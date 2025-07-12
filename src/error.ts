@@ -1,5 +1,5 @@
-import { ZodError } from "zod";
-import { fromError as formatZodError } from "zod-validation-error";
+import { ZodError } from "zod/v4";
+import { fromError } from "zod-validation-error/v4";
 
 import type { NextFunction, Request, Response } from "express";
 
@@ -37,10 +37,10 @@ export function errorHandler(
   if (res.headersSent) return next(err);
 
   if (err instanceof ZodError) {
-    const formatted = formatZodError(err);
+    const formatted = fromError(err);
     renderError(res, {
-      code: "ValidationError",
-      title: "Invalid input",
+      code: "ValidationFailed",
+      title: "Error",
       name: "Validation error",
       details: formatted.toString(),
     }, 400);
