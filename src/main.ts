@@ -4,7 +4,10 @@ import { makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
 import { createPostSchema } from "./schemas/mod.ts";
-import { errorHandler } from "./error.ts";
+import { errorHandler, renderError } from "./error.ts";
+import { createPost, getPosts } from "./db.ts";
+import captchas from "../data/captchas.json" with { type: "json" };
+import { timeMs } from "./utils/time.ts";
 
 /*
 POST /post
@@ -44,17 +47,39 @@ const createApp = () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(makeCors());
 
-  const limiter6pm = makeLimiter(6);
-  const limiter2pm = makeLimiter(2);
-
-  app.all("/", (req, res) => {
-    res.render("index");
+  app.get("/", (req, res) => {
+    const { nsfw, sort } = req.query;
+    const results = getPosts({
+      nsfw: nsfw === "yes" || nsfw === "no" ? nsfw : undefined,
+      sort: sort === "updated" || sort === "views" ? sort : undefined,
+    });
+    console.log(results);
+    res.render("index", { results });
   });
 
-  app.post("/post", (req, res) => {
+  app.get("/post", (_, res) => {
+  });
+
+  const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
+
+  app.post("/post", makeLimiter(1, timeMs({ s: 15 })), (req, res) => {
     const parsed = createPostSchema.parse(req.body);
-    console.log(parsed);
-    res.send(req.body);
+    if (
+      !isCaptchaId(parsed.captcha) ||
+      captchas[parsed.captcha].answer !== parsed.solution
+    ) {
+      return renderError(res, {
+        details:
+          "Your solution to the captcha was incorrect. Please try again.",
+        title: "Incorrect captcha.",
+        name: "Captcha",
+      });
+    }
+
+    const { captcha: _, solution: __, ...createOpts } = parsed;
+
+    const created = createPost(createOpts);
+    return res.redirect(`/post/${created}`);
   });
 
   app.use(errorHandler);
@@ -63,5 +88,5 @@ const createApp = () => {
 };
 
 createApp().listen(config.httpPort).on("listening", () => {
-  console.log(`Listening at http://0.0.0.0:${config.httpPort}`);
+  console.info(`Listening at http://0.0.0.0:${config.httpPort}`);
 });

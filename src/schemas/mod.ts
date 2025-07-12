@@ -9,14 +9,16 @@ z.config({
 });
 
 export const createPostSchema = z.object({
-  title: z.string().optional(),
-  nickname: z.string().optional(),
-  triggers: z.string().optional(),
-  nsfw: z.string().optional().transform((s) => s === "yes" ? 1 : 0),
+  title: z.string().default(""),
+  nickname: z.string().default("Anonymous"),
+  triggers: z.string().default(""),
+  nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
   content: z.string().nonempty().refine((v) => count(v, "words") < 100, {
     error: "Your submission must have greater than or exactly 100 words!",
   }),
-  password: z.string().optional(),
+  password: z.string().default(""),
+  captcha: z.uuidv4(),
+  solution: z.string().nonempty().transform((v) => v.toLowerCase().trim()),
 });
 
 export interface Post {
@@ -36,7 +38,7 @@ export interface Post {
 export const createCommentSchema = z.object({
   for: z.ulid(),
   content: z.string().nonempty(),
-  nickname: z.string().optional(),
+  nickname: z.string().default(""),
 });
 
 export interface Comment {
