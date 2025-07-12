@@ -2,7 +2,6 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import express from "express";
 import { renderError } from "../error.ts";
-import { timeMs } from "./time.ts";
 
 export const makeCors = () =>
   cors({
@@ -10,7 +9,7 @@ export const makeCors = () =>
     optionsSuccessStatus: 200,
   });
 
-export const makeLimiter = (rpm: number) =>
+export const makeLimiter = (reqs: number, duration: number) =>
   rateLimit({
     keyGenerator: (req: express.Request) => {
       const firstPart = (s: string, sep: string, n = 0) =>
@@ -30,6 +29,6 @@ export const makeLimiter = (rpm: number) =>
           "You have made too many requests to the specified resource. Please try again in some time.",
       }, 429);
     },
-    windowMs: timeMs({ m: 1 }),
-    limit: rpm,
+    windowMs: duration,
+    limit: reqs,
   });
