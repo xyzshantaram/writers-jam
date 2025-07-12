@@ -1,16 +1,16 @@
-import { string, uuid, z } from "zod";
+import { z } from "zod";
 
 export const createPostSchema = z.object({
-  title: string().optional(),
-  nickname: string().optional(),
-  trigger_warnings: string().optional(),
-  is_nsfw: string().optional().transform((s) => s === "yes"),
-  content: string(),
-  password: string().optional(),
+  title: z.string().optional(),
+  nickname: z.string().optional(),
+  triggers: z.string().optional(),
+  nsfw: z.string().optional().transform((s) => s === "yes" ? 1 : 0),
+  content: z.string().nonempty(),
+  password: z.string().optional(),
 });
 
 export interface Post {
-  content: boolean;
+  content: string;
   nsfw: boolean;
   password?: string;
   triggers?: string;
@@ -19,4 +19,20 @@ export interface Post {
   views: number;
   reports: number;
   id: string;
+  updated: number;
+  deleted: boolean;
+}
+
+export const createCommentSchema = z.object({
+  on: z.ulid(),
+  content: z.string().nonempty(),
+  nickname: z.string().optional(),
+});
+
+export interface Comment {
+  id: string;
+  on: string;
+  content: string;
+  nickname?: string;
+  created: number;
 }
