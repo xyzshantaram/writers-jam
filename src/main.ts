@@ -8,6 +8,7 @@ import { errorHandler, renderError } from "./error.ts";
 import { createPost, getPosts } from "./db.ts";
 import captchas from "../data/captchas.json" with { type: "json" };
 import { timeMs } from "./utils/time.ts";
+import { choose } from "./utils/mod.ts";
 
 /*
 POST /post
@@ -58,6 +59,12 @@ const createApp = () => {
   });
 
   app.get("/post", (_, res) => {
+    res.render("create-post", {
+      captcha: choose(Object.values(captchas)),
+    });
+  });
+
+  app.get("/post/:uuid", (_, res) => {
   });
 
   const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
