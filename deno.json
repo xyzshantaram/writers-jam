@@ -4,6 +4,8 @@
     "@std/path": "jsr:@std/path@^1.1.1",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
     "@types/express": "npm:@types/express@^5.0.3",
+    "@types/wordpress__wordcount": "npm:@types/wordpress__wordcount@^2.4.5",
+    "@wordpress/wordcount": "npm:@wordpress/wordcount@^4.26.0",
     "better-sqlite3": "npm:better-sqlite3@^12.2.0",
     "better-sqlite3-session-store": "npm:better-sqlite3-session-store@^0.1.0",
     "cors": "npm:cors@^2.8.5",

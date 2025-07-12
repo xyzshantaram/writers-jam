@@ -7,6 +7,8 @@
     "jsr:@std/ulid@1": "1.0.0",
     "npm:@types/express@^5.0.3": "5.0.3",
     "npm:@types/node@*": "22.15.15",
+    "npm:@types/wordpress__wordcount@^2.4.5": "2.4.5",
+    "npm:@wordpress/wordcount@^4.26.0": "4.26.0",
     "npm:better-sqlite3-session-store@0.1": "0.1.0",
     "npm:better-sqlite3@^12.2.0": "12.2.0",
     "npm:cors@^2.8.5": "2.8.5",
@@ -40,6 +42,12 @@
     }
   },
   "npm": {
+    "@babel/runtime@7.25.7": {
+      "integrity": "sha512-FjoyLe754PMiYsFaN5C94ttGiOmBNYTf6pLr4xXHAT5uctHb092PBszndLDR5XA/jghQvn4n7JMHl7dmTgbm9w==",
+      "dependencies": [
+        "regenerator-runtime"
+      ]
+    },
     "@types/body-parser@1.19.6": {
       "integrity": "sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==",
       "dependencies": [
@@ -101,6 +109,15 @@
         "@types/http-errors",
         "@types/node",
         "@types/send"
+      ]
+    },
+    "@types/wordpress__wordcount@2.4.5": {
+      "integrity": "sha512-WpTXs/3xKswj2B2N+waXLIctMAgcPSlagJdbQhE0yu6TWDe/FZqrb6vsqEiamcNeKc8t9BO9B3EihElKMoqFPQ=="
+    },
+    "@wordpress/wordcount@4.26.0": {
+      "integrity": "sha512-xYF9yKvfkFmDZrX9OF5ocNnxkCfdt6hvrDZJDOKZvY74BRzaDqqczCtTEx/UADvHN8Lz1iQX38FwpBEMnjO4Eg==",
+      "dependencies": [
+        "@babel/runtime"
       ]
     },
     "accepts@2.0.0": {
@@ -580,6 +597,9 @@
         "util-deprecate"
       ]
     },
+    "regenerator-runtime@0.14.1": {
+      "integrity": "sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw=="
+    },
     "router@2.2.0": {
       "integrity": "sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==",
       "dependencies": [
@@ -760,6 +780,8 @@
       "jsr:@std/path@^1.1.1",
       "jsr:@std/ulid@1",
       "npm:@types/express@^5.0.3",
+      "npm:@types/wordpress__wordcount@^2.4.5",
+      "npm:@wordpress/wordcount@^4.26.0",
       "npm:better-sqlite3-session-store@0.1",
       "npm:better-sqlite3@^12.2.0",
       "npm:cors@^2.8.5",
