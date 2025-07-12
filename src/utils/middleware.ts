@@ -1,7 +1,7 @@
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import express from "express";
-import { renderError } from "./mod.ts";
+import { renderError } from "../error.ts";
 import { timeMs } from "./time.ts";
 
 export const makeCors = () =>
