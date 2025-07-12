@@ -42,7 +42,8 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     password,
     triggers,
     title,
-    nickname
+    nickname,
+    updated
   ) VALUES (
     :id,
     :content,
@@ -50,12 +51,16 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     :password,
     :triggers,
     :title,
-    :nickname
+    :nickname,
+    :updated
   )`);
 
-export const createPost = (opts: z.infer<typeof createPostSchema>) => {
+export const createPost = (
+  opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "solution">,
+) => {
   const updated = Date.now();
   const id = ulid();
+
   createPostStmt.run({
     id,
     updated,
@@ -130,6 +135,7 @@ INSERT INTO comment(
 export const createComment = (opts: z.infer<typeof createCommentSchema>) => {
   const updated = Date.now();
   const id = ulid();
+
   createCommentStmt.run({
     id,
     updated,
