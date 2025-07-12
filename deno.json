@@ -17,5 +17,10 @@
     "zod": "npm:zod@^4.0.5",
     "zod-validation-error": "npm:zod-validation-error@^3.5.3"
   },
-  "nodeModulesDir": "auto"
+  "nodeModulesDir": "auto",
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  }
 }
