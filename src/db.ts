@@ -8,6 +8,8 @@ const db = new DatabaseSync("./writing-jam.db", {
   readOnly: false,
 });
 
+db.exec("PRAGMA journal_mode=WAL");
+
 db.exec(`\
 CREATE TABLE IF NOT EXISTS post (
   id TEXT PRIMARY KEY,
