@@ -1,0 +1,18 @@
+{
+  "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.19",
+    "@std/path": "jsr:@std/path@^1.1.1",
+    "@std/ulid": "jsr:@std/ulid@^1.0.0",
+    "@types/express": "npm:@types/express@^5.0.3",
+    "better-sqlite3": "npm:better-sqlite3@^12.2.0",
+    "better-sqlite3-session-store": "npm:better-sqlite3-session-store@^0.1.0",
+    "cors": "npm:cors@^2.8.5",
+    "express": "npm:express@^5.1.0",
+    "express-rate-limit": "npm:express-rate-limit@^7.5.1",
+    "express-session": "npm:express-session@^1.18.1",
+    "liquidjs": "npm:liquidjs@^10.21.1",
+    "marked": "npm:marked@^16.0.0",
+    "zod": "npm:zod@^4.0.5"
+  },
+  "nodeModulesDir": "auto"
+}
