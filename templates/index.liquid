@@ -1,0 +1,25 @@
+{% block extra_head %}
+<link rel="stylesheet" href="/index.css">
+{% endblock %}
+
+{% layout "base.liquid", heading:heading, title:title %}
+{% block content %}
+
+<p>Welcome! Writing Jams are a simple collaborative writing exercise where people of all get together to create and celebrate each other's work!</p>
+
+<p>The rules are simple:</p>
+
+<ul>
+    <li>Write a minimum of 100 words on a given theme, no upper limit.</li>
+    <li>This week's theme is: <strong><em>"How are you feeling?"</em></strong></li>
+    <li>You are encouraged to get creative with the theme. You can literally talk about your day, or use it as a dialogue or opening line in your story, or write about the phrase itself, or the history of asking people how they are... the possibilities are endless!</li>
+    <li>When done, simply post your creation to this website! There will be a discussion at 7pm IST on 2025-07-13.</li>
+</ul>
+
+<p>What are you waiting for?</p>
+
+<a class="btn invert" href="/post"><strong>Get started!</strong></a>
+
+<h2>Posts</h2>
+
+{% endblock %}

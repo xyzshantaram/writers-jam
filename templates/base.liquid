@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Jam{% if title %} - {{ title | escape }}{% endif %}</title>
+    {% block head %}
+    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/base.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    {% block head_extras %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <h1>
+            <a href="/">Writing Jam</a>
+        </h1>
+    </header>
+
+    {%if heading %}
+    <h2>{{ heading | escape }}</h2>
+    {% elsif title %}
+    <h2>{{ title | escape }}</h2>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+    <div class="footer-socials">
+        <a class="btn" href="https://chat.whatsapp.com/EO7iXhFfPOTAe5Jy5yeY9k" target="_blank" rel="noopener noreferrer"
+            aria-label="Join the WhatsApp group" title="Join the WhatsApp group" role="button">
+            <i class="iconoir-whatsapp"></i>
+        </a>
+        <a class="btn" href="https://github.com/xyzshantaram/writing-jam" target="_blank" rel="noopener noreferrer"
+            aria-label="Visit our GitHub repository" title="Visit our GitHub repository" role="button">
+            <i class="iconoir-github"></i>
+        </a>
+    </div>
+
+    <footer class=invert>
+        <ul class="footer-links">
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+        </ul>
+        <div>Copyright &copy; 2025 <a href='https://shantaram.xyz'>Siddharth Singh</a></div>
+    </footer>
+</body>
+
+</html>
