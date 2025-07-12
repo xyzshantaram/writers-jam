@@ -15,6 +15,7 @@
     "npm:express@^5.1.0": "5.1.0",
     "npm:liquidjs@^10.21.1": "10.21.1",
     "npm:marked@16": "16.0.0",
+    "npm:zod-validation-error@^3.5.3": "3.5.3_zod@4.0.5",
     "npm:zod@^4.0.5": "4.0.5"
   },
   "jsr": {
@@ -743,6 +744,12 @@
     "wrappy@1.0.2": {
       "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="
     },
+    "zod-validation-error@3.5.3_zod@4.0.5": {
+      "integrity": "sha512-OT5Y8lbUadqVZCsnyFaTQ4/O2mys4tj7PqhdbBCp7McPwvIEKfPtdA6QfPeFQK2/Rz5LgwmAXRJTugBNBi0btw==",
+      "dependencies": [
+        "zod"
+      ]
+    },
     "zod@4.0.5": {
       "integrity": "sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA=="
     }
@@ -761,6 +768,7 @@
       "npm:express@^5.1.0",
       "npm:liquidjs@^10.21.1",
       "npm:marked@16",
+      "npm:zod-validation-error@^3.5.3",
       "npm:zod@^4.0.5"
     ]
   }
