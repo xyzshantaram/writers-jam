@@ -58,7 +58,7 @@
     <div class="posts">
     {% for post in results %}
         <a class="post-item" href="/post/{{ post.id }}">
-            <div class="post-title">{{ post.title }}
+            <div class="post-title">{{ post.title | default: "Untitled" }}
                 {% if post.nsfw %}
                     <span class="badge danger invert">NSFW</span>
                 {% endif %}
