@@ -5,7 +5,13 @@ import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
 import { createPostSchema } from "./schemas/mod.ts";
 import { errorHandler, renderError } from "./error.ts";
-import { createPost, getPosts } from "./db.ts";
+import {
+  createPost,
+  getPostCount,
+  getPosts,
+  getViewCount,
+  randomPost,
+} from "./db.ts";
 import captchas from "../data/captchas.json" with { type: "json" };
 import { timeMs } from "./utils/time.ts";
 import { choose } from "./utils/mod.ts";
@@ -36,10 +42,23 @@ POST /admin/posts/:ulid/comment/:ulid/delete
 POST /admin/post/:ulid/mark-safe
 */
 
+function makeQueryLinkHelper(query: Record<string, any>) {
+  return function addQueryParamsObject(newParams?: Record<string, string>) {
+    const merged = { ...query, ...newParams };
+
+    const cleaned = Object.fromEntries(
+      Object.entries(merged).filter(([_, v]) => v != null),
+    );
+
+    const searchParams = new URLSearchParams(cleaned);
+    return `?${searchParams.toString()}`;
+  };
+}
+
 const createApp = () => {
   const app = express();
   app.use(express.static("./public"));
-  const liquid = new Liquid({ extname: ".liquid" });
+  const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
 
   app.engine("liquid", liquid.express());
   app.set("view engine", "liquid");
@@ -49,13 +68,32 @@ const createApp = () => {
   app.use(makeCors());
 
   app.get("/", (req, res) => {
-    const { nsfw, sort } = req.query;
-    const results = getPosts({
-      nsfw: nsfw === "yes" || nsfw === "no" ? nsfw : undefined,
-      sort: sort === "updated" || sort === "views" ? sort : undefined,
+    const rawSort = req.query.sort;
+    const rawNsfw = req.query.nsfw;
+
+    const sort = rawSort === "updated" || rawSort === "views"
+      ? rawSort
+      : undefined;
+    const nsfw = rawNsfw === "yes" || rawNsfw === "no" ? rawNsfw : undefined;
+
+    const results = getPosts({ sort, nsfw });
+    const addQuery = makeQueryLinkHelper(req.query);
+
+    const postCount = getPostCount();
+    const viewCount = getViewCount();
+
+    res.render("index", {
+      results,
+      postCount,
+      viewCount,
+      currentSort: sort,
+      currentNsfw: nsfw,
+      queries: {
+        sort_views: addQuery({ sort: "views" }),
+        sort_updated: addQuery({ sort: "updated" }),
+        nsfw_toggle: addQuery({ nsfw: nsfw === "yes" ? "no" : "yes" }),
+      },
     });
-    console.log(results);
-    res.render("index", { results });
   });
 
   app.get("/post", (_, res) => {
@@ -64,13 +102,23 @@ const createApp = () => {
     });
   });
 
-  app.get("/post/:uuid", (_, res) => {
+  app.get("/post/:uuid", (req, res) => {
+    res.send(req.params);
+  });
+
+  app.get("/post/random", (_, res) => {
+    const post = randomPost();
+    console.log("post id", post);
+    if (!post) throw new Error("Found zero posts");
+    return res.redirect(`/post/${post}`);
   });
 
   const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
 
   app.post("/post", makeLimiter(1, timeMs({ s: 15 })), (req, res) => {
+    console.log(req.body);
     const parsed = createPostSchema.parse(req.body);
+    console.log(parsed);
     if (
       !isCaptchaId(parsed.captcha) ||
       captchas[parsed.captcha].answer !== parsed.solution
