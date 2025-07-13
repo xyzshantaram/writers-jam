@@ -240,6 +240,7 @@ textarea {
     border: 2px solid var(--body-secondary);
     border-radius: 0.25rem;
     background-color: transparent;
+    color: inherit;
     min-width: 12ch;
 }
 
@@ -364,5 +365,10 @@ form .submit-group {
     html {
         min-height: 100%;
         display: block;
+    }
+
+    p {
+        margin-left: 0.4rem;
+        margin-right: 0.4rem;
     }
 }
