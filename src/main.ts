@@ -9,6 +9,9 @@ import * as posts from "./routes/posts.ts";
 import { timeMs } from "./utils/time.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { marked, Renderer } from "marked";
+import sanitize from "sanitize-html";
+import { markedSmartypants } from "marked-smartypants";
 
 /*
 GET /post/:ulid
@@ -27,11 +30,47 @@ POST /admin/posts/:ulid/comment/:ulid/delete
 POST /admin/post/:ulid/mark-safe
 */
 
+let markedSetup = false;
+const setupMarked = () => {
+  if (markedSetup) return;
+  markedSetup = true;
+  const renderer: Partial<Renderer> = {
+    heading({ tokens, depth }) {
+      const text = this.parser?.parseInline(tokens);
+      return `<div class='heading-${depth}'>${text}</div>`;
+    },
+    image() {
+      return "";
+    },
+  };
+  marked.use({ renderer });
+  marked.use(markedSmartypants());
+};
+
+const parseMd = (s: string) => {
+  setupMarked();
+
+  return sanitize(marked.parse(s), {
+    allowedClasses: {
+      "div": [
+        "heading-1",
+        "heading-2",
+        "heading-3",
+        "heading-4",
+        "heading-5",
+        "heading-6",
+      ],
+    },
+  }) as string;
+};
+
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
   const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
+
   liquid.registerFilter("time_ago", (stamp: number) => {
     return timeAgo.format(new Date(stamp));
   });
+  liquid.registerFilter("parse_md", parseMd);
 
   app.engine("liquid", liquid.express());
   app.set("view engine", "liquid");

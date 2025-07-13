@@ -15,6 +15,8 @@
     "javascript-time-ago": "npm:javascript-time-ago@^2.5.11",
     "liquidjs": "npm:liquidjs@^10.21.1",
     "marked": "npm:marked@^16.0.0",
+    "marked-smartypants": "npm:marked-smartypants@^1.1.10",
+    "sanitize-html": "npm:sanitize-html@^2.17.0",
     "zod": "npm:zod@^4.0.5",
     "zod-validation-error": "npm:zod-validation-error@^3.5.3"
   },
