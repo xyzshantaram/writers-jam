@@ -240,3 +240,39 @@ const addPostStmt = db.prepare(
 export const addPostView = (id: string) => {
   addPostStmt.run(id);
 };
+
+const deletePostQuery = db.prepare(
+  "delete from post where id = ?",
+);
+
+export const deletePost = (id: string) => {
+  return deletePostQuery.run(id);
+};
+
+const updatePostStmt = db.prepare(
+  `UPDATE post
+   SET title = :title, content = :content, triggers = :triggers, nsfw = :nsfw, updated = :updated
+   WHERE id = :id`,
+);
+
+export const updatePost = (id: string, {
+  title,
+  content,
+  triggers,
+  nsfw,
+}: {
+  title: string;
+  content: string;
+  triggers?: string;
+  nsfw: boolean;
+}) => {
+  const updated = Date.now();
+  return updatePostStmt.run({
+    id,
+    title,
+    content,
+    triggers: triggers || "",
+    nsfw: nsfw ? 1 : 0,
+    updated,
+  });
+};

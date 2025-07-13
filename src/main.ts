@@ -13,14 +13,13 @@ import { marked, Renderer } from "marked";
 import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
 import z from "zod/v4";
-import { getPostById } from "./db.ts";
+import { deletePost, getPostById, updatePost } from "./db.ts";
 
 /*
 GET /post/:ulid/edit
     - delete post
     - edit post contents
 POST /post/:ulid/edit
-POST /post/:ulid/comment
 
 GET /admin/reports
 GET /admin/reports/:lid
@@ -101,13 +100,25 @@ const createApp = () => {
   );
 
   const manageSchema = z.object({
-    id: z.ulid(),
     password: z.string().nonempty(),
   });
 
+  const editSessions: Record<string, {
+    session: string;
+    started: number;
+    post: string;
+  }> = {};
+
   app.post("/post/:id/manage", (req, res) => {
+    Object.values(editSessions).forEach((sess) => {
+      if (Date.now() - sess.started > timeMs({ m: 30 })) {
+        delete editSessions[sess.session];
+      }
+    });
+
     const parsed = manageSchema.parse(req.body);
-    const post = getPostById(parsed.id);
+    const id = z.ulid().parse(req.params.id);
+    const post = getPostById(id);
     if (!post) {
       return renderError(res, {
         code: "NotFound",
@@ -126,10 +137,64 @@ const createApp = () => {
       });
     }
 
+    const session = crypto.randomUUID();
+    editSessions[session] = {
+      session,
+      started: Date.now(),
+      post: id,
+    };
+
     res.render("create-post", {
       mode: "edit",
       post,
+      session,
     });
+  });
+
+  const updatePostSchema = z.object({
+    action: z.enum(["update", "delete"]),
+    session: z.uuidv4().refine(
+      (v) => Object.keys(editSessions).includes(v),
+      "Looks like your editing session expired. Try again.",
+    ),
+  });
+
+  const postModificationAction = z.object({
+    title: z.string().default(""),
+    triggers: z.string().default(""),
+    content: z.string(),
+    action: z.literal("update"),
+    nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
+  });
+
+  app.post("/post/:id/update", (req, res) => {
+    Object.values(editSessions).forEach((sess) => {
+      if (Date.now() - sess.started > timeMs({ m: 30 })) {
+        delete editSessions[sess.session];
+      }
+    });
+
+    const id = z.ulid().parse(req.params.id);
+    const parsed = updatePostSchema.parse(req.body);
+    if (editSessions[parsed.session].post !== id) {
+      return renderError(res, { code: "BadRequest" });
+    }
+
+    delete editSessions[parsed.session];
+
+    if (parsed.action === "delete") {
+      deletePost(id);
+      return res.redirect("/");
+    } else if (parsed.action === "update") {
+      const updated = postModificationAction.parse(req.body);
+      updatePost(id, {
+        title: updated.title,
+        triggers: updated.triggers,
+        content: updated.content,
+        nsfw: !!updated.nsfw,
+      });
+      return res.redirect(`/post/${id}`);
+    } else throw new Error("wtf");
   });
 
   app.use(errorHandler);

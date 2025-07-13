@@ -60,7 +60,7 @@
     "id": "7c300f99-d305-41ff-bde8-8922a38fc6f7"
   },
   "3605f0f2-3212-4c87-a978-1a81256ab7b3": {
-    "question": "What is five plus seven?",
+    "question": "What is five plus seven (in words)?",
     "answer": "twelve",
     "id": "3605f0f2-3212-4c87-a978-1a81256ab7b3"
   },
@@ -120,7 +120,7 @@
     "id": "2c084be6-1ab6-4ef9-afd7-46f8b3860932"
   },
   "b6929c02-bd26-4e4d-bcd0-b089c43c610f": {
-    "question": "What is nine minus three?",
+    "question": "What is nine minus three (in words)?",
     "answer": "six",
     "id": "b6929c02-bd26-4e4d-bcd0-b089c43c610f"
   },

@@ -6,15 +6,15 @@
 {% endblock %}
 
 {% block content %}
-<form class="create-post" action="/post" method="post">
+<form class="create-post" {% if mode != "edit" %} action="/post" {% else %} action="/post/{{ post.id }}/update" {% endif %} method="post">
     <div class="form-group">
         <label for="post-title">Title</label>
-        <input type="text" id="post-title" name="title">
+        <input type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
     </div>
 
     <div class="form-group">
         <label for="post-tws">Trigger warnings (if applicable)</label>
-        <input type="text" id="post-tws" name="triggers">
+        <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
     </div>
 
     <details class="editing-help">
@@ -84,12 +84,13 @@ my second line
 
     <div class="form-group textarea-group">
         <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>
-        <textarea id="post-content" name="content"></textarea>
+<textarea id="post-content" name="content">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
     </div>
 
     <div id="content-rendered-label" aria-roledescription="label">Post preview</div>
     <div aria-labelledby="content-rendered-label" id="content-rendered"></div>
 
+    {% if mode != "edit" %}
 
     <div class="nag">
         This is just a nickname! Setting it here does not reserve it. If not entered, this will be "Anonymous".
@@ -104,6 +105,7 @@ my second line
         If you don't set this, you will have to contact the admins to edit your post. 
         <strong>Keep this secret! Anyone with the code can change your posts.</strong>
     </div>
+
     <div class="form-group">
         <label for="post-edit-code">Edit code</label>
         <input type="text" name="password" id="post-edit-code">
@@ -115,15 +117,40 @@ my second line
         <input type="text" name="solution" id="post-captcha-solution" required aria-required>
     </div>
 
+    {% else %}
+    <input type="hidden" name="session" value="{{ session }}">
+    <input type="hidden" name="action" value="update">
+    {% endif %}
+
     <div class="form-group">
         <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
-        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes">
+        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
     </div>
 
     <div class="form-group submit-group">
-        <input type="submit" value="Post!">
+        <input type="submit" {% if mode != "edit" %} value="Post!" {% else %} value="Update post" {% endif %}>
     </div>
 </form>
+
+{% if mode == "edit" %}
+    <style>
+        h3, h4 {
+            margin: 0.25rem;
+        }
+    </style>
+    <h3>Danger Zone</h3>
+    <h4>Delete post</h4>
+
+    <div class="nag"><strong>WARNING!</strong> THIS CANNOT BE UNDONE. Only continue if you are sure of what you're doing.</div>
+
+    <form action="/post/{{ post.id }}/update" method="post">
+        <input type="hidden" name="session" value="{{ session }}">
+        <input type="hidden" name="action" value="delete">
+        <div class="form-group submit-group">
+            <input type="submit" value="Delete post">
+        </div>
+    </form>
+{% endif %}
 
 <script type="module">
     import { marked } from "https://esm.sh/marked@^16.0.0";
