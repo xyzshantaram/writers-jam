@@ -10,10 +10,10 @@ z.config({
 
 export const createPostSchema = z.object({
   title: z.string().default(""),
-  nickname: z.string().default("Anonymous"),
+  author: z.string().default("Anonymous"),
   triggers: z.string().default(""),
   nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
-  content: z.string().nonempty().refine((v) => count(v, "words") < 100, {
+  content: z.string().nonempty().refine((v) => count(v, "words") >= 100, {
     error: "Your submission must have greater than or exactly 100 words!",
   }),
   password: z.string().default(""),
@@ -27,7 +27,7 @@ export interface Post {
   password?: string;
   triggers?: string;
   title?: string;
-  nickname?: string;
+  author?: string;
   views: number;
   reports: number;
   id: string;
@@ -38,13 +38,13 @@ export interface Post {
 export const createCommentSchema = z.object({
   for: z.ulid(),
   content: z.string().nonempty(),
-  nickname: z.string().default(""),
+  author: z.string().default(""),
 });
 
 export interface Comment {
   id: string;
   for: string;
   content: string;
-  nickname?: string;
+  author?: string;
   created: number;
 }

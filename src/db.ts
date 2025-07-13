@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS post (
   password TEXT,
   triggers TEXT,
   title TEXT,
-  nickname TEXT,
+  author TEXT,
   views INTEGER NOT NULL DEFAULT 0,
   reports INTEGER NOT NULL DEFAULT 0,
   updated INTEGER NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS comment (
   id TEXT PRIMARY KEY,
   for TEXT NOT NULL,
   content TEXT NOT NULL,
-  nickname TEXT,
+  author TEXT,
   created INTEGER NOT NULL,
   FOREIGN KEY (for) REFERENCES post(id) ON DELETE CASCADE
 )`);
@@ -42,7 +42,7 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     password,
     triggers,
     title,
-    nickname,
+    author,
     updated
   ) VALUES (
     :id,
@@ -51,7 +51,7 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     :password,
     :triggers,
     :title,
-    :nickname,
+    :author,
     :updated
   )`);
 
@@ -79,15 +79,13 @@ export const getPosts = (
 ): Omit<Post, "content" | "reports" | "deleted">[] => {
   const { sort, nsfw } = opts || {};
   let query =
-    `SELECT id, title, nsfw, password, triggers, nickname, updated, views FROM post`;
+    `SELECT id, title, nsfw, password, triggers, author, updated, views FROM post`;
   const conditions: string[] = [
     "deleted != 1",
   ];
   const params: Record<string, any> = {};
 
-  if (nsfw === "yes") {
-    conditions.push("nsfw = 1");
-  } else if (nsfw === "no") {
+  if (nsfw !== "yes") {
     conditions.push("nsfw = 0");
   }
 
@@ -110,7 +108,7 @@ export const getPosts = (
       nsfw: !!row.nsfw,
       password: row.password as string | undefined,
       triggers: row.triggers as string | undefined,
-      nickname: row.nickname as string,
+      author: row.author as string,
       updated: Number(row.updated),
       views: Number(row.views),
     }));
@@ -121,13 +119,13 @@ INSERT INTO comment(
     id,
     for,
     content,
-    nickname,
+    author,
     created
 ) VALUES (
     :id,
     :for,
     :content,
-    :nickname,
+    :author,
     :created
 )
 `);
