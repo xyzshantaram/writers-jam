@@ -1,0 +1,43 @@
+.create-post {
+    margin: 1rem;
+}
+
+.editing-help {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.visible-space {
+    background-color: rgb(136, 255, 136);
+    white-space: pre;
+    border: 1px solid green;
+}
+
+#content-preview {
+    width: calc(100% - 1rem);
+    border: 2px solid var(--body-secondary);
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+#content-preview:empty {
+    min-height: 5ch;
+}
+
+#content-preview:empty::after {
+    content: "No content yet! Write something fun.";
+    color: grey;
+}
+
+#content-preview p {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+#content-preview-label {
+    text-align: left;
+    width: 100%;
+}

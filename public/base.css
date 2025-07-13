@@ -51,6 +51,45 @@ footer {
     align-items: center;
 }
 
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-4,
+.heading-5,
+.heading-6 {
+    font-weight: bold;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.heading-1 {
+    font-size: 1.6rem;
+}
+
+.heading-2 {
+    font-size: 1.4rem;
+}
+
+.heading-3 {
+    font-size: 1.2rem;
+}
+
+.heading-4 {
+    font-size: 1.1rem;
+}
+
+.heading-5 {
+    font-size: 1rem;
+}
+
+.heading-6 {
+    font-size: 0.9rem;
+}
+
+pre {
+    overflow-x: auto;
+}
+
 body {
     background-color: var(--body-bg);
     max-width: 70ch;
@@ -68,6 +107,12 @@ body {
 
 body>*:not(header):not(footer) {
     max-width: 60ch;
+}
+
+blockquote {
+    border-left: 3px solid #aaa;
+    padding-left: 0.5rem;
+    margin-left: 0.5rem;
 }
 
 html {
@@ -119,7 +164,12 @@ img {
 
 .cta-links {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cta-links p {
+    margin: unset;
 }
 
 h2,
@@ -180,7 +230,8 @@ label {
     padding: 0.5rem;
 }
 
-input {
+input,
+textarea {
     border: 2px solid var(--body-secondary);
     border-radius: 0.25rem;
     background-color: transparent;
@@ -223,6 +274,36 @@ form {
 .submit-group {
     justify-content: flex-end;
     margin-top: 1rem;
+}
+
+.nag {
+    background: var(--accent);
+    padding: 0.5rem;
+    border: 2px solid var(--body-primary);
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.textarea-group {
+    flex-direction: column;
+    margin: 0.5rem;
+}
+
+.textarea-group textarea {
+    resize: none;
+    width: calc(100% - 0.8rem);
+    line-height: 1.2;
+    font-size: 1rem;
+    padding: 0.4rem;
+    min-height: 60vh;
+}
+
+.textarea-group label {
+    text-align: left;
+    width: 100%;
 }
 
 section {
