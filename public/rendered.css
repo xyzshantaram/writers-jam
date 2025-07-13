@@ -1,0 +1,27 @@
+#content-rendered {
+    width: calc(100% - 1rem);
+    border: 2px solid var(--body-secondary);
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+#content-rendered:empty {
+    min-height: 5ch;
+}
+
+#content-rendered:empty::after {
+    content: "No content yet! Write something fun.";
+    color: grey;
+}
+
+#content-rendered p {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+#content-rendered-label {
+    text-align: left;
+    width: 100%;
+}
