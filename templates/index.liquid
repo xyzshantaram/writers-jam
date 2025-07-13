@@ -5,13 +5,6 @@
 {% layout "base.liquid", heading:"Welcome to Writing Jams!", title:title %}
 {% block content %}
 
-<style>
-    span.counter {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-</style>
-
 <p>
     {% if postCount %}
         <span class="counter">{{ postCount }}</span> posts so far
@@ -60,5 +53,33 @@
         {% endif %}
     </p>
 </div>
+
+{% if results.size %}
+    <div class="posts">
+    {% for post in results %}
+        <a class="post-item" href="/post/{{ post.id }}">
+            <div class="post-title">{{ post.title }}
+                {% if post.nsfw %}
+                    <span class="badge danger invert">NSFW</span>
+                {% endif %}
+            </div>
+            <div class="post-author">by <strong>{{ post.author | default: "Anonymous" }}</strong></div>
+            {% if post.triggers.size != 0 %}
+                <strong>TRIGGER WARNINGS: </strong> {{ post.triggers }}
+            {% endif %}
+            <div class="view-count">
+                <i class="iconoir-eye" aria-label="View count" title="View count"></i> 
+                {{ post.views }}
+            </div>
+            <div class="updated-time">
+                <i class="iconoir-clock" aria-label="Last updated" title="Last updated"></i> 
+                {{ post.updated | time_ago }}
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>No posts yet. <a href="/post">Be the first!</a></p>
+{% endif %}
 
 {% endblock %}
