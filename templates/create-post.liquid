@@ -1,0 +1,214 @@
+{% layout "base.liquid" heading: "Create a post" %}
+
+{% block head_extras %}
+<link rel="stylesheet" href="/create-post.css">
+{% endblock %}
+
+{% block content %}
+<form class="create-post" action="/post" method="post">
+    <div class="form-group">
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" name="title">
+    </div>
+
+    <div class="form-group">
+        <label for="post-tws">Trigger warnings (if applicable)</label>
+        <input type="text" id="post-tws" name="triggers">
+    </div>
+
+    <details class="editing-help">
+        <summary class="invert">Editing help</summary>
+        <p>The editor uses Markdown for formatting. You may have used it before in messaging apps and 
+            not known it. Don't worry if you haven't though, you'll pick it up in no time! 
+            <strong>
+                You can also paste directly from your word processor (Google Docs/Microsoft Word etc)
+                and it gets converted automatically.
+            </strong> A live preview is available at all times below the editor! Check it often.</p>
+        <ul>
+            <li>
+                Putting a number of <code>#</code>s at the beginning of a line will make a heading.
+                <div>
+                    Example:
+<pre><code># My cool heading
+## My cool second heading
+### My cool third heading</code></pre>
+                    Becomes:
+                    <div>
+                        <div class="heading-1">My cool heading</div>
+                        <div class="heading-2">My cool second heading</div>
+                        <div class="heading-3">My cool third heading</div>
+                    </div>
+                </div>
+            </li>
+
+            <li>
+                To add a soft break (Shift+Enter in Google Docs), end a line with two spaces.
+                <pre><code>my first line<span class="visible-space"> </span><span class="visible-space"> </span>
+my second line
+</code></pre>
+            </li>
+
+            <li>
+                To add a paragraph break, simply leave an empty line between paragraphs.
+            </li>
+
+            <li>
+                <code>**Double asterisks**</code> or <code>__underscores__</code> make <strong>bold text</strong>.
+            </li>
+
+            <li>
+                <code>*Single asterisks*</code> or <code>_underscores_</code> make <em>italic text</em>.
+            </li>
+
+            <li>
+                <code>~~Double tildes~</code> make <del>strikethrough text</del>.
+            </li>
+
+            <li>
+                To make a bulleted list, begin a line with an asterisk (*).
+<pre><code>* first thing
+* second thing
+* third thing</code></pre>
+            </li>
+
+            <li>
+                To make a block quote, prefix each line of the quote with <code>&gt;</code>.
+                <pre><code>&gt; "The story so far: In the beginning the Universe was created.
+&gt; This has made a lot of people very angry and been widely regarded as a bad move."
+&gt; -- Douglas Adams, The Restaurant at the End of the Universe
+</code></pre>
+            </li>
+        </ul>
+    </details>
+
+    <div class="form-group textarea-group">
+        <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>
+        <textarea id="post-content" name="content"></textarea>
+    </div>
+
+    <div id="content-preview-label" aria-roledescription="label">Post preview</div>
+    <div aria-labelledby="content-preview-label" id="content-preview"></div>
+
+
+    <div class="nag">
+        This is just a nickname! Setting it here does not reserve it. If not entered, this will be "Anonymous".
+    </div>
+    <div class="form-group">
+        <label for="post-nickname">Your name</label>
+        <input type="text" name="nickname" id="post-nickname">
+    </div>
+
+    <div class="nag">
+        Setting an edit code is highly recommended. You can use this to edit or delete your post later on. 
+        If you don't set this, you will have to contact the admins to edit your post. 
+        <strong>Keep this secret! Anyone with the code can change your posts.</strong>
+    </div>
+    <div class="form-group">
+        <label for="post-edit-code">Edit code</label>
+        <input type="text" name="password" id="post-edit-code">
+    </div>
+
+    <input type="hidden" name="captcha" value="{{ captcha.id }}">
+    <div class="form-group">
+        <label for="post-nickname"><strong>CAPTCHA:</strong> {{ captcha.question }}</label>
+        <input type="text" name="solution" id="post-captcha-solution" required aria-required>
+    </div>
+
+    <div class="form-group">
+        <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
+        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes">
+    </div>
+
+    <div class="form-group submit-group">
+        <input type="submit" value="Post!">
+    </div>
+</form>
+
+<script type="module">
+    import { marked } from "https://esm.sh/marked@^16.0.0";
+    import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
+    import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
+    import { markedSmartypants } from "https://esm.sh/marked-smartypants@1.1.10";
+    import TurndownService from "https://esm.sh/turndown@7.2.0";
+    import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const textarea = document.querySelector('textarea');
+        const preview = document.querySelector('#content-preview');
+        const wc = document.querySelector('#content-word-count');
+        let timeout = null;
+        const renderer = {
+            heading({ tokens, depth }) {
+                const text = this.parser.parseInline(tokens);
+                return `<div class='heading-${depth}'>${text}</div>`;
+            },
+            image() {
+                return '';
+            }
+        };
+
+        const turndownService = new TurndownService({
+            headingStyle: 'atx'
+        });
+
+        turndownService.use([turndownGfm.gfm, turndownGfm.strikethrough, turndownGfm.taskListItems]);
+
+        function htmlToMarkdown(html) {
+            return turndownService.turndown(html);
+        }
+
+        textarea.addEventListener('paste', async (e) => {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            if (!clipboardData) return;
+
+            const htmlData = clipboardData.getData('text/html');
+            const textData = clipboardData.getData('text/plain');
+
+            if (htmlData) {
+                e.preventDefault();
+                console.log(htmlData);
+                const markdown = htmlToMarkdown(htmlData);
+                console.log(markdown);
+                insertMarkdownAtCursor(markdown);
+            }
+        });
+
+        function insertMarkdownAtCursor(markdown) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+
+            // Insert the markdown
+            textarea.value = value.slice(0, start) + markdown + value.slice(end);
+
+            // Move cursor to the end of inserted text
+            const newCursorPos = start + markdown.length;
+            textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+
+            // Focus the textarea again
+            textarea.focus();
+        }
+
+        marked.use(markedSmartypants());
+        marked.use({ renderer });
+
+        const oninput = () => {
+            const value = textarea.value;
+            if (!value.trim()) return;
+            preview.innerHTML = sanitize(marked.parse(value), {
+                allowedClasses: {
+                    'div': ['heading-1', 'heading-2', 'heading-3', 'heading-4', 'heading-5', 'heading-6']
+                }
+            });
+            wc.innerHTML = count(value, 'words');
+        }
+
+        textarea.addEventListener('input', () => {
+            if (timeout) window.clearTimeout(timeout);
+            timeout = window.setTimeout(oninput, 1000);
+        })
+
+        oninput();
+    })
+</script>
+{% endblock %}
