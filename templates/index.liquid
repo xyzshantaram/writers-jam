@@ -18,8 +18,47 @@
 
 <p>What are you waiting for?</p>
 
+<style>
+    span.counter {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+</style>
+
+<p>
+    {% if postCount %}
+        <span class="counter">{{ postCount }}</span> posts so far
+    {% endif %}
+    {% if postCount and viewCount %}
+        totalling <span class="counter">{{ viewCount }}</span> views
+    {% endif %}
+</p>
+
 <a class="btn invert" href="/post"><strong>Get started!</strong></a>
 
 <h2>Posts</h2>
+<div class="cta-links">
+    {% if postCount != 0 %}
+    <p>
+    <a href="/random">Random post</a>
+    </p>
+    {% endif %}
+
+    <p>
+        {% if currentNsfw == "yes" %}
+            <a href="{{ queries.nsfw_toggle }}">Hide NSFW</a>
+        {% else %}
+            <a href="{{ queries.nsfw_toggle }}">Show NSFW</a>
+        {% endif %}
+    </p>
+
+    <p>
+        {% if currentSort == "views" %}
+            Sorting by views. <a href="{{ queries.sort_updated }}">Sort by last update</a>
+        {% else %}
+            Sorting by last update. <a href="{{ queries.sort_views }}">Sort by views</a>
+        {% endif %}
+    </p>
+</div>
 
 {% endblock %}
