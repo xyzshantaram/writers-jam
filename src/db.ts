@@ -1,6 +1,11 @@
 import { DatabaseSync } from "node:sqlite";
 import { z } from "zod/v4";
-import { createCommentSchema, createPostSchema, Post } from "./schemas/mod.ts";
+import {
+  Comment,
+  createCommentSchema,
+  createPostSchema,
+  Post,
+} from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
 
 const db = new DatabaseSync("./writing-jam.db", {
@@ -31,7 +36,7 @@ CREATE TABLE IF NOT EXISTS comment (
   for TEXT NOT NULL,
   content TEXT NOT NULL,
   author TEXT,
-  created INTEGER NOT NULL,
+  posted INTEGER NOT NULL,
   FOREIGN KEY (for) REFERENCES post(id) ON DELETE CASCADE
 )`);
 
@@ -120,23 +125,23 @@ INSERT INTO comment(
     for,
     content,
     author,
-    created
+    posted
 ) VALUES (
     :id,
     :for,
     :content,
     :author,
-    :created
+    :posted
 )
 `);
 
 export const createComment = (opts: z.infer<typeof createCommentSchema>) => {
-  const updated = Date.now();
+  const posted = Date.now();
   const id = ulid();
 
   createCommentStmt.run({
     id,
-    updated,
+    posted,
     ...opts,
   });
   return id;
@@ -203,4 +208,23 @@ export const getPostById = (id: string): Post | null => {
     title: String(res.title || ""),
     triggers: String(res.triggers || ""),
   };
+};
+
+const getPostCommentsQuery = db.prepare(`select
+  id,
+  content,
+  author
+from comment where
+  for = ?
+order by posted desc
+`);
+
+export const getCommentsForPost = (id: string): Comment[] => {
+  return getPostCommentsQuery.all(id).map((itm) => ({
+    id: String(itm.id),
+    content: String(itm.content),
+    author: String(itm.content || "Anonymous"),
+    posted: Number(itm.posted),
+    for: id,
+  }));
 };
