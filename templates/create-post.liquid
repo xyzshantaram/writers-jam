@@ -86,8 +86,8 @@ my second line
         <textarea id="post-content" name="content"></textarea>
     </div>
 
-    <div id="content-preview-label" aria-roledescription="label">Post preview</div>
-    <div aria-labelledby="content-preview-label" id="content-preview"></div>
+    <div id="content-rendered-label" aria-roledescription="label">Post preview</div>
+    <div aria-labelledby="content-rendered-label" id="content-rendered"></div>
 
 
     <div class="nag">
@@ -134,7 +134,7 @@ my second line
 
     window.addEventListener('DOMContentLoaded', () => {
         const textarea = document.querySelector('textarea');
-        const preview = document.querySelector('#content-preview');
+        const preview = document.querySelector('#content-rendered');
         const wc = document.querySelector('#content-word-count');
         let timeout = null;
         const renderer = {
