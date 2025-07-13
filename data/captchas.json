@@ -14,11 +14,6 @@
     "answer": "four",
     "id": "c6092a16-b975-4309-826f-c281b9e7263d"
   },
-  "fa42a0a4-9953-43b1-9226-40fb90a479d6": {
-    "question": "Which planet is known as the Red Planet?",
-    "answer": "mars",
-    "id": "fa42a0a4-9953-43b1-9226-40fb90a479d6"
-  },
   "d0db1f98-1945-4cd1-b42d-0867590c7d79": {
     "question": "How many fingers does a human have (in words, on one hand)?",
     "answer": "five",
@@ -54,11 +49,6 @@
     "answer": "green",
     "id": "cab3627f-d645-4e20-844b-61c5981b435b"
   },
-  "7c300f99-d305-41ff-bde8-8922a38fc6f7": {
-    "question": "What do you call a young dog?",
-    "answer": "puppy",
-    "id": "7c300f99-d305-41ff-bde8-8922a38fc6f7"
-  },
   "3605f0f2-3212-4c87-a978-1a81256ab7b3": {
     "question": "What is five plus seven (in words)?",
     "answer": "twelve",
@@ -84,26 +74,6 @@
     "answer": "water",
     "id": "347cbe93-10c2-4cb7-8ce5-ebd01eef43e6"
   },
-  "85cf9e98-b629-46dc-837a-b30ac16be52d": {
-    "question": "What fruit is yellow and long?",
-    "answer": "banana",
-    "id": "85cf9e98-b629-46dc-837a-b30ac16be52d"
-  },
-  "d6ada4b1-9b8c-49d4-9600-3c160534aa32": {
-    "question": "What is the largest ocean on Earth?",
-    "answer": "pacific",
-    "id": "d6ada4b1-9b8c-49d4-9600-3c160534aa32"
-  },
-  "32ff6814-f931-41e8-be71-f63d3e163cc4": {
-    "question": "What do you use to write on a blackboard?",
-    "answer": "chalk",
-    "id": "32ff6814-f931-41e8-be71-f63d3e163cc4"
-  },
-  "8cba900e-3d85-4edd-a7ff-fb36f811a13c": {
-    "question": "What is the sound a dog makes?",
-    "answer": "bark",
-    "id": "8cba900e-3d85-4edd-a7ff-fb36f811a13c"
-  },
   "7ad866ac-8d5a-41ae-8b3a-a257acbb6b31": {
     "question": "What is the opposite of 'up'?",
     "answer": "down",
@@ -113,11 +83,6 @@
     "question": "How many days are in a week (in words)?",
     "answer": "seven",
     "id": "a8c638e3-bbe3-452c-b8be-18169a2e030f"
-  },
-  "2c084be6-1ab6-4ef9-afd7-46f8b3860932": {
-    "question": "What do birds lay?",
-    "answer": "eggs",
-    "id": "2c084be6-1ab6-4ef9-afd7-46f8b3860932"
   },
   "b6929c02-bd26-4e4d-bcd0-b089c43c610f": {
     "question": "What is nine minus three (in words)?",
@@ -133,16 +98,6 @@
     "question": "What is the color of snow?",
     "answer": "white",
     "id": "1cccfeec-0554-4152-87cb-01a91ed1cceb"
-  },
-  "d960476a-a423-4174-9319-89f14bed0b69": {
-    "question": "What is the main ingredient in bread?",
-    "answer": "flour",
-    "id": "d960476a-a423-4174-9319-89f14bed0b69"
-  },
-  "145af6b4-3583-447e-b392-583fe4adbe61": {
-    "question": "What do you wear on your feet?",
-    "answer": "shoes",
-    "id": "145af6b4-3583-447e-b392-583fe4adbe61"
   },
   "3a628c80-b781-4abc-8d28-2eaa5d3e7767": {
     "question": "What is the opposite of 'fast'?",
@@ -168,11 +123,6 @@
     "question": "How many seconds are in a minute (in words)?",
     "answer": "sixty",
     "id": "f405c59f-e626-4fe9-8c73-40add575a1f6"
-  },
-  "cdb77f96-e2e7-4ac3-b543-cee453500258": {
-    "question": "What is the name of the biggest star in our solar system?",
-    "answer": "sun",
-    "id": "cdb77f96-e2e7-4ac3-b543-cee453500258"
   },
   "39b374dd-0dcc-4636-8220-33292761966f": {
     "question": "What tool do you use to brush your teeth?",
