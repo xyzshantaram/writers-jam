@@ -34,11 +34,6 @@
     "answer": "june",
     "id": "ac1f584d-96d2-40a0-8612-88182175cb47"
   },
-  "00655f93-c961-414a-a1b5-ff44dd60b695": {
-    "question": "What is the capital of France?",
-    "answer": "paris",
-    "id": "00655f93-c961-414a-a1b5-ff44dd60b695"
-  },
   "a7cb11c7-b544-4a8c-9427-2c1eec679359": {
     "question": "What animal says 'meow'?",
     "answer": "cat",
@@ -109,11 +104,6 @@
     "answer": "bark",
     "id": "8cba900e-3d85-4edd-a7ff-fb36f811a13c"
   },
-  "6c4c55fa-b96e-491e-b7ab-ae84324e54ea": {
-    "question": "What is the capital of Japan?",
-    "answer": "tokyo",
-    "id": "6c4c55fa-b96e-491e-b7ab-ae84324e54ea"
-  },
   "7ad866ac-8d5a-41ae-8b3a-a257acbb6b31": {
     "question": "What is the opposite of 'up'?",
     "answer": "down",
@@ -159,16 +149,6 @@
     "answer": "slow",
     "id": "3a628c80-b781-4abc-8d28-2eaa5d3e7767"
   },
-  "ab2fa1ed-1e84-4053-966c-6c82f6c21aa2": {
-    "question": "What is the name of our galaxy?",
-    "answer": "milky way",
-    "id": "ab2fa1ed-1e84-4053-966c-6c82f6c21aa2"
-  },
-  "3e14d916-3abf-4980-8413-cd39c7468099": {
-    "question": "What do you use to cut paper?",
-    "answer": "scissors",
-    "id": "3e14d916-3abf-4980-8413-cd39c7468099"
-  },
   "70382931-d88e-4e90-b758-8ee8d61632f1": {
     "question": "What is the first letter of the alphabet?",
     "answer": "a",
@@ -178,11 +158,6 @@
     "question": "What is the shape of a wheel?",
     "answer": "circle",
     "id": "e5187521-f9fb-4f1a-b687-80dc6dd99b01"
-  },
-  "630f9426-a167-4961-a2fc-37818304ec80": {
-    "question": "What do you drink when you are thirsty?",
-    "answer": "water",
-    "id": "630f9426-a167-4961-a2fc-37818304ec80"
   },
   "93811d8b-c516-430c-a181-7272d816bafe": {
     "question": "What is the opposite of 'big'?",
@@ -200,14 +175,9 @@
     "id": "cdb77f96-e2e7-4ac3-b543-cee453500258"
   },
   "39b374dd-0dcc-4636-8220-33292761966f": {
-    "question": "What do you use to brush your teeth?",
+    "question": "What tool do you use to brush your teeth?",
     "answer": "toothbrush",
     "id": "39b374dd-0dcc-4636-8220-33292761966f"
-  },
-  "53ce35f8-8c21-4af2-aa5c-b944d1815d20": {
-    "question": "What is the color of a stop sign?",
-    "answer": "red",
-    "id": "53ce35f8-8c21-4af2-aa5c-b944d1815d20"
   },
   "39aca9bb-22bc-4713-8c5a-f8e0f2a33260": {
     "question": "What animal says 'moo'?",
