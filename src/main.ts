@@ -197,6 +197,9 @@ const createApp = () => {
     } else throw new Error("wtf");
   });
 
+  app.get("/terms", (_, res) => res.render("tos"));
+  app.get("/privacy", (_, res) => res.render("privacy"));
+
   app.use(errorHandler);
   return app;
 };
