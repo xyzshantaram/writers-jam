@@ -15,24 +15,19 @@ import {
 import captchas from "../data/captchas.json" with { type: "json" };
 import { timeMs } from "./utils/time.ts";
 import { choose } from "./utils/mod.ts";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+
+TimeAgo.addDefaultLocale(en);
 
 /*
-POST /post
-    - optional trigger warning
-    - nsfw flag
-    - password
-GET /
-    - sort by views, recent + filter by nsfw
-    - show total post stats
-    - link to create new post
 GET /post/:ulid
-    - show post details, link to edit page
+    - show post details, link to edit page, post comments (!)
 GET /post/:ulid/edit
     - delete post
     - edit post contents
 POST /post/:ulid/edit
 POST /post/:ulid/comment
-GET /post/random
 
 GET /admin/reports
 GET /admin/reports/:lid
@@ -57,8 +52,12 @@ function makeQueryLinkHelper(query: Record<string, any>) {
 
 const createApp = () => {
   const app = express();
+  const timeAgo = new TimeAgo("en-US");
   app.use(express.static("./public"));
   const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
+  liquid.registerFilter("time_ago", (stamp: number) => {
+    return timeAgo.format(new Date(stamp));
+  });
 
   app.engine("liquid", liquid.express());
   app.set("view engine", "liquid");
@@ -102,15 +101,15 @@ const createApp = () => {
     });
   });
 
-  app.get("/post/:uuid", (req, res) => {
-    res.send(req.params);
-  });
-
   app.get("/post/random", (_, res) => {
     const post = randomPost();
     console.log("post id", post);
     if (!post) throw new Error("Found zero posts");
     return res.redirect(`/post/${post}`);
+  });
+
+  app.get("/post/:uuid", (req, res) => {
+    res.send(req.params);
   });
 
   const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
@@ -131,9 +130,12 @@ const createApp = () => {
       });
     }
 
-    const { captcha: _, solution: __, ...createOpts } = parsed;
+    const { captcha: _, solution: __, triggers, ...createOpts } = parsed;
 
-    const created = createPost(createOpts);
+    const created = createPost({
+      ...createOpts,
+      triggers: triggers.trim(),
+    });
     return res.redirect(`/post/${created}`);
   });
 

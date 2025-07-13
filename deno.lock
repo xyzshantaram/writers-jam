@@ -15,6 +15,7 @@
     "npm:express-rate-limit@^7.5.1": "7.5.1_express@5.1.0",
     "npm:express-session@^1.18.1": "1.18.1",
     "npm:express@^5.1.0": "5.1.0",
+    "npm:javascript-time-ago@^2.5.11": "2.5.11",
     "npm:liquidjs@^10.21.1": "10.21.1",
     "npm:marked@16": "16.0.0",
     "npm:zod-validation-error@^3.5.3": "3.5.3_zod@4.0.5",
@@ -443,6 +444,12 @@
     "is-promise@4.0.0": {
       "integrity": "sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ=="
     },
+    "javascript-time-ago@2.5.11": {
+      "integrity": "sha512-Zeyf5R7oM1fSMW9zsU3YgAYwE0bimEeF54Udn2ixGd8PUwu+z1Yc5t4Y8YScJDMHD6uCx6giLt3VJR5K4CMwbg==",
+      "dependencies": [
+        "relative-time-format"
+      ]
+    },
     "liquidjs@10.21.1": {
       "integrity": "sha512-NZXmCwv3RG5nire3fmIn9HsOyJX3vo+ptp0yaXUHAMzSNBhx74Hm+dAGJvscUA6lNqbLuYfXgNavRQ9UbUJhQQ==",
       "dependencies": [
@@ -599,6 +606,9 @@
     },
     "regenerator-runtime@0.14.1": {
       "integrity": "sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw=="
+    },
+    "relative-time-format@1.1.6": {
+      "integrity": "sha512-aCv3juQw4hT1/P/OrVltKWLlp15eW1GRcwP1XdxHrPdZE9MtgqFpegjnTjLhi2m2WI9MT/hQQtE+tjEWG1hgkQ=="
     },
     "router@2.2.0": {
       "integrity": "sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==",
@@ -788,6 +798,7 @@
       "npm:express-rate-limit@^7.5.1",
       "npm:express-session@^1.18.1",
       "npm:express@^5.1.0",
+      "npm:javascript-time-ago@^2.5.11",
       "npm:liquidjs@^10.21.1",
       "npm:marked@16",
       "npm:zod-validation-error@^3.5.3",

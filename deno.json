@@ -12,6 +12,7 @@
     "express": "npm:express@^5.1.0",
     "express-rate-limit": "npm:express-rate-limit@^7.5.1",
     "express-session": "npm:express-session@^1.18.1",
+    "javascript-time-ago": "npm:javascript-time-ago@^2.5.11",
     "liquidjs": "npm:liquidjs@^10.21.1",
     "marked": "npm:marked@^16.0.0",
     "zod": "npm:zod@^4.0.5",
