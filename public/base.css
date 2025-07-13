@@ -285,7 +285,7 @@ form {
     background: var(--accent);
     padding: 0.5rem;
     border: 2px solid var(--body-primary);
-    width: 100%;
+    width: calc(100% - 1rem);
     text-align: center;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
