@@ -10,7 +10,7 @@
     "id": "7bb063cc-1358-4c3f-b315-5c1e7b57a3b1"
   },
   "c6092a16-b975-4309-826f-c281b9e7263d": {
-    "question": "How many legs does a cat have?",
+    "question": "How many legs does a cat have (in words)?",
     "answer": "four",
     "id": "c6092a16-b975-4309-826f-c281b9e7263d"
   },
@@ -20,7 +20,7 @@
     "id": "fa42a0a4-9953-43b1-9226-40fb90a479d6"
   },
   "d0db1f98-1945-4cd1-b42d-0867590c7d79": {
-    "question": "How many fingers does a human have?",
+    "question": "How many fingers does a human have (in words, on one hand)?",
     "answer": "five",
     "id": "d0db1f98-1945-4cd1-b42d-0867590c7d79"
   },
@@ -45,7 +45,7 @@
     "id": "5f76c705-77cf-46e5-8dbf-6bd900c117ba"
   },
   "3021222b-cea7-4422-b2a1-5c2976fa8261": {
-    "question": "How many wheels does a bicycle have?",
+    "question": "How many wheels does a bicycle have (in words)?",
     "answer": "two",
     "id": "3021222b-cea7-4422-b2a1-5c2976fa8261"
   },
@@ -75,7 +75,7 @@
     "id": "28301507-16e1-4a0a-b326-85c38b9093b6"
   },
   "c17749b7-289f-43b4-821a-5424ceaf35e4": {
-    "question": "How many colors are there in the rainbow?",
+    "question": "How many colors are there in the rainbow (in words)?",
     "answer": "seven",
     "id": "c17749b7-289f-43b4-821a-5424ceaf35e4"
   },
@@ -110,7 +110,7 @@
     "id": "7ad866ac-8d5a-41ae-8b3a-a257acbb6b31"
   },
   "a8c638e3-bbe3-452c-b8be-18169a2e030f": {
-    "question": "How many days are in a week?",
+    "question": "How many days are in a week (in words)?",
     "answer": "seven",
     "id": "a8c638e3-bbe3-452c-b8be-18169a2e030f"
   },
@@ -165,7 +165,7 @@
     "id": "93811d8b-c516-430c-a181-7272d816bafe"
   },
   "f405c59f-e626-4fe9-8c73-40add575a1f6": {
-    "question": "How many seconds are in a minute?",
+    "question": "How many seconds are in a minute (in words)?",
     "answer": "sixty",
     "id": "f405c59f-e626-4fe9-8c73-40add575a1f6"
   },
@@ -190,7 +190,7 @@
     "id": "c5948d73-7ebd-49a1-a02e-1f041dab9ac7"
   },
   "bfc27b1c-5c0a-4b2e-a921-5b911e206add": {
-    "question": "How many sides does a triangle have?",
+    "question": "How many sides does a triangle have (in words)?",
     "answer": "three",
     "id": "bfc27b1c-5c0a-4b2e-a921-5b911e206add"
   },
