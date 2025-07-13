@@ -1,5 +1,6 @@
+import { z } from "zod/v4";
 import captchas from "../../data/captchas.json" with { type: "json" };
-import { createPost, randomPost } from "../db.ts";
+import { createPost, getPostById, getPosts, randomPost } from "../db.ts";
 import { renderError } from "../error.ts";
 import { createPostSchema } from "../schemas/mod.ts";
 import { choose } from "../utils/mod.ts";
@@ -19,7 +20,18 @@ export const random = (_: Request, res: Response) => {
 };
 
 export const view = (req: Request, res: Response) => {
-  res.send(req.params);
+  const id = z.ulid().parse(req.params.id);
+  const post = getPostById(id);
+  if (!post) {
+    return renderError(res, {
+      code: 400,
+      details:
+        "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
+      name: "NotFound",
+      title: "Post not found",
+    });
+  }
+  res.send(post);
 };
 
 const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;

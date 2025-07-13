@@ -53,7 +53,7 @@ const createApp = () => {
 
   app.get("/post", posts.index);
   app.get("/post/random", posts.random);
-  app.get("/post/:uuid", posts.view);
+  app.get("/post/:id", posts.view);
   app.post("/post", makeLimiter(1, timeMs({ s: 15 })), posts.create);
 
   app.use(errorHandler);

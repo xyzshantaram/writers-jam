@@ -142,24 +142,65 @@ export const createComment = (opts: z.infer<typeof createCommentSchema>) => {
   return id;
 };
 
+const randomPostQuery = db.prepare(
+  "select id from post where deleted = 0 order by random() limit 1",
+);
+
 export const randomPost = () => {
-  const res = db.prepare(
-    "select id from post where deleted = 0 order by random() limit 1",
-  ).get();
+  const res = randomPostQuery.get();
   if (!res) return null;
   return res.id as string;
 };
 
+const postCountQuery = db.prepare(
+  "select distinct count(id) as count from post",
+);
+
 export const getPostCount = () => {
-  const res = db.prepare("select distinct count(id) as count from post").get();
+  const res = postCountQuery.get();
   if (!res) throw new Error("This should never happen");
   return res.count || 0 as number;
 };
 
+const aggViewCountQuery = db.prepare(
+  "select sum(views) as count from post",
+);
+
 export const getViewCount = () => {
-  const res = db.prepare(
-    "select sum(views) as count from post",
-  ).get();
+  const res = aggViewCountQuery.get();
   if (!res) throw new Error("This should never happen");
   return res.count || 0 as number;
+};
+
+const postByIdQuery = db.prepare(`select
+  id,
+  content,
+  nsfw,
+  password,
+  triggers,
+  title,
+  author,
+  updated,
+  reports,
+  views
+from post where
+  deleted = 0 and
+  id = ?`);
+
+export const getPostById = (id: string): Post | null => {
+  const res = postByIdQuery.get(id);
+  if (!res) return null;
+  return {
+    content: res.content as string,
+    nsfw: !!res.nsfw,
+    views: Number(res.views) || 0,
+    reports: Number(res.reports) || 0,
+    id,
+    updated: Number(res.updated) || NaN,
+    deleted: false,
+    author: String(res.author || ""),
+    password: String(res.password || ""),
+    title: String(res.title || ""),
+    triggers: String(res.triggers || ""),
+  };
 };
