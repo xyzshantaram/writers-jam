@@ -143,3 +143,25 @@ export const createComment = (opts: z.infer<typeof createCommentSchema>) => {
   });
   return id;
 };
+
+export const randomPost = () => {
+  const res = db.prepare(
+    "select id from post where deleted = 0 order by random() limit 1",
+  ).get();
+  if (!res) return null;
+  return res.id as string;
+};
+
+export const getPostCount = () => {
+  const res = db.prepare("select distinct count(id) as count from post").get();
+  if (!res) throw new Error("This should never happen");
+  return res.count || 0 as number;
+};
+
+export const getViewCount = () => {
+  const res = db.prepare(
+    "select sum(views) as count from post",
+  ).get();
+  if (!res) throw new Error("This should never happen");
+  return res.count || 0 as number;
+};
