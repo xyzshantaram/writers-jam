@@ -30,8 +30,7 @@ CREATE TABLE IF NOT EXISTS post (
   deleted BOOLEAN NOT NULL DEFAULT 0
 )`);
 
-db.exec(`\
-CREATE TABLE IF NOT EXISTS comment (
+db.exec(`CREATE TABLE IF NOT EXISTS comment (
   id TEXT PRIMARY KEY,
   for TEXT NOT NULL,
   content TEXT NOT NULL,
@@ -119,8 +118,7 @@ export const getPosts = (
     }));
 };
 
-const createCommentStmt = db.prepare(`\
-INSERT INTO comment(
+const createCommentStmt = db.prepare(`INSERT INTO comment (
     id,
     for,
     content,
@@ -135,9 +133,13 @@ INSERT INTO comment(
 )
 `);
 
-export const createComment = (opts: z.infer<typeof createCommentSchema>) => {
+export const createComment = (
+  opts: Omit<z.infer<typeof createCommentSchema>, "captcha" | "solution">,
+) => {
   const posted = Date.now();
   const id = ulid();
+
+  console.log(opts);
 
   createCommentStmt.run({
     id,
@@ -213,17 +215,19 @@ export const getPostById = (id: string): Post | null => {
 const getPostCommentsQuery = db.prepare(`select
   id,
   content,
-  author
+  author,
+  posted,
+  for
 from comment where
   for = ?
 order by posted desc
 `);
 
 export const getCommentsForPost = (id: string): Comment[] => {
-  return getPostCommentsQuery.all(id).map((itm) => ({
+  return getPostCommentsQuery.all(id).map((itm) => (console.log(itm), {
     id: String(itm.id),
     content: String(itm.content),
-    author: String(itm.content || "Anonymous"),
+    author: String(itm.author || "Anonymous"),
     posted: Number(itm.posted),
     for: id,
   }));

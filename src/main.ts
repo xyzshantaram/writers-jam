@@ -14,8 +14,6 @@ import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
 
 /*
-GET /post/:ulid
-    - show post details, link to edit page, post comments (!)
 GET /post/:ulid/edit
     - delete post
     - edit post contents
@@ -94,6 +92,11 @@ const createApp = () => {
   app.get("/post/random", posts.random);
   app.get("/post/:id", posts.view);
   app.post("/post", makeLimiter(1, timeMs({ s: 15 })), posts.create);
+  app.post(
+    "/post/:id/comment",
+    makeLimiter(1, timeMs({ s: 15 })),
+    posts.addComment,
+  );
 
   app.use(errorHandler);
   return app;

@@ -1,5 +1,96 @@
-{% layout "base.liquid" %}
+{% layout "base.liquid", heading:heading, title: "View post" %}
+
+{% block head_extras %}
+<link rel="stylesheet" href="/view.css">
+<link rel="stylesheet" href="/rendered.css">
+{% endblock %}
 
 {% block content %}
-{{ post | json }}
+<div class="post-meta">
+    <div class="post-author">by <span class="author">{{ post.author }}</span></div>
+
+    <div class="post-details">
+        <div class="view-count">
+            <i class="iconoir-eye" aria-label="View count" title="View count"></i> 
+            {{ post.views }}
+        </div>
+        <div class="updated-time">
+            <i class="iconoir-clock" aria-label="Last updated" title="Last updated"></i> 
+            {{ post.updated | time_ago }}
+        </div>
+    </div>
+</div>
+
+{% if post.triggers.size %}
+    <div class="nag"><strong>TRIGGER WARNING:</strong> {{ post.triggers }}</div>
+{% endif %}
+
+
+<div class="content-rendered">
+    {{ post.content | parse_md | raw }}
+</div>
+
+<hr id="separator">
+
+{% if post.password.size %}
+    <details>
+        <summary>Manage post</summary>
+        <p>Creator of this post? You can edit or delete it here using the edit code you chose while posting.</p>
+        <form>
+            <div class="form-group">
+                <label for="manage-password">Edit code</label>
+                <input type="text" name="password" id="manage-password">
+            </div>
+            <div class="form-group submit-group">
+                <input type="submit" name="action" value="Delete">
+                <input type="submit" name="action" value="Edit" class="invert">
+            </div>
+        </form>
+    </details>
+{% endif %}
+
+<h2>Comments</h2>
+
+<h3>Leave a comment</h3>
+<form method="POST" action="/post/{{ post.id }}/comment">
+    <div class="form-group">
+        <label for="comment-author">Your name</label>
+        <input type="text" name="author" placeholder="Anonymous" id="comment-author">
+    </div>
+
+    <div class="form-group textarea-group">
+        <label for="comment-body">Your comment</label>
+        <textarea name="content" id="comment-body" placeholder="Remember to be respectful! All art is subjective."></textarea>
+    </div>
+
+    <input type="hidden" name="for" value="{{ post.id }}">
+
+    <input type="hidden" name="captcha" value="{{ captcha.id }}">
+    <div class="form-group">
+        <label for="comment-captcha-soln"><strong>CAPTCHA:</strong> {{ captcha.question }}</label>
+        <input type="text" name="solution" id="comment-captcha-soln" required aria-required>
+    </div>
+
+    <div class="form-group submit-group">
+        <input type="submit" value="Post comment">
+    </div>
+</form>
+
+{% if comments.size %}
+    <div class="comments">
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-author">{{ comment.author }}</div>
+            <div class="comment-body">{{ comment.content }}</div>
+            <div class="comment-time">
+                <i class="iconoir-clock" aria-label="Comment posted at" title="Comment posted at"></i> {{ comment.posted | time_ago }}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>No comments yet. Be the first to leave one!</p>
+{% endif %}
+
+<!-- <p><code>{{ post | json }}</code></p> -->
 {% endblock %}
