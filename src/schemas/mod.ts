@@ -46,5 +46,5 @@ export interface Comment {
   for: string;
   content: string;
   author?: string;
-  created: number;
+  posted: number;
 }
