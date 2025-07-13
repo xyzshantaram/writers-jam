@@ -37,8 +37,6 @@
         <summary>Manage post</summary>
         <p>Creator of this post? You can edit it here using the edit code you chose while posting.</p>
         <form id="manage-form" method="POST" action="/post/{{ post.id }}/manage">
-            <input type="hidden" name="id" value="{{ post.id }}">
-
             <div class="form-group">
                 <label for="manage-password">Edit code</label>
                 <input type="text" name="password" id="manage-password">
