@@ -46,3 +46,9 @@ span.danger {
     font-style: italic;
     font-size: 0.9rem;
 }
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .posts {
+        grid-template-columns: 1fr;
+    }
+}
