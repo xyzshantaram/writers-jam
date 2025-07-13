@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import captchas from "../../data/captchas.json" with { type: "json" };
 import {
+  addPostView,
   createComment,
   createPost,
   getCommentsForPost,
@@ -9,8 +10,9 @@ import {
 } from "../db.ts";
 import { renderError } from "../error.ts";
 import { createCommentSchema, createPostSchema } from "../schemas/mod.ts";
-import { choose } from "../utils/mod.ts";
+import { choose, getClientIP } from "../utils/mod.ts";
 import { Request, Response } from "express";
+import { timeMs } from "../utils/time.ts";
 
 export const index = (_: Request, res: Response) => {
   res.render("create-post", {
@@ -25,8 +27,28 @@ export const random = (_: Request, res: Response) => {
   return res.redirect(`/post/${post}`);
 };
 
+const postViewsByIp: Record<string, Record<string, number>> = {};
+
+const shouldCountView = (now: number, post: string, ip: string) => {
+  postViewsByIp[post] ||= {};
+
+  const last = postViewsByIp[post][ip];
+  if (last !== undefined && now - last < timeMs({ m: 15 })) {
+    return false;
+  }
+
+  postViewsByIp[post][ip] = now;
+  return true;
+};
+
 export const view = (req: Request, res: Response) => {
   const id = z.ulid().parse(req.params.id);
+
+  const ip = getClientIP(req);
+  if (!ip || shouldCountView(Date.now(), id, ip)) {
+    addPostView(id);
+  }
+
   const post = getPostById(id);
   if (!post) {
     return renderError(res, {
@@ -37,6 +59,7 @@ export const view = (req: Request, res: Response) => {
       title: "Post not found",
     });
   }
+
   res.render("view-post", {
     post,
     heading: post.title && post.title.length

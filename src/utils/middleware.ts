@@ -2,6 +2,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import express from "express";
 import { renderError } from "../error.ts";
+import { getClientIP } from "./mod.ts";
 
 export const makeCors = () =>
   cors({
@@ -14,10 +15,7 @@ export const makeLimiter = (reqs: number, duration: number) =>
     keyGenerator: (req: express.Request) => {
       const firstPart = (s: string, sep: string, n = 0) =>
         s.split(sep).at(n)?.trim()!;
-      const xff = req.header("X-Forwarded-For");
-      const realIP = req.header("X-Real-IP");
-      // Use first IP in XFF or fallback to X-Real-IP
-      const clientIP = xff ? firstPart(xff, ",", -1) : realIP;
+      const clientIP = getClientIP(req);
       const path = firstPart(req.originalUrl, "?");
       return `${clientIP}-${path}`;
     },

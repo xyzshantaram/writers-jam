@@ -232,3 +232,11 @@ export const getCommentsForPost = (id: string): Comment[] => {
     for: id,
   }));
 };
+
+const addPostStmt = db.prepare(
+  "update post set views = views + 1 where id = ?",
+);
+
+export const addPostView = (id: string) => {
+  addPostStmt.run(id);
+};
