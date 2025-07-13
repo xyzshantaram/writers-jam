@@ -3,22 +3,12 @@ import * as path from "@std/path";
 import { makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
-import { createPostSchema } from "./schemas/mod.ts";
-import { errorHandler, renderError } from "./error.ts";
-import {
-  createPost,
-  getPostCount,
-  getPosts,
-  getViewCount,
-  randomPost,
-} from "./db.ts";
-import captchas from "../data/captchas.json" with { type: "json" };
+import { errorHandler } from "./error.ts";
+import * as index from "./routes/index.ts";
+import * as posts from "./routes/posts.ts";
 import { timeMs } from "./utils/time.ts";
-import { choose } from "./utils/mod.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-
-TimeAgo.addDefaultLocale(en);
 
 /*
 GET /post/:ulid
@@ -37,23 +27,7 @@ POST /admin/posts/:ulid/comment/:ulid/delete
 POST /admin/post/:ulid/mark-safe
 */
 
-function makeQueryLinkHelper(query: Record<string, any>) {
-  return function addQueryParamsObject(newParams?: Record<string, string>) {
-    const merged = { ...query, ...newParams };
-
-    const cleaned = Object.fromEntries(
-      Object.entries(merged).filter(([_, v]) => v != null),
-    );
-
-    const searchParams = new URLSearchParams(cleaned);
-    return `?${searchParams.toString()}`;
-  };
-}
-
-const createApp = () => {
-  const app = express();
-  const timeAgo = new TimeAgo("en-US");
-  app.use(express.static("./public"));
+const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
   const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
   liquid.registerFilter("time_ago", (stamp: number) => {
     return timeAgo.format(new Date(stamp));
@@ -62,85 +36,27 @@ const createApp = () => {
   app.engine("liquid", liquid.express());
   app.set("view engine", "liquid");
   app.set("views", path.resolve("./templates"));
+};
+
+const createApp = () => {
+  const app = express();
+
   app.use(express.static("./public"));
   app.use(express.urlencoded({ extended: true }));
   app.use(makeCors());
 
-  app.get("/", (req, res) => {
-    const rawSort = req.query.sort;
-    const rawNsfw = req.query.nsfw;
+  TimeAgo.addDefaultLocale(en);
+  const timeAgo = new TimeAgo("en-US");
+  setupLiquid(app, timeAgo);
 
-    const sort = rawSort === "updated" || rawSort === "views"
-      ? rawSort
-      : undefined;
-    const nsfw = rawNsfw === "yes" || rawNsfw === "no" ? rawNsfw : undefined;
+  app.get("/", index.get);
 
-    const results = getPosts({ sort, nsfw });
-    const addQuery = makeQueryLinkHelper(req.query);
-
-    const postCount = getPostCount();
-    const viewCount = getViewCount();
-
-    res.render("index", {
-      results,
-      postCount,
-      viewCount,
-      currentSort: sort,
-      currentNsfw: nsfw,
-      queries: {
-        sort_views: addQuery({ sort: "views" }),
-        sort_updated: addQuery({ sort: "updated" }),
-        nsfw_toggle: addQuery({ nsfw: nsfw === "yes" ? "no" : "yes" }),
-      },
-    });
-  });
-
-  app.get("/post", (_, res) => {
-    res.render("create-post", {
-      captcha: choose(Object.values(captchas)),
-    });
-  });
-
-  app.get("/post/random", (_, res) => {
-    const post = randomPost();
-    console.log("post id", post);
-    if (!post) throw new Error("Found zero posts");
-    return res.redirect(`/post/${post}`);
-  });
-
-  app.get("/post/:uuid", (req, res) => {
-    res.send(req.params);
-  });
-
-  const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
-
-  app.post("/post", makeLimiter(1, timeMs({ s: 15 })), (req, res) => {
-    console.log(req.body);
-    const parsed = createPostSchema.parse(req.body);
-    console.log(parsed);
-    if (
-      !isCaptchaId(parsed.captcha) ||
-      captchas[parsed.captcha].answer !== parsed.solution
-    ) {
-      return renderError(res, {
-        details:
-          "Your solution to the captcha was incorrect. Please try again.",
-        title: "Incorrect captcha.",
-        name: "Captcha",
-      });
-    }
-
-    const { captcha: _, solution: __, triggers, ...createOpts } = parsed;
-
-    const created = createPost({
-      ...createOpts,
-      triggers: triggers.trim(),
-    });
-    return res.redirect(`/post/${created}`);
-  });
+  app.get("/post", posts.index);
+  app.get("/post/random", posts.random);
+  app.get("/post/:uuid", posts.view);
+  app.post("/post", makeLimiter(1, timeMs({ s: 15 })), posts.create);
 
   app.use(errorHandler);
-
   return app;
 };
 
