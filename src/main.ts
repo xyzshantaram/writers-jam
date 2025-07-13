@@ -3,7 +3,7 @@ import * as path from "@std/path";
 import { makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
-import { errorHandler } from "./error.ts";
+import { errorHandler, renderError } from "./error.ts";
 import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
 import { timeMs } from "./utils/time.ts";
@@ -12,6 +12,8 @@ import en from "javascript-time-ago/locale/en";
 import { marked, Renderer } from "marked";
 import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
+import z from "zod/v4";
+import { getPostById } from "./db.ts";
 
 /*
 GET /post/:ulid/edit
@@ -97,6 +99,38 @@ const createApp = () => {
     makeLimiter(1, timeMs({ s: 15 })),
     posts.addComment,
   );
+
+  const manageSchema = z.object({
+    id: z.ulid(),
+    password: z.string().nonempty(),
+  });
+
+  app.post("/post/:id/manage", (req, res) => {
+    const parsed = manageSchema.parse(req.body);
+    const post = getPostById(parsed.id);
+    if (!post) {
+      return renderError(res, {
+        code: "NotFound",
+        details:
+          "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
+        name: "Not found",
+        title: "Post not found",
+      });
+    }
+
+    if (post.password !== parsed.password) {
+      return renderError(res, {
+        code: "BadRequest",
+        details:
+          "There was an error processing your request. Please try again later.",
+      });
+    }
+
+    res.render("create-post", {
+      mode: "edit",
+      post,
+    });
+  });
 
   app.use(errorHandler);
   return app;
