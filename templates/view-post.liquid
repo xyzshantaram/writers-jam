@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="post-meta">
-    <div class="post-author">by <span class="author">{{ post.author }}</span></div>
+    <div class="post-author">by <span class="author">{{ post.author | default: "Anonymous" }}</span></div>
 
     <div class="post-details">
         <div class="view-count">
