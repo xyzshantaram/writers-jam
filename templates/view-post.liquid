@@ -36,9 +36,38 @@
 {% endif %}
 
 
-<div class="content-rendered">
+<div id="content-rendered" class="noborder">
     {{ post.content | parse_md | raw }}
 </div>
+
+<div class="view-settings">
+    <div class="form-group">
+        <label for="font-selector">Display font</label>
+        <select id="font-selector">
+            <option value="sans">Sans-serif (default)</option>
+            <option value="serif">Serif</option>
+            <option value="monospace">Monospace</option>
+        </select>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const fontSelector = document.querySelector('#font-selector');
+        const pane = document.querySelector('#content-rendered');
+        const pref = localStorage.getItem('user-font-preference');
+        fontSelector.onchange = () => {
+            pane.classList.remove("monospace", "serif", "sans");
+            pane.classList.add(fontSelector.value);
+            localStorage.setItem('user-font-preference', fontSelector.value);
+        }
+
+        if (pref && ['sans', 'serif', 'monospace'].includes(pref)) {
+            fontSelector.value = pref;
+            fontSelector.onchange();
+        }
+    })
+</script>
 
 <hr id="separator">
 

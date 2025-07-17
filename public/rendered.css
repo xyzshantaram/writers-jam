@@ -7,6 +7,22 @@
     padding-right: 0.5rem;
 }
 
+#content-rendered.monospace {
+    font-family: "Courier Prime", monospace;
+}
+
+#content-rendered.serif {
+    font-family: "Literata", serif;
+}
+
+#content-rendered.sans {
+    font-family: "Inter", sans-serif;
+}
+
+#content-rendered.noborder {
+    border: none;
+}
+
 #content-rendered:empty {
     min-height: 5ch;
 }
