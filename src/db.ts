@@ -7,8 +7,9 @@ import {
   Post,
 } from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
+import { hashPostId, unhashPostId } from "./utils/mod.ts";
 
-const db = new DatabaseSync("./writing-jam.db", {
+const db = new DatabaseSync("./writers-jam.db", {
   enableForeignKeyConstraints: true,
   readOnly: false,
 });
@@ -39,8 +40,37 @@ db.exec(`CREATE TABLE IF NOT EXISTS comment (
   FOREIGN KEY (for) REFERENCES post(id) ON DELETE CASCADE
 )`);
 
+db.exec(`CREATE TABLE IF NOT EXISTS post_id_map (
+  ulid TEXT PRIMARY KEY,
+  new_id INTEGER UNIQUE NOT NULL
+);`);
+
+`CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
+  content,
+  title,
+  author,
+  content='post',
+  content_rowid='id'
+);`;
+
+db.exec(`CREATE TRIGGER IF NOT EXISTS post_ai AFTER INSERT ON post BEGIN
+  INSERT INTO post_fts(rowid, content, title, author)
+  VALUES (new.id, new.content, new.title, new.author);
+END;`);
+
+db.exec(`CREATE TRIGGER IF NOT EXISTS post_au AFTER UPDATE ON post BEGIN
+  UPDATE post_fts
+  SET content = new.content,
+      title = new.title,
+      author = new.author
+  WHERE rowid = new.id;
+END;`);
+
+db.exec(`CREATE TRIGGER IF NOT EXISTS post_ad AFTER DELETE ON post BEGIN
+  DELETE FROM post_fts WHERE rowid = old.id;
+END;`);
+
 const createPostStmt = db.prepare(`INSERT INTO post (
-    id,
     content,
     nsfw,
     password,
@@ -49,7 +79,6 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     author,
     updated
   ) VALUES (
-    :id,
     :content,
     :nsfw,
     :password,
@@ -57,20 +86,21 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     :title,
     :author,
     :updated
+  returning
+    id
   )`);
 
 export const createPost = (
   opts: Omit<z.infer<typeof createPostSchema>, "captcha">,
 ) => {
   const updated = Date.now();
-  const id = ulid();
 
-  createPostStmt.run({
-    id,
+  const result = createPostStmt.get({
     updated,
     ...opts,
   });
-  return id;
+
+  return hashPostId(result!.id as number);
 };
 
 interface GetPostOpts {
@@ -107,7 +137,7 @@ export const getPosts = (
 
   return stmt.all(params)
     .map((row) => ({
-      id: row.id as string,
+      id: hashPostId(row.id as number),
       title: row.title as string,
       nsfw: !!row.nsfw,
       password: row.password as string | undefined,
@@ -195,7 +225,7 @@ from post where
   id = ?`);
 
 export const getPostById = (id: string): Post | null => {
-  const res = postByIdQuery.get(id);
+  const res = postByIdQuery.get(unhashPostId(id));
   if (!res) return null;
   return {
     content: res.content as string,
@@ -210,6 +240,20 @@ export const getPostById = (id: string): Post | null => {
     title: String(res.title || ""),
     triggers: String(res.triggers || ""),
   };
+};
+
+const getNewPostIdQuery = db.prepare(`select
+  new_id
+from 
+  post_id_map
+where
+  ulid = ?
+`);
+
+export const getNewPostId = (ulid: string): string | null => {
+  const result = getNewPostIdQuery.get(ulid);
+  if (!result) return null;
+  return result.new_id as string;
 };
 
 const getPostCommentsQuery = db.prepare(`select

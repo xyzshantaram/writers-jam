@@ -21,3 +21,16 @@ export const getClientIP = (req: Request): string | undefined => {
   // Use last IP in XFF if available, else fallback to X-Real-IP
   return xff ? firstPart(xff, ",", -1) : realIP ?? undefined;
 };
+
+export function hashPostId(n: number) {
+  if (n < 0 || n > 0xFFFFFFFF) {
+    throw new Error("Input out of 32-bit unsigned range");
+  }
+  const result = (BigInt(n) * 387420489n) % 4000000000n;
+  return result.toString(16).padStart(8, "0");
+}
+
+export function unhashPostId(h: string) {
+  const result = (BigInt("0x" + h) * 3513180409n) % 4000000000n;
+  return Number(result);
+}
