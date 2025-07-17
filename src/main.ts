@@ -14,6 +14,7 @@ import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
 import z from "zod/v4";
 import { deletePost, getPostById, updatePost } from "./db.ts";
+import * as captcha from "./routes/captcha.ts";
 
 /*
 GET /post/:ulid/edit
@@ -98,6 +99,9 @@ const createApp = () => {
     makeLimiter(1, timeMs({ s: 15 })),
     posts.addComment,
   );
+
+  app.post("/captcha/challenge", captcha.challenge);
+  app.post("/captcha/redeem", captcha.redeem);
 
   const manageSchema = z.object({
     password: z.string().nonempty(),

@@ -1,7 +1,7 @@
 import Cap from "@cap.js/server";
 import { Request, Response } from "express";
 
-const cap = new Cap({
+export const cap = new Cap({
   tokens_store_path: ".data/cap-state.json",
 });
 
