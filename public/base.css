@@ -322,6 +322,16 @@ details>form {
     margin-bottom: 1.5rem;
 }
 
+cap-widget {
+    --cap-background: #fdfdfd;
+    --cap-border-color: var(--body-primary);
+    --cap-border-radius: 0.25rem;
+    --cap-checkbox-margin: 4px;
+    --cap-credits-font-size: 10px;
+    --cap-font: "Inter", sans-serif;
+    margin: 1rem;
+}
+
 form .submit-group {
     gap: 1rem;
 }

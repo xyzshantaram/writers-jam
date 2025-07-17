@@ -112,8 +112,6 @@ my second line
         <input type="text" name="password" id="post-edit-code">
     </div>
 
-    <cap-widget id="cap" data-cap-api-endpoint="/captcha" data-cap-hidden-field-name="captcha"></cap-widget>
-
     {% else %}
     <input type="hidden" name="session" value="{{ session }}">
     <input type="hidden" name="action" value="update">
@@ -123,6 +121,9 @@ my second line
         <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
         <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
     </div>
+
+
+    <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
 
     <div class="form-group submit-group">
         <input type="submit" {% if mode != "edit" %} value="Post!" {% else %} value="Update post" {% endif %}>

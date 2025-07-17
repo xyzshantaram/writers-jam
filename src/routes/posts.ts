@@ -72,7 +72,7 @@ export const create = async (req: Request, res: Response) => {
   const { success } = await cap.validateToken(parsed.captcha);
   if (!success) return captchaErr(res);
 
-  const { triggers, ...createOpts } = parsed;
+  const { triggers, captcha: _, ...createOpts } = parsed;
 
   const created = createPost({
     ...createOpts,

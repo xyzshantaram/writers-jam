@@ -2,7 +2,7 @@ import Cap from "@cap.js/server";
 import { Request, Response } from "express";
 
 export const cap = new Cap({
-  tokens_store_path: ".data/cap-state.json",
+  tokens_store_path: "data/cap-state.json",
 });
 
 export const challenge = (_: Request, res: Response) => {

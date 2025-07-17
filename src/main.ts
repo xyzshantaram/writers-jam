@@ -82,6 +82,7 @@ const createApp = () => {
 
   app.use(express.static("./public"));
   app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
   app.use(makeCors());
 
   TimeAgo.addDefaultLocale(en);
@@ -100,8 +101,17 @@ const createApp = () => {
     posts.addComment,
   );
 
-  app.post("/captcha/challenge", captcha.challenge);
-  app.post("/captcha/redeem", captcha.redeem);
+  app.post(
+    "/captcha/challenge",
+    makeLimiter(1, timeMs({ s: 10 })),
+    captcha.challenge,
+  );
+
+  app.post(
+    "/captcha/redeem",
+    makeLimiter(1, timeMs({ s: 10 })),
+    captcha.redeem,
+  );
 
   const manageSchema = z.object({
     password: z.string().nonempty(),
