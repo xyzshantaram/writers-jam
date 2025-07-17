@@ -67,6 +67,21 @@
         </a>
     {% endfor %}
     </div>
+    <div class="page-links">
+        <div>
+            {% if page != 1 %}
+            <a href="{{ queries.prev_link }}">Previous</a>
+            {% endif %}
+        </div>
+
+        <div>Page {{ page }} of {{ totalPages }}</div>
+
+        <div>
+            {% if page != totalPages %}
+            <a href="{{ queries.next_link }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
 {% else %}
     <p>No posts yet. <a href="/post">Be the first!</a></p>
 {% endif %}

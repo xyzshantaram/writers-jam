@@ -109,46 +109,64 @@ export const createPost = (
 interface GetPostOpts {
   sort?: "views" | "updated";
   nsfw?: "yes" | "no";
+  page?: number;
+}
+
+interface PaginatedPosts {
+  posts: Omit<Post, "content" | "reports" | "deleted">[];
+  totalPages: number;
 }
 
 export const getPosts = (
   opts?: GetPostOpts,
-): Omit<Post, "content" | "reports" | "deleted">[] => {
-  const { sort, nsfw } = opts || {};
-  let query =
-    `SELECT id, title, nsfw, password, triggers, author, updated, views FROM post`;
-  const conditions: string[] = [
-    "deleted != 1",
-  ];
-  const params: Record<string, any> = {};
+): PaginatedPosts => {
+  const { sort, nsfw, page = 1 } = opts || {};
+  const pageSize = 10;
+  const offset = (page - 1) * pageSize;
 
+  const conditions: string[] = ["deleted != 1"];
   if (nsfw !== "yes") {
     conditions.push("nsfw = 0");
   }
 
-  if (conditions.length) {
-    query += " WHERE " + conditions.join(" AND ");
-  }
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
 
-  if (sort === "views") {
-    query += " ORDER BY views DESC";
-  } else {
-    query += " ORDER BY updated DESC";
-  }
+  // Count total posts
+  const countStmt = db.prepare(
+    `SELECT COUNT(*) as count FROM post ${whereClause}`,
+  );
+  const { count } = countStmt.get() as { count: number };
+
+  const totalPages = Math.ceil(count / pageSize);
+
+  // Main query
+  let query = `
+    SELECT id, title, nsfw, password, triggers, author, updated, views
+    FROM post
+    ${whereClause}
+  `;
+
+  query += sort === "views" ? " ORDER BY views DESC" : " ORDER BY updated DESC";
+
+  query += ` LIMIT ${pageSize} OFFSET ${offset}`;
 
   const stmt = db.prepare(query);
+  const rows = stmt.all();
 
-  return stmt.all(params)
-    .map((row) => ({
-      id: hashPostId(row.id as number),
-      title: row.title as string,
-      nsfw: !!row.nsfw,
-      password: row.password as string | undefined,
-      triggers: row.triggers as string | undefined,
-      author: row.author as string,
-      updated: Number(row.updated),
-      views: Number(row.views),
-    }));
+  const posts = rows.map((row) => ({
+    id: hashPostId(row.id as number),
+    title: row.title as string,
+    nsfw: !!row.nsfw,
+    password: row.password as string | undefined,
+    triggers: row.triggers as string | undefined,
+    author: row.author as string,
+    updated: Number(row.updated),
+    views: Number(row.views),
+  }));
+
+  return { posts, totalPages };
 };
 
 const createCommentStmt = db.prepare(`INSERT INTO comment (
@@ -198,7 +216,7 @@ const postCountQuery = db.prepare(
 export const getPostCount = () => {
   const res = postCountQuery.get();
   if (!res) throw new Error("This should never happen");
-  return res.count || 0 as number;
+  return res.count as number || 0;
 };
 
 const aggViewCountQuery = db.prepare(
@@ -208,7 +226,7 @@ const aggViewCountQuery = db.prepare(
 export const getViewCount = () => {
   const res = aggViewCountQuery.get();
   if (!res) throw new Error("This should never happen");
-  return res.count || 0 as number;
+  return res.count as number || 0;
 };
 
 const postByIdQuery = db.prepare(`select

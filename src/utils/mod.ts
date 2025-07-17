@@ -12,6 +12,9 @@ export const choose = (arr: any[]) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
+export const clamp = (val: number, min: number, max: number) =>
+  val > max ? max : (val < min ? min : val);
+
 export const getClientIP = (req: Request): string | undefined => {
   const firstPart = (s: string, sep: string, n = 0) =>
     s.split(sep).at(n)?.trim();
