@@ -4,6 +4,7 @@ import {
   createComment,
   createPost,
   getCommentsForPost,
+  getNewPostId,
   getPostById,
   randomPost,
 } from "../db.ts";
@@ -39,8 +40,22 @@ const shouldCountView = (now: number, post: string, ip: string) => {
   return true;
 };
 
+const normalizeId = (id: string): string | null => {
+  const result = z.ulid().safeParse(id);
+  if (result.success) {
+    return getNewPostId(id);
+  }
+  return null;
+};
+
 export const view = (req: Request, res: Response) => {
-  const id = z.ulid().parse(req.params.id);
+  if (!req.params.id) throw new Error("Invalid id");
+  const id = req.params.id;
+
+  const replacedId = normalizeId(id);
+  if (replacedId) {
+    return res.redirect(`/post/${replacedId}`);
+  }
 
   const ip = getClientIP(req);
   if (!ip || shouldCountView(Date.now(), id, ip)) {
@@ -83,8 +98,8 @@ export const create = async (req: Request, res: Response) => {
 
 const captchaErr = (res: Response) =>
   renderError(res, {
-    details: "Your solution to the captcha was incorrect. Please try again.",
-    title: "Incorrect captcha.",
+    details: "The captcha expired. Please try again.",
+    title: "Invalid captcha.",
     name: "Captcha",
   });
 
