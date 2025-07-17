@@ -86,9 +86,9 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     :title,
     :author,
     :updated
+  )
   returning
-    id
-  )`);
+    id`);
 
 export const createPost = (
   opts: Omit<z.infer<typeof createPostSchema>, "captcha">,
@@ -175,6 +175,7 @@ export const createComment = (
     id,
     posted,
     ...opts,
+    for: unhashPostId(opts.for),
   });
   return id;
 };
@@ -186,7 +187,7 @@ const randomPostQuery = db.prepare(
 export const randomPost = () => {
   const res = randomPostQuery.get();
   if (!res) return null;
-  return res.id as string;
+  return hashPostId(res.id as number);
 };
 
 const postCountQuery = db.prepare(
@@ -252,8 +253,8 @@ where
 
 export const getNewPostId = (ulid: string): string | null => {
   const result = getNewPostIdQuery.get(ulid);
-  if (!result) return null;
-  return result.new_id as string;
+  if (!result || !result.new_id) return null;
+  return hashPostId(result.new_id as number);
 };
 
 const getPostCommentsQuery = db.prepare(`select
@@ -268,7 +269,9 @@ order by posted desc
 `);
 
 export const getCommentsForPost = (id: string): Comment[] => {
-  return getPostCommentsQuery.all(id).map((itm) => (console.log(itm), {
+  return getPostCommentsQuery.all(unhashPostId(id)).map((
+    itm,
+  ) => (console.log(itm), {
     id: String(itm.id),
     content: String(itm.content),
     author: String(itm.author || "Anonymous"),
@@ -277,12 +280,12 @@ export const getCommentsForPost = (id: string): Comment[] => {
   }));
 };
 
-const addPostStmt = db.prepare(
+const addPostViewStmt = db.prepare(
   "update post set views = views + 1 where id = ?",
 );
 
 export const addPostView = (id: string) => {
-  addPostStmt.run(id);
+  addPostViewStmt.run(unhashPostId(id));
 };
 
 const deletePostQuery = db.prepare(
@@ -290,7 +293,7 @@ const deletePostQuery = db.prepare(
 );
 
 export const deletePost = (id: string) => {
-  return deletePostQuery.run(id);
+  return deletePostQuery.run(unhashPostId(id));
 };
 
 const updatePostStmt = db.prepare(
@@ -312,7 +315,7 @@ export const updatePost = (id: string, {
 }) => {
   const updated = Date.now();
   return updatePostStmt.run({
-    id,
+    id: unhashPostId(id),
     title,
     content,
     triggers: triggers || "",
