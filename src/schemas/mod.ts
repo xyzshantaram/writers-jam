@@ -35,7 +35,7 @@ export interface Post {
 }
 
 export const createCommentSchema = z.object({
-  for: z.ulid(),
+  for: z.string(),
   content: z.string().nonempty().transform((s) => s.trim()),
   author: z.string().default("").transform((s) => s.trim()),
   captcha: z.string().nonempty(),
@@ -48,3 +48,5 @@ export interface Comment {
   author?: string;
   posted: number;
 }
+
+export const postIdSchema = z.string().length(8);
