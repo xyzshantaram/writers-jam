@@ -60,7 +60,7 @@ const createPostStmt = db.prepare(`INSERT INTO post (
   )`);
 
 export const createPost = (
-  opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "solution">,
+  opts: Omit<z.infer<typeof createPostSchema>, "captcha">,
 ) => {
   const updated = Date.now();
   const id = ulid();
@@ -134,7 +134,7 @@ const createCommentStmt = db.prepare(`INSERT INTO comment (
 `);
 
 export const createComment = (
-  opts: Omit<z.infer<typeof createCommentSchema>, "captcha" | "solution">,
+  opts: Omit<z.infer<typeof createCommentSchema>, "captcha">,
 ) => {
   const posted = Date.now();
   const id = ulid();

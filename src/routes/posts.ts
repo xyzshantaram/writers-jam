@@ -1,5 +1,4 @@
 import { z } from "zod/v4";
-import captchas from "../../data/captchas.json" with { type: "json" };
 import {
   addPostView,
   createComment,
@@ -10,14 +9,13 @@ import {
 } from "../db.ts";
 import { renderError } from "../error.ts";
 import { createCommentSchema, createPostSchema } from "../schemas/mod.ts";
-import { choose, getClientIP } from "../utils/mod.ts";
+import { getClientIP } from "../utils/mod.ts";
 import { Request, Response } from "express";
 import { timeMs } from "../utils/time.ts";
+import { cap } from "./captcha.ts";
 
 export const index = (_: Request, res: Response) => {
-  res.render("create-post", {
-    captcha: choose(Object.values(captchas)),
-  });
+  res.render("create-post");
 };
 
 export const random = (_: Request, res: Response) => {
@@ -65,27 +63,16 @@ export const view = (req: Request, res: Response) => {
     heading: post.title && post.title.length
       ? `View post "${post.title}"`
       : "View post",
-    captcha: choose(Object.values(captchas)),
     comments: getCommentsForPost(post.id),
   });
 };
 
-const isCaptchaId = (s: string): s is keyof typeof captchas => s in captchas;
-
-export const create = (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   const parsed = createPostSchema.parse(req.body);
-  if (
-    !isCaptchaId(parsed.captcha) ||
-    captchas[parsed.captcha].answer !== parsed.solution
-  ) {
-    return renderError(res, {
-      details: "Your solution to the captcha was incorrect. Please try again.",
-      title: "Incorrect captcha.",
-      name: "Captcha",
-    });
-  }
+  const { success } = await cap.validateToken(parsed.captcha);
+  if (!success) return captchaErr(res);
 
-  const { captcha: _, solution: __, triggers, ...createOpts } = parsed;
+  const { triggers, ...createOpts } = parsed;
 
   const created = createPost({
     ...createOpts,
@@ -94,20 +81,19 @@ export const create = (req: Request, res: Response) => {
   return res.redirect(`/post/${created}`);
 };
 
-export const addComment = (req: Request, res: Response) => {
-  const parsed = createCommentSchema.parse(req.body);
-  if (
-    !isCaptchaId(parsed.captcha) ||
-    captchas[parsed.captcha].answer !== parsed.solution
-  ) {
-    return renderError(res, {
-      details: "Your solution to the captcha was incorrect. Please try again.",
-      title: "Incorrect captcha.",
-      name: "Captcha",
-    });
-  }
+const captchaErr = (res: Response) =>
+  renderError(res, {
+    details: "Your solution to the captcha was incorrect. Please try again.",
+    title: "Incorrect captcha.",
+    name: "Captcha",
+  });
 
-  const { captcha: _, solution: __, ...opts } = parsed;
+export const addComment = async (req: Request, res: Response) => {
+  const parsed = createCommentSchema.parse(req.body);
+  const { success } = await cap.validateToken(parsed.captcha);
+  if (!success) return captchaErr(res);
+
+  const { captcha: _, ...opts } = parsed;
   createComment(opts);
   res.redirect(`/post/${parsed.for}`);
 };

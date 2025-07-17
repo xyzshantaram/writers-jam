@@ -17,8 +17,7 @@ export const createPostSchema = z.object({
     error: "Your submission must have greater than or exactly 100 words!",
   }).transform((s) => s.trim()),
   password: z.string().default(""),
-  captcha: z.uuidv4(),
-  solution: z.string().nonempty().transform((v) => v.toLowerCase().trim()),
+  captcha: z.string().nonempty(),
 });
 
 export interface Post {
@@ -39,8 +38,7 @@ export const createCommentSchema = z.object({
   for: z.ulid(),
   content: z.string().nonempty().transform((s) => s.trim()),
   author: z.string().default("").transform((s) => s.trim()),
-  captcha: z.uuidv4(),
-  solution: z.string().nonempty().transform((v) => v.toLowerCase().trim()),
+  captcha: z.string().nonempty(),
 });
 
 export interface Comment {

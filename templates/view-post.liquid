@@ -1,6 +1,7 @@
 {% layout "base.liquid", heading:heading, title: "View post" %}
 
 {% block head_extras %}
+<script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
 <link rel="stylesheet" href="/view.css">
 <link rel="stylesheet" href="/rendered.css">
 {% endblock %}
@@ -64,12 +65,8 @@
 
     <input type="hidden" name="for" value="{{ post.id }}">
 
-    <input type="hidden" name="captcha" value="{{ captcha.id }}">
-    <div class="form-group">
-        <label for="comment-captcha-soln"><strong>CAPTCHA:</strong> {{ captcha.question }}</label>
-        <input type="text" name="solution" id="comment-captcha-soln" required aria-required>
-    </div>
-
+    <cap-widget id="cap" data-cap-api-endpoint="/captcha" data-cap-hidden-field-name="captcha"></cap-widget>
+    
     <div class="form-group submit-group">
         <input type="submit" value="Post comment">
     </div>

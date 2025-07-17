@@ -1,6 +1,7 @@
 {% layout "base.liquid" heading: "Create a post" %}
 
 {% block head_extras %}
+<script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
 <link rel="stylesheet" href="/create-post.css">
 <link rel="stylesheet" href="/rendered.css">
 {% endblock %}
@@ -111,11 +112,7 @@ my second line
         <input type="text" name="password" id="post-edit-code">
     </div>
 
-    <input type="hidden" name="captcha" value="{{ captcha.id }}">
-    <div class="form-group">
-        <label for="post-captcha-solution"><strong>CAPTCHA:</strong> {{ captcha.question }}</label>
-        <input type="text" name="solution" id="post-captcha-solution" required aria-required>
-    </div>
+    <cap-widget id="cap" data-cap-api-endpoint="/captcha" data-cap-hidden-field-name="captcha"></cap-widget>
 
     {% else %}
     <input type="hidden" name="session" value="{{ session }}">
