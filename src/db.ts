@@ -45,28 +45,31 @@ db.exec(`CREATE TABLE IF NOT EXISTS post_id_map (
   new_id INTEGER UNIQUE NOT NULL
 );`);
 
-`CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
+db.exec(`
+CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
   content,
   title,
   author,
   content='post',
-  content_rowid='id'
-);`;
+  content_rowid='id',
+  tokenize = 'porter unicode61'
+);
 
-db.exec(`CREATE TRIGGER IF NOT EXISTS post_ai AFTER INSERT ON post BEGIN
+-- AFTER INSERT: mirror the insert
+CREATE TRIGGER IF NOT EXISTS post_ai AFTER INSERT ON post BEGIN
   INSERT INTO post_fts(rowid, content, title, author)
   VALUES (new.id, new.content, new.title, new.author);
-END;`);
+END;
 
-db.exec(`CREATE TRIGGER IF NOT EXISTS post_au AFTER UPDATE ON post BEGIN
-  UPDATE post_fts
-  SET content = new.content,
-      title = new.title,
-      author = new.author
-  WHERE rowid = new.id;
-END;`);
+-- AFTER UPDATE: DELETE + INSERT to simulate update
+CREATE TRIGGER IF NOT EXISTS post_au AFTER UPDATE OF content, title, author ON post BEGIN
+  DELETE FROM post_fts WHERE rowid = old.id;
+  INSERT INTO post_fts(rowid, content, title, author)
+  VALUES (new.id, new.content, new.title, new.author);
+END;
 
-db.exec(`CREATE TRIGGER IF NOT EXISTS post_ad AFTER DELETE ON post BEGIN
+-- AFTER DELETE: mirror the delete
+CREATE TRIGGER IF NOT EXISTS post_ad AFTER DELETE ON post BEGIN
   DELETE FROM post_fts WHERE rowid = old.id;
 END;`);
 
@@ -169,8 +172,6 @@ export const createComment = (
   const posted = Date.now();
   const id = ulid();
 
-  console.log(opts);
-
   createCommentStmt.run({
     id,
     posted,
@@ -271,7 +272,7 @@ order by posted desc
 export const getCommentsForPost = (id: string): Comment[] => {
   return getPostCommentsQuery.all(unhashPostId(id)).map((
     itm,
-  ) => (console.log(itm), {
+  ) => ({
     id: String(itm.id),
     content: String(itm.content),
     author: String(itm.author || "Anonymous"),

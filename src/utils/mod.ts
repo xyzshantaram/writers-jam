@@ -1,7 +1,8 @@
 import { Request } from "express";
 
 export const die = (code: number, ...args: any[]): never => {
-  console.log(...args);
+  if (code !== 0) console.error(...args);
+  else console.info(...args);
   Deno.exit(code);
 };
 

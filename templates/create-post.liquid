@@ -192,9 +192,7 @@ my second line
 
             if (htmlData) {
                 e.preventDefault();
-                console.log(htmlData);
                 const markdown = htmlToMarkdown(htmlData);
-                console.log(markdown);
                 insertMarkdownAtCursor(markdown);
             }
         });

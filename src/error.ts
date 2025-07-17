@@ -36,6 +36,8 @@ export function errorHandler(
 ): void {
   if (res.headersSent) return next(err);
 
+  console.error(err);
+
   if (err instanceof ZodError) {
     const formatted = fromError(err);
     renderError(res, {

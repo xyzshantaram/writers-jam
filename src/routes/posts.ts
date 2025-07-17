@@ -21,7 +21,6 @@ export const index = (_: Request, res: Response) => {
 
 export const random = (_: Request, res: Response) => {
   const post = randomPost();
-  console.log("post id", post);
   if (!post) throw new Error("Found zero posts");
   return res.redirect(`/post/${post}`);
 };
