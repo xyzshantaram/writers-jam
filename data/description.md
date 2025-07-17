@@ -1,0 +1,15 @@
+Writers Jam is a simple collaborative writing exercise where people get together
+to create and celebrate each other's work!
+
+The rules are simple:
+
+- Write a minimum of 100 words on a given theme, no upper limit.
+- This week's theme is: "How are you feeling?"
+- You are encouraged to get creative with the theme. You can literally talk
+  about your day, or use it as a dialogue or opening line in your story, or
+  write about the phrase itself, or the history of asking people how they are...
+  the possibilities are endless!
+- When done, simply post your creation to this website! There will be a
+  discussion at 7 PM IST on 2025-07-13.
+
+What are you waiting for?

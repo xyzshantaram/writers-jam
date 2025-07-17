@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getPostCount, getPosts, getViewCount } from "../db.ts";
+import description from "../../data/description.md" with { type: "text" };
 
 function makeQueryLinkHelper(query: Record<string, any>) {
   return function addQueryParamsObject(newParams?: Record<string, string>) {
@@ -35,6 +36,7 @@ export const get = (req: Request, res: Response) => {
     viewCount,
     currentSort: sort,
     currentNsfw: nsfw,
+    description,
     queries: {
       sort_views: addQuery({ sort: "views" }),
       sort_updated: addQuery({ sort: "updated" }),
