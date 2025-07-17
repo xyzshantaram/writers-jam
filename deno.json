@@ -3,6 +3,7 @@
     "start": "deno run -A --unstable-raw-imports src/main.ts"
   },
   "imports": {
+    "@cap.js/server": "npm:@cap.js/server@^2.0.0",
     "@std/fs": "jsr:@std/fs@^1.0.19",
     "@std/path": "jsr:@std/path@^1.1.1",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
