@@ -75,7 +75,7 @@ export const view = (req: Request, res: Response) => {
   res.render("view-post", {
     post,
     heading: post.title && post.title.length
-      ? `View post "${post.title}"`
+      ? `View post “${post.title}” by ${post.author || "Anonymous"}`
       : "View post",
     comments: getCommentsForPost(post.id),
   });
