@@ -15,6 +15,7 @@ import { markedSmartypants } from "marked-smartypants";
 import z from "zod/v4";
 import { deletePost, getPostById, updatePost } from "./db.ts";
 import * as captcha from "./routes/captcha.ts";
+import { postIdSchema } from "./schemas/mod.ts";
 
 /*
 GET /post/:ulid/edit
@@ -131,7 +132,7 @@ const createApp = () => {
     });
 
     const parsed = manageSchema.parse(req.body);
-    const id = z.ulid().parse(req.params.id);
+    const id = postIdSchema.parse(req.params.id);
     const post = getPostById(id);
     if (!post) {
       return renderError(res, {
@@ -188,7 +189,7 @@ const createApp = () => {
       }
     });
 
-    const id = z.ulid().parse(req.params.id);
+    const id = postIdSchema.parse(req.params.id);
     const parsed = updatePostSchema.parse(req.body);
     if (editSessions[parsed.session].post !== id) {
       return renderError(res, { code: "BadRequest" });
