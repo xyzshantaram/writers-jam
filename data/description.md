@@ -1,16 +1,22 @@
-Writers Jam is a simple collaborative writing exercise where people get together
-to create and celebrate each other's work!
+Writers Jam is a simple writing exercise where people get together to create and
+celebrate each other's work!
 
 The rules are simple:
 
-- Write a minimum of 100 words on a given theme, no upper limit. Themes change
-  every Sunday.
-- This week's theme is: "How are you feeling?"
-- You are encouraged to get creative with the theme. You can literally talk
-  about your day, or use it as a dialogue or opening line in your story, or
-  write about the phrase itself, or the history of asking people how they are...
-  the possibilities are endless!
-- When done, simply post your creation to this website! Feel free to join us in
-  the WhatsApp group to discuss.
+- **Write a minimum of 100 words on a given theme**, no upper limit. Themes change
+  every Sunday. You can write all week, but you are encouraged to write with us
+  on Sunday when people are most likely to be active.
+- **Any format is allowed**: essay, poem, short story, journal, play, etc.
+- **You must write an original piece for the event**. Please don't post something
+  you've already written - the idea is for you to explore new concepts and
+  themes in a low-stress, judgment-free environment.
+- **Post your submission to [this website](/post) when done**. Feel free to join us
+  in the WhatsApp group to share and discuss!
+- Most importantly of all, have fun!
+
+This week's theme is: **"The One That Got Away"**. You are encouraged to get 
+creative with the theme. Write about the Katy Perry song, a match-ending cricket
+ball, a missed flight or a lost career opportunity. Anything, or anyone, that 
+slipped through your fingers.
 
 What are you waiting for?
