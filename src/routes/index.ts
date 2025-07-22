@@ -19,6 +19,19 @@ function makeQueryLinkHelper(query: Record<string, any>) {
   };
 }
 
+const descReplacements = {
+  $WHATSAPP_URL: config.whatsappUrl,
+}
+
+export const getDescription = () => {
+  let result = description;
+  for (const [replacement, value] of Object.entries(descReplacements)) {
+    result = result.replace(replacement, value);
+  }
+
+  return result;
+}
+
 export const get = (req: Request, res: Response) => {
   const rawSort = req.query.sort;
   const rawNsfw = req.query.nsfw;
@@ -44,7 +57,7 @@ export const get = (req: Request, res: Response) => {
     viewCount,
     currentSort: sort,
     currentNsfw: nsfw,
-    description,
+    description: getDescription(),
     queries: {
       sort_views: addQuery({ sort: "views", page: undefined }),
       sort_updated: addQuery({ sort: "updated", page: undefined }),

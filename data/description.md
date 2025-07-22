@@ -11,7 +11,7 @@ The rules are simple:
   you've already written - the idea is for you to explore new concepts and
   themes in a low-stress, judgment-free environment.
 - **[Post your submission](/post) to this website when done**. Feel free to join us
-  in the [WhatsApp group](https://chat.whatsapp.com/EO7iXhFfPOTAe5Jy5yeY9k) to share and discuss!
+  in the [WhatsApp group]($WHATSAPP_URL) to share and discuss!
 - Most importantly of all, have fun!
 
 This week's theme is: **"The One That Got Away"**. You are encouraged to get 
