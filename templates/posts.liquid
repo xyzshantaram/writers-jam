@@ -41,6 +41,7 @@
     </div>
 </form>
 
+{% if results.posts.size %}
 <div class="posts">
     {% for post in results.posts %}
         {% render 'partials/post.liquid' post: post %}
@@ -62,5 +63,8 @@
         {% endif %}
     </div>
 </div>
+{% else %}
+<p>No posts found matching the selected criteria.</p>
+{% endif %}
 
 {% endblock %}
