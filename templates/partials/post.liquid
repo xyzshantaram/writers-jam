@@ -1,0 +1,19 @@
+<a class="post-item" href="/post/{{ post.id }}">
+    <div class="post-title">{{ post.title | default: "(Untitled)" }}
+        {% if post.nsfw %}
+            <span class="badge danger invert">NSFW</span>
+        {% endif %}
+    </div>
+    <div class="post-author">by <strong>{{ post.author | default: "Anonymous" }}</strong></div>
+    {% if post.triggers.size != 0 %}
+        <strong>Notes: </strong> {{ post.triggers }}
+    {% endif %}
+    <div class="view-count">
+        <i class="iconoir-eye" aria-label="View count" title="View count"></i> 
+        {{ post.views }}
+    </div>
+    <div class="updated-time">
+        <i class="iconoir-clock" aria-label="Last updated" title="Last updated"></i> 
+        {{ post.updated | time_ago }}
+    </div>
+</a>

@@ -38,3 +38,18 @@ export function unhashPostId(h: string) {
   const result = (BigInt("0x" + h) * 3513180409n) % 4000000000n;
   return Number(result);
 }
+
+export const makeQueryLinkHelper = (query: Record<string, any>) => {
+  return function addQueryParamsObject(
+    newParams?: Record<string, string | undefined>,
+  ) {
+    const merged = { ...query, ...newParams };
+
+    const cleaned = Object.fromEntries(
+      Object.entries(merged).filter(([_, v]) => v != null),
+    );
+
+    const searchParams = new URLSearchParams(cleaned);
+    return `?${searchParams.toString()}`;
+  };
+}

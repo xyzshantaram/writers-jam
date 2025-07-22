@@ -110,6 +110,7 @@ interface GetPostOpts {
   sort?: "views" | "updated";
   nsfw?: "yes" | "no";
   page?: number;
+  search?: string;
 }
 
 interface PaginatedPosts {
@@ -120,40 +121,72 @@ interface PaginatedPosts {
 export const getPosts = (
   opts?: GetPostOpts,
 ): PaginatedPosts => {
-  const { sort, nsfw, page = 1 } = opts || {};
+  const { sort, nsfw, page = 1, search } = opts || {};
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
-  const conditions: string[] = ["deleted != 1"];
+  const conditions: string[] = ["p.deleted != 1"];
   if (nsfw !== "yes") {
-    conditions.push("nsfw = 0");
+    conditions.push("p.nsfw = 0");
   }
 
   const whereClause = conditions.length
     ? `WHERE ${conditions.join(" AND ")}`
     : "";
 
-  // Count total posts
-  const countStmt = db.prepare(
-    `SELECT COUNT(*) as count FROM post ${whereClause}`,
-  );
-  const { count } = countStmt.get() as { count: number };
+  let joinClause = "";
+  let searchClause = "";
+  let countQuery = "";
+  let mainQuery = "";
+
+  if (search && search.trim() !== "") {
+    // Join post_fts on post.id
+    joinClause = `JOIN post_fts fts ON fts.rowid = p.id`;
+    searchClause = `AND fts MATCH ?`;
+
+    countQuery = `
+      SELECT COUNT(*) as count
+      FROM post p
+      ${joinClause}
+      ${whereClause}
+      ${searchClause}
+    `;
+
+    mainQuery = `
+      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views
+      FROM post p
+      ${joinClause}
+      ${whereClause}
+      ${searchClause}
+    `;
+  } else {
+    countQuery = `
+      SELECT COUNT(*) as count
+      FROM post p
+      ${whereClause}
+    `;
+
+    mainQuery = `
+      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views
+      FROM post p
+      ${whereClause}
+    `;
+  }
+
+  mainQuery += sort === "views" ? " ORDER BY p.views DESC" : " ORDER BY p.updated DESC";
+  mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
+
+  const countStmt = db.prepare(countQuery);
+  const count = search && search.trim() !== ""
+    ? (countStmt.get(search) as { count: number }).count
+    : (countStmt.get() as { count: number }).count;
 
   const totalPages = Math.ceil(count / pageSize);
 
-  // Main query
-  let query = `
-    SELECT id, title, nsfw, password, triggers, author, updated, views
-    FROM post
-    ${whereClause}
-  `;
-
-  query += sort === "views" ? " ORDER BY views DESC" : " ORDER BY updated DESC";
-
-  query += ` LIMIT ${pageSize} OFFSET ${offset}`;
-
-  const stmt = db.prepare(query);
-  const rows = stmt.all();
+  const stmt = db.prepare(mainQuery);
+  const rows = search && search.trim() !== ""
+    ? stmt.all(search)
+    : stmt.all();
 
   const posts = rows.map((row) => ({
     id: hashPostId(row.id as number),
@@ -167,6 +200,58 @@ export const getPosts = (
   }));
 
   return { posts, totalPages };
+};
+
+export const getHomepageFeeds = (): {
+  latest: ReturnType<typeof getPosts>['posts'],
+  sleptOn: ReturnType<typeof getPosts>['posts'],
+} => {
+  const selectFields = `
+    p.id, p.title, p.nsfw, p.password, p.triggers,
+    p.author, p.updated, p.views
+  `;
+
+  // latest posts
+  const latestStmt = db.prepare(`
+    SELECT ${selectFields}
+    FROM post p
+    WHERE p.deleted != 1 AND p.nsfw = 0
+    ORDER BY p.updated DESC
+    LIMIT 5
+  `);
+  const latestRows = latestStmt.all();
+
+  // Slept-on posts: views < 20 OR comment count < 2
+  const sleptOnStmt = db.prepare(`
+    SELECT ${selectFields}
+    FROM post p
+    LEFT JOIN (
+      SELECT "for", COUNT(*) AS comment_count
+      FROM comment
+      GROUP BY "for"
+    ) c ON c."for" = p.id
+    WHERE p.deleted != 1 AND p.nsfw = 0
+      AND (IFNULL(p.views, 0) < 15 OR IFNULL(c.comment_count, 0) < 2)
+    ORDER BY RANDOM()
+    LIMIT 5
+  `);
+  const sleptOnRows = sleptOnStmt.all();
+
+  const mapRow = (row: any) => ({
+    id: hashPostId(row.id as number),
+    title: row.title as string,
+    nsfw: !!row.nsfw,
+    password: String(row.password || ""),
+    triggers: String(row.triggers || ""),
+    author: row.author as string,
+    updated: Number(row.updated),
+    views: Number(row.views),
+  });
+
+  return {
+    latest: latestRows.map(mapRow),
+    sleptOn: sleptOnRows.map(mapRow),
+  };
 };
 
 const createCommentStmt = db.prepare(`INSERT INTO comment (

@@ -59,3 +59,29 @@ div.page-links {
     width: 80%;
     margin-bottom: 2rem;
 }
+
+.feed-wrapper h3 {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
+
+.feed-wrapper {
+    width: calc(50% - 0.5rem);
+}
+
+.feeds {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.feed .post-item {
+    margin-top: 1rem;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .feeds {
+        flex-direction: column;
+    }
+}
