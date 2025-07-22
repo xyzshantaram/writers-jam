@@ -6,7 +6,7 @@
     </div>
     <div class="post-author">by <strong>{{ post.author | default: "Anonymous" }}</strong></div>
     {% if post.triggers.size != 0 %}
-        <strong>Notes: </strong> {{ post.triggers }}
+        <div class="post-notes"><strong>Notes: </strong> {{ post.triggers }}</div>
     {% endif %}
     <div class="view-count">
         <i class="iconoir-eye" aria-label="View count" title="View count"></i> 

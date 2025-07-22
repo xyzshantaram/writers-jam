@@ -80,6 +80,10 @@ div.page-links {
     margin-top: 1rem;
 }
 
+.post-notes {
+    font-size: 0.9rem;
+}
+
 @media screen and (max-aspect-ratio: 1/1) {
     .feeds {
         flex-direction: column;
