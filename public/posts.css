@@ -1,0 +1,33 @@
+div.page-links {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-bottom: 2rem;
+}
+
+.sort-line {
+    display: flex;
+    align-items: center;
+}
+
+.nsfw-posts {
+    margin: 0.2rem;
+    text-align: center;
+}
+
+.search-line {
+    display: flex;
+}
+
+.search-line.search-line input[type=text] {
+    width: 80%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.search-line.search-line input[type=submit] {
+    width: 20%;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}

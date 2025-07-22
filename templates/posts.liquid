@@ -1,0 +1,66 @@
+{% block head_extras %}
+<link rel="stylesheet" href="/posts.css">
+<link rel="stylesheet" href="/post-preview.css">
+{% endblock %}
+
+{% layout "base.liquid" heading: "Posts" %}
+{% block content %}
+<form method="GET" action="/posts">
+    <div class="search-container">
+        <div class="nsfw-posts">
+            <label for="search-nsfw">
+            <input type="checkbox" id="search-nsfw" name="nsfw" value="yes" {% if nsfw == 'yes' %}checked{% endif %}>
+            Include NSFW posts
+            </label>
+        </div>
+        <div class="sort-line">
+            <label for="search-sort">Sort by</label>
+            <select id="search-sort" name="sort">
+                <option value="updated" {% if sort == 'updated' %} selected {% endif %} >Updated</option>
+                <option value="views" {% if sort == 'views' %} selected {% endif %}>Views</option>
+            </select>
+            <div class="order-group">
+              <label for="search-order-asc">
+                <input type="radio" id="search-order-asc" name="order" value="asc" {% if order == 'asc' %}checked{% endif %}>
+                Ascending
+              </label>
+            </div>
+        
+            <div class="order-group">
+              <label for="search-order-desc">
+                <input type="radio" id="search-order-desc" name="order" value="desc" {% if order == 'desc' %}checked{% endif %}>
+                    Descending
+              </label>
+            </div>
+        </div>
+        
+        <div class="search-line">
+            <input aria-label="search" type="text" id="search-text" name="search" placeholder="Search..." value="{{ search }}">
+            <input type="submit" value="Search">
+        </div>
+    </div>
+</form>
+
+<div class="posts">
+    {% for post in results.posts %}
+        {% render 'partials/post.liquid' post: post %}
+    {% endfor %}
+</div>
+
+<div class="page-links">
+    <div>
+        {% if page != 1 %}
+        <a href="{{ links.prevPage }}">Previous</a>
+        {% endif %}
+    </div>
+
+    <div>Page {{ page }} of {{ results.totalPages }}</div>
+
+    <div>
+        {% if page != totalPages %}
+        <a href="{{ links.nextPage }}">Next</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

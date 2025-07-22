@@ -6,6 +6,7 @@ import { config } from "./config.ts";
 import { errorHandler } from "./error.ts";
 import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
+import * as search from "./routes/search.ts";
 import { timeMs } from "./utils/time.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
@@ -98,6 +99,8 @@ const createApp = () => {
     makeLimiter(1, timeMs({ s: 15 })),
     posts.addComment,
   );
+
+  app.get('/posts', search.index);
 
   app.post(
     "/captcha/challenge",
