@@ -20,7 +20,7 @@ import { config } from "../config.ts";
 import { hash, verify } from "@bronti/argon2";
 
 export const index = (_: Request, res: Response) => {
-  res.render("create-post", { whatsappUrl: config.whatsappUrl });
+  res.render("create-post", { heading: "Create a post", whatsappUrl: config.whatsappUrl });
 };
 
 export const random = (_: Request, res: Response) => {
@@ -182,6 +182,7 @@ export const manage = (req: Request, res: Response) => {
 
   res.render("create-post", {
     mode: "edit",
+    heading: "Edit post",
     post,
     session,
     whatsappUrl: config.whatsappUrl,
