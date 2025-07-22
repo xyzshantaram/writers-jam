@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@bronti/argon2@^1.0.3": "1.0.3",
     "jsr:@std/fs@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.9": "1.0.9",
     "jsr:@std/path@^1.1.1": "1.1.1",
@@ -25,6 +26,9 @@
     "npm:zod@^4.0.5": "4.0.5"
   },
   "jsr": {
+    "@bronti/argon2@1.0.3": {
+      "integrity": "ddd3614a701e18d41971ff7b6dcd5ced53db294ef81f7b3624e3f2f9fa175352"
+    },
     "@std/fs@1.0.19": {
       "integrity": "051968c2b1eae4d2ea9f79a08a3845740ef6af10356aff43d3e2ef11ed09fb06",
       "dependencies": [
@@ -893,6 +897,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@bronti/argon2@^1.0.3",
       "jsr:@std/fs@^1.0.19",
       "jsr:@std/path@^1.1.1",
       "jsr:@std/ulid@1",

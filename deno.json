@@ -3,6 +3,7 @@
     "start": "deno run -A --unstable-raw-imports src/main.ts"
   },
   "imports": {
+    "@bronti/argon2": "jsr:@bronti/argon2@^1.0.3",
     "@cap.js/server": "npm:@cap.js/server@^2.0.0",
     "@std/fs": "jsr:@std/fs@^1.0.19",
     "@std/path": "jsr:@std/path@^1.1.1",
