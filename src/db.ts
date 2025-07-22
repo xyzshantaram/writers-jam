@@ -110,6 +110,7 @@ interface GetPostOpts {
   sort?: "views" | "updated";
   nsfw?: "yes" | "no";
   page?: number;
+  order?: "asc" | "desc";
   search?: string;
 }
 
@@ -121,7 +122,7 @@ interface PaginatedPosts {
 export const getPosts = (
   opts?: GetPostOpts,
 ): PaginatedPosts => {
-  const { sort, nsfw, page = 1, search } = opts || {};
+  const { sort = "updated", nsfw, page = 1, search, order="desc" } = opts || {};
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
@@ -142,7 +143,7 @@ export const getPosts = (
   if (search && search.trim() !== "") {
     // Join post_fts on post.id
     joinClause = `JOIN post_fts fts ON fts.rowid = p.id`;
-    searchClause = `AND fts MATCH ?`;
+    searchClause = `AND post_fts MATCH ?`;
 
     countQuery = `
       SELECT COUNT(*) as count
@@ -173,7 +174,7 @@ export const getPosts = (
     `;
   }
 
-  mainQuery += sort === "views" ? " ORDER BY p.views DESC" : " ORDER BY p.updated DESC";
+  mainQuery += sort === "views" ? ` ORDER BY p.views ${order}` : ` ORDER BY p.updated ${order}`;
   mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
 
   const countStmt = db.prepare(countQuery);
