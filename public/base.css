@@ -235,13 +235,21 @@ label {
     padding: 0.5rem;
 }
 
-input,
+input:not([type="radio"]):not([type="checkbox"]),
 textarea {
     border: 2px solid var(--body-secondary);
     border-radius: 0.25rem;
     background-color: transparent;
     color: inherit;
     min-width: 12ch;
+}
+
+select {
+    border: 2px solid;
+    border-radius: 0.25rem;
+    background-color: inherit;
+    padding: 0.25rem;
+    height: 2rem;
 }
 
 button {
