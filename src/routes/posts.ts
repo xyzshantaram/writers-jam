@@ -17,6 +17,7 @@ import { Request, Response } from "express";
 import { timeMs } from "../utils/time.ts";
 import { cap } from "./captcha.ts";
 import { config } from "../config.ts";
+import { hash, verify } from "@bronti/argon2";
 
 export const index = (_: Request, res: Response) => {
   res.render("create-post", { whatsappUrl: config.whatsappUrl });
@@ -90,10 +91,11 @@ export const create = async (req: Request, res: Response) => {
   const { success } = await cap.validateToken(parsed.captcha);
   if (!success) return captchaErr(res);
 
-  const { triggers, captcha: _, ...createOpts } = parsed;
+  const { triggers, captcha: _, password, ...createOpts } = parsed;
 
   const created = createPost({
     ...createOpts,
+    password: hash(password),
     triggers: triggers.trim(),
   });
   return res.redirect(`/post/${created}`);
@@ -163,7 +165,7 @@ export const manage = (req: Request, res: Response) => {
     });
   }
 
-  if (post.password !== parsed.password) {
+  if (post.password && post.password.length && !verify(parsed.password, post.password)) {
     return renderError(res, {
       code: "BadRequest",
       details:
