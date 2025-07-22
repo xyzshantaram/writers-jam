@@ -16,8 +16,6 @@ export const index = (req: Request, res: Response) => {
         nsfw, sort, page, order, search: String(search || "")
     })
 
-    console.log(results);
-
     return res.render('posts', {
         results,
         links: {
