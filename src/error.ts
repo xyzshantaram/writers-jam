@@ -4,12 +4,14 @@ import { fromError } from "zod-validation-error/v4";
 import type { NextFunction, Request, Response } from "express";
 
 import express from "express";
+import { config } from "./config.ts";
 
 const RENDER_ERROR_OPTS = {
   code: "Error",
   title: "Error",
   details: "An unknown error occurred.",
   name: "Unknown error",
+  whatsappUrl: config.whatsappUrl
 };
 
 export type RenderErrorOpts = Partial<

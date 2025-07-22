@@ -3,7 +3,7 @@ import * as path from "@std/path";
 import { makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
-import { errorHandler, renderError } from "./error.ts";
+import { errorHandler } from "./error.ts";
 import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
 import { timeMs } from "./utils/time.ts";
@@ -12,10 +12,7 @@ import en from "javascript-time-ago/locale/en";
 import { marked, Renderer } from "marked";
 import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
-import z from "zod/v4";
-import { deletePost, getPostById, updatePost } from "./db.ts";
 import * as captcha from "./routes/captcha.ts";
-import { postIdSchema } from "./schemas/mod.ts";
 
 /*
 GET /post/:ulid/edit
@@ -114,106 +111,13 @@ const createApp = () => {
     captcha.redeem,
   );
 
-  const manageSchema = z.object({
-    password: z.string().nonempty(),
-  });
+  app.post("/post/:id/manage", posts.manage);
+  app.post("/post/:id/update", posts.update);
 
-  const editSessions: Record<string, {
-    session: string;
-    started: number;
-    post: string;
-  }> = {};
+  const withUrl = { whatsappUrl: config.whatsappUrl };
 
-  app.post("/post/:id/manage", (req, res) => {
-    Object.values(editSessions).forEach((sess) => {
-      if (Date.now() - sess.started > timeMs({ m: 30 })) {
-        delete editSessions[sess.session];
-      }
-    });
-
-    const parsed = manageSchema.parse(req.body);
-    const id = postIdSchema.parse(req.params.id);
-    const post = getPostById(id);
-    if (!post) {
-      return renderError(res, {
-        code: "NotFound",
-        details:
-          "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-        name: "Not found",
-        title: "Post not found",
-      });
-    }
-
-    if (post.password !== parsed.password) {
-      return renderError(res, {
-        code: "BadRequest",
-        details:
-          "There was an error processing your request. Please try again later.",
-      });
-    }
-
-    const session = crypto.randomUUID();
-    editSessions[session] = {
-      session,
-      started: Date.now(),
-      post: id,
-    };
-
-    res.render("create-post", {
-      mode: "edit",
-      post,
-      session,
-    });
-  });
-
-  const updatePostSchema = z.object({
-    action: z.enum(["update", "delete"]),
-    session: z.uuidv4().refine(
-      (v) => Object.keys(editSessions).includes(v),
-      "Looks like your editing session expired. Try again.",
-    ),
-  });
-
-  const postModificationAction = z.object({
-    title: z.string().default(""),
-    triggers: z.string().default(""),
-    content: z.string(),
-    action: z.literal("update"),
-    nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
-  });
-
-  app.post("/post/:id/update", (req, res) => {
-    Object.values(editSessions).forEach((sess) => {
-      if (Date.now() - sess.started > timeMs({ m: 30 })) {
-        delete editSessions[sess.session];
-      }
-    });
-
-    const id = postIdSchema.parse(req.params.id);
-    const parsed = updatePostSchema.parse(req.body);
-    if (editSessions[parsed.session].post !== id) {
-      return renderError(res, { code: "BadRequest" });
-    }
-
-    delete editSessions[parsed.session];
-
-    if (parsed.action === "delete") {
-      deletePost(id);
-      return res.redirect("/");
-    } else if (parsed.action === "update") {
-      const updated = postModificationAction.parse(req.body);
-      updatePost(id, {
-        title: updated.title,
-        triggers: updated.triggers,
-        content: updated.content,
-        nsfw: !!updated.nsfw,
-      });
-      return res.redirect(`/post/${id}`);
-    } else throw new Error("wtf");
-  });
-
-  app.get("/terms", (_, res) => res.render("tos"));
-  app.get("/privacy", (_, res) => res.render("privacy"));
+  app.get("/terms", (_, res) => res.render("tos", withUrl));
+  app.get("/privacy", (_, res) => res.render("privacy", withUrl));
 
   app.use(errorHandler);
   return app;

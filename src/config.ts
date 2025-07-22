@@ -8,6 +8,7 @@ const configSchema = z.object({
   httpPort: z.number().default(8000),
   adminPass: z.string().nonempty(),
   secrets: z.string().array().nonempty(),
+  whatsappUrl: z.url().nonempty()
 });
 
 export const loadConfig = (): z.infer<typeof configSchema> => {

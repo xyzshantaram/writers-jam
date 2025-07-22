@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getPostCount, getPosts, getViewCount } from "../db.ts";
 import description from "../../data/description.md" with { type: "text" };
 import { clamp } from "../utils/mod.ts";
+import { config } from "../config.ts";
 
 function makeQueryLinkHelper(query: Record<string, any>) {
   return function addQueryParamsObject(
@@ -35,6 +36,7 @@ export const get = (req: Request, res: Response) => {
   const viewCount = getViewCount();
 
   res.render("index", {
+    whatsappUrl: config.whatsappUrl,
     results: results.posts,
     totalPages: results.totalPages,
     page,

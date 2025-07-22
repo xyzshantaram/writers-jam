@@ -3,20 +3,23 @@ import {
   addPostView,
   createComment,
   createPost,
+  deletePost,
   getCommentsForPost,
   getNewPostId,
   getPostById,
   randomPost,
+  updatePost,
 } from "../db.ts";
 import { renderError } from "../error.ts";
-import { createCommentSchema, createPostSchema } from "../schemas/mod.ts";
+import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
 import { getClientIP } from "../utils/mod.ts";
 import { Request, Response } from "express";
 import { timeMs } from "../utils/time.ts";
 import { cap } from "./captcha.ts";
+import { config } from "../config.ts";
 
 export const index = (_: Request, res: Response) => {
-  res.render("create-post");
+  res.render("create-post", { whatsappUrl: config.whatsappUrl });
 };
 
 export const random = (_: Request, res: Response) => {
@@ -78,6 +81,7 @@ export const view = (req: Request, res: Response) => {
       ? `View post “${post.title}” by ${post.author || "Anonymous"}`
       : "View post",
     comments: getCommentsForPost(post.id),
+    whatsappUrl: config.whatsappUrl,
   });
 };
 
@@ -110,4 +114,104 @@ export const addComment = async (req: Request, res: Response) => {
   const { captcha: _, ...opts } = parsed;
   createComment(opts);
   res.redirect(`/post/${parsed.for}`);
+};
+
+const editSessions: Record<string, {
+  session: string;
+  started: number;
+  post: string;
+}> = {};
+
+const manageSchema = z.object({
+  password: z.string().nonempty(),
+});
+
+const updatePostSchema = z.object({
+  action: z.enum(["update", "delete"]),
+  session: z.uuidv4().refine(
+    (v) => Object.keys(editSessions).includes(v),
+    "Looks like your editing session expired. Try again.",
+  ),
+});
+
+
+const postModificationAction = z.object({
+  title: z.string().default(""),
+  triggers: z.string().default(""),
+  content: z.string(),
+  action: z.literal("update"),
+  nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
+});
+
+export const manage = (req: Request, res: Response) => {
+  Object.values(editSessions).forEach((sess) => {
+    if (Date.now() - sess.started > timeMs({ m: 30 })) {
+      delete editSessions[sess.session];
+    }
+  });
+
+  const parsed = manageSchema.parse(req.body);
+  const id = postIdSchema.parse(req.params.id);
+  const post = getPostById(id);
+  if (!post) {
+    return renderError(res, {
+      code: "NotFound",
+      details:
+        "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
+      name: "Not found",
+      title: "Post not found",
+    });
+  }
+
+  if (post.password !== parsed.password) {
+    return renderError(res, {
+      code: "BadRequest",
+      details:
+        "There was an error processing your request. Please try again later.",
+    });
+  }
+
+  const session = crypto.randomUUID();
+  editSessions[session] = {
+    session,
+    started: Date.now(),
+    post: id,
+  };
+
+  res.render("create-post", {
+    mode: "edit",
+    post,
+    session,
+    whatsappUrl: config.whatsappUrl,
+  });
+};
+
+export const update = (req: Request, res: Response) => {
+  Object.values(editSessions).forEach((sess) => {
+    if (Date.now() - sess.started > timeMs({ m: 30 })) {
+      delete editSessions[sess.session];
+    }
+  });
+
+  const id = postIdSchema.parse(req.params.id);
+  const parsed = updatePostSchema.parse(req.body);
+  if (editSessions[parsed.session].post !== id) {
+    return renderError(res, { code: "BadRequest" });
+  }
+
+  delete editSessions[parsed.session];
+
+  if (parsed.action === "delete") {
+    deletePost(id);
+    return res.redirect("/");
+  } else if (parsed.action === "update") {
+    const updated = postModificationAction.parse(req.body);
+    updatePost(id, {
+      title: updated.title,
+      triggers: updated.triggers,
+      content: updated.content,
+      nsfw: !!updated.nsfw,
+    });
+    return res.redirect(`/post/${id}`);
+  } else throw new Error("wtf");
 };
