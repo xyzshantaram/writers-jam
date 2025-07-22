@@ -95,7 +95,7 @@ export const create = async (req: Request, res: Response) => {
 
   const created = createPost({
     ...createOpts,
-    password: hash(password),
+    password: password.length ? hash(password) : "",
     triggers: triggers.trim(),
   });
   return res.redirect(`/post/${created}`);
