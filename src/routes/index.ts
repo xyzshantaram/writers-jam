@@ -5,7 +5,7 @@ import { config } from "../config.ts";
 
 const descReplacements = {
   $WHATSAPP_URL: config.whatsappUrl,
-}
+};
 
 export const getDescription = () => {
   let result = description;
@@ -14,7 +14,7 @@ export const getDescription = () => {
   }
 
   return result;
-}
+};
 
 export const get = (_: Request, res: Response) => {
   const postCount = getPostCount();
@@ -25,6 +25,6 @@ export const get = (_: Request, res: Response) => {
     postCount,
     viewCount,
     description: getDescription(),
-    feeds: getHomepageFeeds()
+    feeds: getHomepageFeeds(),
   });
 };

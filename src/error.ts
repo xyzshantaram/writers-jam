@@ -11,7 +11,7 @@ const RENDER_ERROR_OPTS = {
   title: "Error",
   details: "An unknown error occurred.",
   name: "Unknown error",
-  whatsappUrl: config.whatsappUrl
+  whatsappUrl: config.whatsappUrl,
 };
 
 export type RenderErrorOpts = Partial<

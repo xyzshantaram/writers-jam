@@ -100,7 +100,7 @@ const createApp = () => {
     posts.addComment,
   );
 
-  app.get('/posts', search.index);
+  app.get("/posts", search.index);
 
   app.post(
     "/captcha/challenge",
