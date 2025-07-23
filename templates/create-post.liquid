@@ -152,10 +152,9 @@ my second line
 {% endif %}
 
 <script type="module">
-    import { marked } from "https://esm.sh/marked@^16.0.0";
+    import { parseMd } from '/js/parse.js';
     import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
     import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
-    import { markedSmartypants } from "https://esm.sh/marked-smartypants@1.1.10";
     import TurndownService from "https://esm.sh/turndown@7.2.0";
     import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 
@@ -164,15 +163,6 @@ my second line
         const preview = document.querySelector('#content-rendered');
         const wc = document.querySelector('#content-word-count');
         let timeout = null;
-        const renderer = {
-            heading({ tokens, depth }) {
-                const text = this.parser.parseInline(tokens);
-                return `<div class='heading-${depth}'>${text}</div>`;
-            },
-            image() {
-                return '';
-            }
-        };
 
         const turndownService = new TurndownService({
             headingStyle: 'atx'
@@ -203,37 +193,25 @@ my second line
             const end = textarea.selectionEnd;
             const value = textarea.value;
 
-            // Insert the markdown
             textarea.value = value.slice(0, start) + markdown + value.slice(end);
-
-            // Move cursor to the end of inserted text
             const newCursorPos = start + markdown.length;
             textarea.selectionStart = textarea.selectionEnd = newCursorPos;
-
-            // Focus the textarea again
             textarea.focus();
         }
-
-        marked.use(markedSmartypants());
-        marked.use({ renderer });
 
         const oninput = () => {
             const value = textarea.value;
             if (!value.trim()) return;
-            preview.innerHTML = sanitize(marked.parse(value), {
-                allowedClasses: {
-                    'div': ['heading-1', 'heading-2', 'heading-3', 'heading-4', 'heading-5', 'heading-6']
-                }
-            });
+            preview.innerHTML = parseMd(value);
             wc.innerHTML = count(value, 'words');
-        }
+        };
 
         textarea.addEventListener('input', () => {
             if (timeout) window.clearTimeout(timeout);
             timeout = window.setTimeout(oninput, 1000);
-        })
+        });
 
         oninput();
-    })
+    });
 </script>
 {% endblock %}
