@@ -11,16 +11,26 @@ import {
   updatePost,
 } from "../db.ts";
 import { renderError } from "../error.ts";
-import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
-import { getClientIP } from "../utils/mod.ts";
+import {
+  createCommentSchema,
+  createPostSchema,
+  postIdSchema,
+} from "../schemas/mod.ts";
+import { getClientIP, getPostTagString } from "../utils/mod.ts";
 import { Request, Response } from "express";
 import { timeMs } from "../utils/time.ts";
 import { cap } from "./captcha.ts";
 import { config } from "../config.ts";
 import { hash, verify } from "@bronti/argon2";
+import { editions, editionSchema } from "../utils/editions.ts";
 
 export const index = (_: Request, res: Response) => {
-  res.render("create-post", { heading: "Create a post", whatsappUrl: config.whatsappUrl });
+  res.render("create-post", {
+    heading: "Create a post",
+    whatsappUrl: config.whatsappUrl,
+    editions,
+    latestEdition: editions[1].id,
+  });
 };
 
 export const random = (_: Request, res: Response) => {
@@ -91,12 +101,13 @@ export const create = async (req: Request, res: Response) => {
   const { success } = await cap.validateToken(parsed.captcha);
   if (!success) return captchaErr(res);
 
-  const { triggers, captcha: _, password, ...createOpts } = parsed;
+  const { triggers, captcha: _, password, edition, ...createOpts } = parsed;
 
   const created = createPost({
     ...createOpts,
     password: password.length ? hash(password) : "",
     triggers: triggers.trim(),
+    tags: getPostTagString({ edition: { value: edition } }),
   });
   return res.redirect(`/post/${created}`);
 };
@@ -136,13 +147,13 @@ const updatePostSchema = z.object({
   ),
 });
 
-
 const postModificationAction = z.object({
   title: z.string().default(""),
   triggers: z.string().default(""),
   content: z.string(),
   action: z.literal("update"),
   nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
+  edition: editionSchema,
 });
 
 export const manage = (req: Request, res: Response) => {
@@ -165,7 +176,10 @@ export const manage = (req: Request, res: Response) => {
     });
   }
 
-  if (post.password && post.password.length && !verify(parsed.password, post.password)) {
+  if (
+    post.password && post.password.length &&
+    !verify(parsed.password, post.password)
+  ) {
     return renderError(res, {
       code: "BadRequest",
       details:
@@ -186,6 +200,8 @@ export const manage = (req: Request, res: Response) => {
     post,
     session,
     whatsappUrl: config.whatsappUrl,
+    editions,
+    currentEdition: post?.tags?.edition?.value,
   });
 };
 
@@ -214,6 +230,7 @@ export const update = (req: Request, res: Response) => {
       triggers: updated.triggers,
       content: updated.content,
       nsfw: !!updated.nsfw,
+      edition: updated.edition,
     });
     return res.redirect(`/post/${id}`);
   } else throw new Error("wtf");

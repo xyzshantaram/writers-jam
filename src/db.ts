@@ -7,7 +7,7 @@ import {
   Post,
 } from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
-import { hashPostId, unhashPostId } from "./utils/mod.ts";
+import { getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
 
 const db = new DatabaseSync("./writers-jam.db", {
   enableForeignKeyConstraints: true,
@@ -89,7 +89,8 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     triggers,
     title,
     author,
-    updated
+    updated,
+    tags
   ) VALUES (
     :content,
     :nsfw,
@@ -97,13 +98,16 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     :triggers,
     :title,
     :author,
-    :updated
+    :updated,
+    :tags
   )
   returning
     id`);
 
 export const createPost = (
-  opts: Omit<z.infer<typeof createPostSchema>, "captcha">,
+  opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "edition"> & {
+    tags: string;
+  },
 ) => {
   const updated = Date.now();
 
@@ -132,7 +136,8 @@ interface PaginatedPosts {
 export const getPosts = (
   opts?: GetPostOpts,
 ): PaginatedPosts => {
-  const { sort = "updated", nsfw, page = 1, search, order="desc", edition } = opts || {};
+  const { sort = "updated", nsfw, page = 1, search, order = "desc", edition } =
+    opts || {};
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
@@ -141,7 +146,7 @@ export const getPosts = (
     conditions.push("p.nsfw = 0");
   }
 
-  if (typeof edition === 'number') {
+  if (typeof edition === "number") {
     conditions.push(`json_extract(p.tags, '$.edition.value') = ${edition}`);
   }
 
@@ -168,7 +173,7 @@ export const getPosts = (
     `;
 
     mainQuery = `
-      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views
+      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
       FROM post p
       ${joinClause}
       ${whereClause}
@@ -182,13 +187,15 @@ export const getPosts = (
     `;
 
     mainQuery = `
-      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views
+      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
       FROM post p
       ${whereClause}
     `;
   }
 
-  mainQuery += sort === "views" ? ` ORDER BY p.views ${order}` : ` ORDER BY p.updated ${order}`;
+  mainQuery += sort === "views"
+    ? ` ORDER BY p.views ${order}`
+    : ` ORDER BY p.updated ${order}`;
   mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
 
   const countStmt = db.prepare(countQuery);
@@ -199,9 +206,7 @@ export const getPosts = (
   const totalPages = Math.ceil(count / pageSize);
 
   const stmt = db.prepare(mainQuery);
-  const rows = search && search.trim() !== ""
-    ? stmt.all(search)
-    : stmt.all();
+  const rows = search && search.trim() !== "" ? stmt.all(search) : stmt.all();
 
   const posts = rows.map((row) => ({
     id: hashPostId(row.id as number),
@@ -212,6 +217,7 @@ export const getPosts = (
     author: row.author as string,
     updated: Number(row.updated),
     views: Number(row.views),
+    tags: JSON.parse(String(row.tags || "{}")),
   }));
 
   return { posts, totalPages };
@@ -219,7 +225,7 @@ export const getPosts = (
 
 const homePageSelectFields = `
   p.id, p.title, p.nsfw, p.password, p.triggers,
-  p.author, p.updated, p.views
+  p.author, p.updated, p.views, p.tags
 `;
 
 const latestStmt = db.prepare(`
@@ -266,15 +272,14 @@ export const getCurrentEdition = () => {
     SELECT MAX(id) as id FROM editions WHERE deleted = 0
   `).get();
   return (editionRow?.id || 0) as number;
-}
+};
 
 export const getHomepageFeeds = (): {
-  latest: ReturnType<typeof getPosts>['posts'],
-  sleptOn: ReturnType<typeof getPosts>['posts'],
-  currentEdition: ReturnType<typeof getPosts>['posts'],
-  mostViewed: ReturnType<typeof getPosts>['posts'],
+  latest: ReturnType<typeof getPosts>["posts"];
+  sleptOn: ReturnType<typeof getPosts>["posts"];
+  currentEdition: ReturnType<typeof getPosts>["posts"];
+  mostViewed: ReturnType<typeof getPosts>["posts"];
 } => {
-
   const latestRows = latestStmt.all();
   const mostViewedRows = mostViewedStmt.all();
   const sleptOnRows = sleptOnStmt.all();
@@ -289,13 +294,14 @@ export const getHomepageFeeds = (): {
     author: row.author as string,
     updated: Number(row.updated),
     views: Number(row.views),
+    tags: JSON.parse(String(row.tags || "{}")),
   });
 
   return {
     latest: latestRows.map(mapRow),
     sleptOn: sleptOnRows.map(mapRow),
     currentEdition: editionRows.map(mapRow),
-    mostViewed: mostViewedRows.map(mapRow)
+    mostViewed: mostViewedRows.map(mapRow),
   };
 };
 
@@ -369,7 +375,8 @@ const postByIdQuery = db.prepare(`select
   author,
   updated,
   reports,
-  views
+  views,
+  tags
 from post where
   deleted = 0 and
   id = ?`);
@@ -389,6 +396,7 @@ export const getPostById = (id: string): Post | null => {
     password: String(res.password || ""),
     title: String(res.title || ""),
     triggers: String(res.triggers || ""),
+    tags: JSON.parse(String(res.tags || "{}")),
   };
 };
 
@@ -447,36 +455,50 @@ export const deletePost = (id: string) => {
 
 const updatePostStmt = db.prepare(
   `UPDATE post
-   SET title = :title, content = :content, triggers = :triggers, nsfw = :nsfw, updated = :updated
+   SET title = :title, content = :content, triggers = :triggers, nsfw = :nsfw, updated = :updated, tags = :tags
    WHERE id = :id`,
 );
+
+const getPostTagsStmt = db.prepare(`
+  SELECT tags FROM post WHERE id = :id
+`);
+
+export const getPostTags = (id: number) => {
+  const result = getPostTagsStmt.get({ id });
+  if (!result) return null;
+  return JSON.parse(String(result.tags || "{}"));
+};
 
 export const updatePost = (id: string, {
   title,
   content,
   triggers,
   nsfw,
+  edition,
 }: {
   title: string;
   content: string;
   triggers?: string;
   nsfw: boolean;
+  edition: number;
 }) => {
   const updated = Date.now();
+  const rawId = unhashPostId(id);
   return updatePostStmt.run({
-    id: unhashPostId(id),
+    id: rawId,
     title,
     content,
     triggers: triggers || "",
     nsfw: nsfw ? 1 : 0,
     updated,
+    tags: getPostTagString({ edition: { value: edition } }, getPostTags(rawId)),
   });
 };
 
 export type Edition = {
-  id: number,
-  name: string,
-  deleted: boolean
+  id: number;
+  name: string;
+  deleted: boolean;
 };
 
 export const getAllEditions = (): Edition[] => {

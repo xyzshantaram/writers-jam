@@ -128,7 +128,8 @@ my second line
         <select name="edition" id="post-edition" autocomplete="off">
             {% for edition in editions %}
                 <option value="{{ edition.id }}"
-                    {% if latestEdition == edition.id %}selected{% endif %}
+                    {% if mode != "edit" and latestEdition == edition.id %}selected{% endif %}
+                    {% if mode == "edit" and edition.id == currentEdition %}selected{% endif %}
                     >{{ edition.name }}</option>
             {% endfor %}
         </select>

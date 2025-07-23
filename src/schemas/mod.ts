@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { createErrorMap } from "zod-validation-error/v4";
 import { count } from "@wordpress/wordcount";
+import { editionSchema } from "../utils/editions.ts";
 
 z.config({
   customError: createErrorMap({
@@ -18,6 +19,7 @@ export const createPostSchema = z.object({
   }).transform((s) => s.trim()),
   password: z.string().default(""),
   captcha: z.string().nonempty(),
+  edition: editionSchema.nonoptional(),
 });
 
 export interface Post {
@@ -32,6 +34,10 @@ export interface Post {
   id: string;
   updated: number;
   deleted: boolean;
+  tags: Record<string, {
+    value: any;
+    type?: "kv" | "badge";
+  }>;
 }
 
 export const createCommentSchema = z.object({
