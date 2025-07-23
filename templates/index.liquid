@@ -23,6 +23,15 @@
 
 <div class="feeds">
     <div class="feed-wrapper">
+        <h3 title="Random posts from the latest edition">Current Edition</h3>
+        <div class="feed current-edition">
+            {% for post in feeds.currentEdition %}
+                {% render 'partials/post.liquid' post: post %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="feed-wrapper">
         <h3 title="Posts with less than 2 comments or 15 views">Slept-on</h3>
         <div class="feed slept-on">
             {% for post in feeds.sleptOn %}
@@ -35,6 +44,15 @@
         <h3>Latest</h3>
         <div class="feed latest">
             {% for post in feeds.latest %}
+                {% render 'partials/post.liquid' post: post %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="feed-wrapper">
+        <h3>Most Viewed</h3>
+        <div class="feed most-viewed">
+            {% for post in feeds.mostViewed %}
                 {% render 'partials/post.liquid' post: post %}
             {% endfor %}
         </div>
