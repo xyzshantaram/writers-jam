@@ -45,6 +45,15 @@ db.exec(`CREATE TABLE IF NOT EXISTS post_id_map (
   new_id INTEGER UNIQUE NOT NULL
 );`);
 
+db.exec(`CREATE TABLE IF NOT EXISTS editions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  deleted BOOLEAN NOT NULL DEFAULT 0
+);
+
+INSERT OR IGNORE INTO editions (id, name) VALUES (0, 'No edition');
+`);
+
 db.exec(`
 CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
   content,
@@ -457,4 +466,44 @@ export const updatePost = (id: string, {
     nsfw: nsfw ? 1 : 0,
     updated,
   });
+};
+
+export type Edition = {
+  id: number,
+  name: string,
+  deleted: boolean
+};
+
+export const getAllEditions = (): Edition[] => {
+  const stmt = db.prepare(`
+    SELECT id, name, deleted
+    FROM editions
+    ORDER BY id DESC
+  `);
+  return stmt.all() as unknown as Edition[];
+};
+
+export const createEdition = (name: string): Edition => {
+  const insertStmt = db.prepare(`
+    INSERT INTO editions (name)
+    VALUES (?)
+  `);
+  const info = insertStmt.run(name);
+
+  const selectStmt = db.prepare(`
+    SELECT id, name, deleted
+    FROM editions
+    WHERE id = ?
+  `);
+
+  return selectStmt.get(info.lastInsertRowid as number) as unknown as Edition;
+};
+
+export const deleteEdition = (id: number): void => {
+  const stmt = db.prepare(`
+    UPDATE editions
+    SET deleted = 1
+    WHERE id = ?
+  `);
+  stmt.run(id);
 };
