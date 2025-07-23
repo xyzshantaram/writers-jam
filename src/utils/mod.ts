@@ -53,3 +53,7 @@ export const makeQueryLinkHelper = (query: Record<string, any>) => {
     return `?${searchParams.toString()}`;
   };
 }
+
+export const getPostTagString = (val: Record<string, any>, old?: Record<string, any>) => {
+  return JSON.stringify({...old, ...val});
+}
