@@ -14,6 +14,8 @@ import { marked, Renderer } from "marked";
 import sanitize from "sanitize-html";
 import { markedSmartypants } from "marked-smartypants";
 import * as captcha from "./routes/captcha.ts";
+import { Post } from "./schemas/mod.ts";
+import { editionMap } from "./utils/editions.ts";
 
 /*
 GET /post/:ulid/edit
@@ -70,6 +72,9 @@ const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
         return timeAgo.format(new Date(stamp));
     });
     liquid.registerFilter("parse_md", parseMd);
+    liquid.registerFilter("get_post_edition", (post: Post) => {
+      return editionMap.get(post.tags.edition.value)?.name;
+    })
 
     app.engine("liquid", liquid.express());
     app.set("view engine", "liquid");

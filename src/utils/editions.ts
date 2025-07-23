@@ -8,6 +8,16 @@ export const editions = [noEdition, ...weeklyEditions].filter(
     Boolean,
 ) as Edition[];
 
+const getEditionMap = () => {
+    const res = new Map<number, Edition>();
+    for (const edition of editions) {
+        res.set(edition.id, edition);
+    }
+    return res;
+}
+
+export const editionMap = getEditionMap();
+
 export const parseEdition = (rawEdition: any): {
     zero?: boolean;
     noEdition?: boolean;

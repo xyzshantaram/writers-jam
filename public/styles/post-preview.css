@@ -17,6 +17,13 @@
     border: 3px solid #aaa;
 }
 
+.post-item .tag {
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.8rem;
+    margin-right: auto;
+}
+
 .view-count {
     margin-top: auto;
 }

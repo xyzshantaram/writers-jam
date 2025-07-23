@@ -18,7 +18,7 @@ import { timeMs } from "../utils/time.ts";
 import { cap } from "./captcha.ts";
 import { config } from "../config.ts";
 import { hash, verify } from "@bronti/argon2";
-import { editions, editionSchema } from "../utils/editions.ts";
+import { editionMap, editions, editionSchema } from "../utils/editions.ts";
 
 export const index = (_: Request, res: Response) => {
     res.render("create-post", {
@@ -81,9 +81,9 @@ export const view = (req: Request, res: Response) => {
             title: "Post not found",
         });
     }
-
+    
     res.render("view-post", {
-        post,
+        post: { ...post, edition: editionMap.get(post.tags.edition.value) },
         title: post.title && post.title.length
             ? `View post “${post.title}” by ${post.author || "Anonymous"}`
             : "View post",

@@ -4,6 +4,7 @@
             <span class="badge danger invert">NSFW</span>
         {% endif %}
     </div>
+    <span class="tag invert">{{ post | get_post_edition }}</span>
     <div class="post-author">by <strong>{{ post.author | default: "Anonymous" }}</strong></div>
     {% if post.triggers.size != 0 %}
         <div class="post-notes"><strong>Notes: </strong> {{ post.triggers }}</div>

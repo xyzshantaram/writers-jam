@@ -18,9 +18,12 @@
 {% endblock %}
 
 {% block content %}
+<div class="post-tags">
+    <div class="tag invert">{{ post | get_post_edition }}</div>
+</div>
+
 <div class="post-meta">
     <div class="post-author">by <span class="author">{{ post.author | default: "Anonymous" }}</span></div>
-
     <div class="post-details">
         <div class="view-count">
             <i class="iconoir-eye" aria-label="View count" title="View count"></i> 

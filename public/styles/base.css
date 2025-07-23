@@ -323,6 +323,13 @@ section {
     width: 100%;
 }
 
+.tag {
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.2rem;
+    font-weight: bold;
+}
+
 details > form {
     justify-content: center;
     margin-left: auto;
