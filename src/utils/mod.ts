@@ -52,8 +52,11 @@ export const makeQueryLinkHelper = (query: Record<string, any>) => {
     const searchParams = new URLSearchParams(cleaned);
     return `?${searchParams.toString()}`;
   };
-}
+};
 
-export const getPostTagString = (val: Record<string, any>, old?: Record<string, any>) => {
-  return JSON.stringify({...old, ...val});
-}
+export const getPostTagString = (
+  val: Record<string, any>,
+  old?: Record<string, any>,
+) => {
+  return JSON.stringify({ ...old, ...val });
+};
