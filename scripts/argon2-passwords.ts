@@ -13,6 +13,6 @@ for (const result of results) {
             password: hash(result.password),
             id: result.id,
         });
-        console.log(`done with ${result.id}`);
+        console.info(`done with ${result.id}`);
     }
 }
