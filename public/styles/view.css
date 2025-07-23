@@ -89,4 +89,8 @@ body > :not(header):not(footer) {
     margin-bottom: 0;
 }
 
+.post-tags {
+    margin-bottom: 0.5rem;
+}
+
 @media screen and (max-aspect-ratio: 1/1) {}

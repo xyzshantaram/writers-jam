@@ -27,6 +27,8 @@ div.page-links {
 
 .order-group label {
     font-size: 0.8rem;
+    display: flex;
+    gap: 0.2rem;
 }
 
 .search-line.search-line input[type="submit"] {
