@@ -37,11 +37,6 @@
     <div class="nag"><strong>Notes:</strong> {{ post.triggers }}</div>
 {% endif %}
 
-
-<div id="content-rendered" class="noborder">
-    {{ post.content | parse_md | raw }}
-</div>
-
 <div class="view-settings">
     <div class="form-group">
         <label for="font-selector">Display font</label>
@@ -51,6 +46,10 @@
             <option value="monospace">Monospace</option>
         </select>
     </div>
+</div>
+
+<div id="content-rendered" class="noborder">
+    {{ post.content | parse_md | raw }}
 </div>
 
 <script>
@@ -128,5 +127,4 @@
     <p>No comments yet. Be the first to leave one!</p>
 {% endif %}
 
-<!-- <p><code>{{ post | json }}</code></p> -->
 {% endblock %}
