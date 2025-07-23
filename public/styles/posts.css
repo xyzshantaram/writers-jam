@@ -35,3 +35,7 @@ div.page-links {
     border-bottom-left-radius: 0;
     border-left: none;
 }
+
+.edition-line {
+    text-align: center;
+}

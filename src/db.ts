@@ -121,6 +121,7 @@ interface GetPostOpts {
   page?: number;
   order?: "asc" | "desc";
   search?: string;
+  edition?: number;
 }
 
 interface PaginatedPosts {
@@ -131,13 +132,17 @@ interface PaginatedPosts {
 export const getPosts = (
   opts?: GetPostOpts,
 ): PaginatedPosts => {
-  const { sort = "updated", nsfw, page = 1, search, order="desc" } = opts || {};
+  const { sort = "updated", nsfw, page = 1, search, order="desc", edition } = opts || {};
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
   const conditions: string[] = ["p.deleted != 1"];
   if (nsfw !== "yes") {
     conditions.push("p.nsfw = 0");
+  }
+
+  if (typeof edition === 'number') {
+    conditions.push(`json_extract(p.tags, '$.edition.value') = ${edition}`);
   }
 
   const whereClause = conditions.length

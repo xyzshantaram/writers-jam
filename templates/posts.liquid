@@ -13,6 +13,16 @@
             Include NSFW posts
             </label>
         </div>
+        <div class="edition-line">
+            <label for="search-edition">Edition</label>
+            <select name="edition" id="search-edition" autocomplete="off">
+                <option value=""{% unless currentEdition %}selected{% endunless %}>All editions</option>
+                {% for edition in editions %}
+                    <option value="{{edition.id}}" {% if edition.id == currentEdition %}selected{% endif %}
+                    >{{edition.name|escape}}</option>
+                {% endfor %}
+            </select>
+        </div>
         <div class="sort-line">
             <label for="search-sort">Sort by</label>
             <select id="search-sort" name="sort">
@@ -58,7 +68,7 @@
     <div>Page {{ page }} of {{ results.totalPages }}</div>
 
     <div>
-        {% if page != totalPages %}
+        {% if page != results.totalPages %}
         <a href="{{ links.nextPage }}">Next</a>
         {% endif %}
     </div>
