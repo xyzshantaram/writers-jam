@@ -7,12 +7,14 @@
 <meta property="og:type" content="article" />
 {% if post.title %}
 <meta property="og:title" content="View “{{ post.title }}” by {{ post.author | default: "Anonymous" }}" />
+{% elsif post.author %}
+<meta property="og:title" content="View this Writers Jam post by {{ post.author }}" />
 {% else %}
-<meta property="og:title" content="Writer's Jam - view post" />
+<meta property="og:title" content="Writers Jam - view post" />
 {% endif %}
 <meta property="og:description" content="{{ post.content | truncate: 100 | escape }}" />
 <meta property="og:url" content="https://writersjam.shantaram.xyz/post/{{ post.id }}" />
-<meta property="og:site_name" content="Writer's Jam" />
+<meta property="og:site_name" content="Writers Jam" />
 {% endblock %}
 
 {% block content %}
