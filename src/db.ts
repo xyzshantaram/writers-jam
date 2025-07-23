@@ -2,7 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import { z } from "zod/v4";
 import { Comment, createCommentSchema, createPostSchema, Post } from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
-import { getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
+import { choose, getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
 
 const db = new DatabaseSync("./writers-jam.db", {
     enableForeignKeyConstraints: true,
@@ -223,7 +223,7 @@ const latestStmt = db.prepare(`
   FROM post p
   WHERE p.deleted != 1 AND p.nsfw = 0
   ORDER BY p.updated DESC
-  LIMIT 5
+  LIMIT 15
 `);
 
 const mostViewedStmt = db.prepare(`
@@ -231,7 +231,7 @@ const mostViewedStmt = db.prepare(`
   FROM post p
   WHERE p.deleted != 1 AND p.nsfw = 0
   ORDER BY p.views DESC
-  LIMIT 5
+  LIMIT 15
 `);
 
 const sleptOnStmt = db.prepare(`
@@ -270,8 +270,8 @@ export const getHomepageFeeds = (): {
     currentEdition: ReturnType<typeof getPosts>["posts"];
     mostViewed: ReturnType<typeof getPosts>["posts"];
 } => {
-    const latestRows = latestStmt.all();
-    const mostViewedRows = mostViewedStmt.all();
+    const latestRows = choose(latestStmt.all(), 5);
+    const mostViewedRows = choose(mostViewedStmt.all(), 5);
     const sleptOnRows = sleptOnStmt.all();
     const editionRows = editionStmt.all(getCurrentEdition());
 

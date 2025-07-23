@@ -8,8 +8,24 @@ export const die = (code: number, ...args: any[]): never => {
 
 export const fatal = (...args: any[]) => die(1, "fatal:", ...args);
 
-export const choose = (arr: any[]) => {
-    return arr[Math.floor(Math.random() * arr.length)];
+export const choose = <T>(arr: T[], count = 1): T[] => {
+  if (count === undefined) {
+      return [arr[Math.floor(Math.random() * arr.length)]];
+  }
+
+  if (count >= arr.length) {
+      return [...arr];
+  }
+
+  const copy = [...arr];
+  const result: T[] = [];
+
+  for (let i = 0; i < count; i++) {
+      const index = Math.floor(Math.random() * copy.length);
+      result.push(copy.splice(index, 1)[0]);
+  }
+
+  return result;
 };
 
 export const clamp = (val: number, min: number, max: number) =>

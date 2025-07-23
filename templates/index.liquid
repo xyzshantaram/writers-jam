@@ -41,7 +41,7 @@
     </div>
 
     <div class="feed-wrapper">
-        <h3>Latest</h3>
+        <h3>Recently updated</h3>
         <div class="feed latest">
             {% for post in feeds.latest %}
                 {% render 'partials/post.liquid' post: post %}
@@ -50,7 +50,7 @@
     </div>
 
     <div class="feed-wrapper">
-        <h3>Most Viewed</h3>
+        <h3>Highly viewed</h3>
         <div class="feed most-viewed">
             {% for post in feeds.mostViewed %}
                 {% render 'partials/post.liquid' post: post %}
