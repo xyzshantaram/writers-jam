@@ -19,7 +19,7 @@ div.page-links {
     display: flex;
 }
 
-.search-line.search-line input[type=text] {
+.search-line.search-line input[type="text"] {
     width: 80%;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -29,7 +29,7 @@ div.page-links {
     font-size: 0.8rem;
 }
 
-.search-line.search-line input[type=submit] {
+.search-line.search-line input[type="submit"] {
     width: 20%;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

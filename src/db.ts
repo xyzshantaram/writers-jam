@@ -1,17 +1,12 @@
 import { DatabaseSync } from "node:sqlite";
 import { z } from "zod/v4";
-import {
-  Comment,
-  createCommentSchema,
-  createPostSchema,
-  Post,
-} from "./schemas/mod.ts";
+import { Comment, createCommentSchema, createPostSchema, Post } from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
 import { getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
 
 const db = new DatabaseSync("./writers-jam.db", {
-  enableForeignKeyConstraints: true,
-  readOnly: false,
+    enableForeignKeyConstraints: true,
+    readOnly: false,
 });
 
 db.exec("PRAGMA journal_mode=WAL");
@@ -105,66 +100,63 @@ const createPostStmt = db.prepare(`INSERT INTO post (
     id`);
 
 export const createPost = (
-  opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "edition"> & {
-    tags: string;
-  },
+    opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "edition"> & {
+        tags: string;
+    },
 ) => {
-  const updated = Date.now();
+    const updated = Date.now();
 
-  const result = createPostStmt.get({
-    updated,
-    ...opts,
-  });
+    const result = createPostStmt.get({
+        updated,
+        ...opts,
+    });
 
-  return hashPostId(result!.id as number);
+    return hashPostId(result!.id as number);
 };
 
 interface GetPostOpts {
-  sort?: "views" | "updated";
-  nsfw?: "yes" | "no";
-  page?: number;
-  order?: "asc" | "desc";
-  search?: string;
-  edition?: number;
+    sort?: "views" | "updated";
+    nsfw?: "yes" | "no";
+    page?: number;
+    order?: "asc" | "desc";
+    search?: string;
+    edition?: number;
 }
 
 interface PaginatedPosts {
-  posts: Omit<Post, "content" | "reports" | "deleted">[];
-  totalPages: number;
+    posts: Omit<Post, "content" | "reports" | "deleted">[];
+    totalPages: number;
 }
 
 export const getPosts = (
-  opts?: GetPostOpts,
+    opts?: GetPostOpts,
 ): PaginatedPosts => {
-  const { sort = "updated", nsfw, page = 1, search, order = "desc", edition } =
-    opts || {};
-  const pageSize = 10;
-  const offset = (page - 1) * pageSize;
+    const { sort = "updated", nsfw, page = 1, search, order = "desc", edition } = opts || {};
+    const pageSize = 10;
+    const offset = (page - 1) * pageSize;
 
-  const conditions: string[] = ["p.deleted != 1"];
-  if (nsfw !== "yes") {
-    conditions.push("p.nsfw = 0");
-  }
+    const conditions: string[] = ["p.deleted != 1"];
+    if (nsfw !== "yes") {
+        conditions.push("p.nsfw = 0");
+    }
 
-  if (typeof edition === "number") {
-    conditions.push(`json_extract(p.tags, '$.edition.value') = ${edition}`);
-  }
+    if (typeof edition === "number") {
+        conditions.push(`json_extract(p.tags, '$.edition.value') = ${edition}`);
+    }
 
-  const whereClause = conditions.length
-    ? `WHERE ${conditions.join(" AND ")}`
-    : "";
+    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
-  let joinClause = "";
-  let searchClause = "";
-  let countQuery = "";
-  let mainQuery = "";
+    let joinClause = "";
+    let searchClause = "";
+    let countQuery = "";
+    let mainQuery = "";
 
-  if (search && search.trim() !== "") {
-    // Join post_fts on post.id
-    joinClause = `JOIN post_fts fts ON fts.rowid = p.id`;
-    searchClause = `AND post_fts MATCH ?`;
+    if (search && search.trim() !== "") {
+        // Join post_fts on post.id
+        joinClause = `JOIN post_fts fts ON fts.rowid = p.id`;
+        searchClause = `AND post_fts MATCH ?`;
 
-    countQuery = `
+        countQuery = `
       SELECT COUNT(*) as count
       FROM post p
       ${joinClause}
@@ -172,55 +164,53 @@ export const getPosts = (
       ${searchClause}
     `;
 
-    mainQuery = `
+        mainQuery = `
       SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
       FROM post p
       ${joinClause}
       ${whereClause}
       ${searchClause}
     `;
-  } else {
-    countQuery = `
+    } else {
+        countQuery = `
       SELECT COUNT(*) as count
       FROM post p
       ${whereClause}
     `;
 
-    mainQuery = `
+        mainQuery = `
       SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
       FROM post p
       ${whereClause}
     `;
-  }
+    }
 
-  mainQuery += sort === "views"
-    ? ` ORDER BY p.views ${order}`
-    : ` ORDER BY p.updated ${order}`;
-  mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
+    mainQuery += sort === "views" ? ` ORDER BY p.views ${order}` : ` ORDER BY p.updated ${order}`;
+    mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
 
-  const countStmt = db.prepare(countQuery);
-  const count = search && search.trim() !== ""
-    ? (countStmt.get(search) as { count: number }).count
-    : (countStmt.get() as { count: number }).count;
+    const countStmt = db.prepare(countQuery);
+    const count = search && search.trim() !== ""
+        ? (countStmt.get(search) as { count: number }).count
+        : (countStmt.get() as { count: number }).count;
 
-  const totalPages = Math.ceil(count / pageSize);
+    const totalPages = Math.ceil(count / pageSize);
 
-  const stmt = db.prepare(mainQuery);
-  const rows = search && search.trim() !== "" ? stmt.all(search) : stmt.all();
+    const stmt = db.prepare(mainQuery);
+    const rows = search && search.trim() !== "" ? stmt.all(search) : stmt.all();
 
-  const posts = rows.map((row) => ({
-    id: hashPostId(row.id as number),
-    title: row.title as string,
-    nsfw: !!row.nsfw,
-    password: String(row.password || ""),
-    triggers: String(row.triggers || ""),
-    author: row.author as string,
-    updated: Number(row.updated),
-    views: Number(row.views),
-    tags: JSON.parse(String(row.tags || "{}")),
-  }));
+    const posts = rows.map((row) => ({
+        id: hashPostId(row.id as number),
+        title: row.title as string,
+        nsfw: !!row.nsfw,
+        password: String(row.password || ""),
+        triggers: String(row.triggers || ""),
+        author: row.author as string,
+        updated: Number(row.updated),
+        views: Number(row.views),
+        tags: JSON.parse(String(row.tags || "{}")),
+    }));
 
-  return { posts, totalPages };
+    return { posts, totalPages };
 };
 
 const homePageSelectFields = `
@@ -268,41 +258,41 @@ const editionStmt = db.prepare(`
 `);
 
 export const getCurrentEdition = () => {
-  const editionRow = db.prepare(`
+    const editionRow = db.prepare(`
     SELECT MAX(id) as id FROM editions WHERE deleted = 0
   `).get();
-  return (editionRow?.id || 0) as number;
+    return (editionRow?.id || 0) as number;
 };
 
 export const getHomepageFeeds = (): {
-  latest: ReturnType<typeof getPosts>["posts"];
-  sleptOn: ReturnType<typeof getPosts>["posts"];
-  currentEdition: ReturnType<typeof getPosts>["posts"];
-  mostViewed: ReturnType<typeof getPosts>["posts"];
+    latest: ReturnType<typeof getPosts>["posts"];
+    sleptOn: ReturnType<typeof getPosts>["posts"];
+    currentEdition: ReturnType<typeof getPosts>["posts"];
+    mostViewed: ReturnType<typeof getPosts>["posts"];
 } => {
-  const latestRows = latestStmt.all();
-  const mostViewedRows = mostViewedStmt.all();
-  const sleptOnRows = sleptOnStmt.all();
-  const editionRows = editionStmt.all(getCurrentEdition());
+    const latestRows = latestStmt.all();
+    const mostViewedRows = mostViewedStmt.all();
+    const sleptOnRows = sleptOnStmt.all();
+    const editionRows = editionStmt.all(getCurrentEdition());
 
-  const mapRow = (row: any) => ({
-    id: hashPostId(row.id as number),
-    title: row.title as string,
-    nsfw: !!row.nsfw,
-    password: String(row.password || ""),
-    triggers: String(row.triggers || ""),
-    author: row.author as string,
-    updated: Number(row.updated),
-    views: Number(row.views),
-    tags: JSON.parse(String(row.tags || "{}")),
-  });
+    const mapRow = (row: any) => ({
+        id: hashPostId(row.id as number),
+        title: row.title as string,
+        nsfw: !!row.nsfw,
+        password: String(row.password || ""),
+        triggers: String(row.triggers || ""),
+        author: row.author as string,
+        updated: Number(row.updated),
+        views: Number(row.views),
+        tags: JSON.parse(String(row.tags || "{}")),
+    });
 
-  return {
-    latest: latestRows.map(mapRow),
-    sleptOn: sleptOnRows.map(mapRow),
-    currentEdition: editionRows.map(mapRow),
-    mostViewed: mostViewedRows.map(mapRow),
-  };
+    return {
+        latest: latestRows.map(mapRow),
+        sleptOn: sleptOnRows.map(mapRow),
+        currentEdition: editionRows.map(mapRow),
+        mostViewed: mostViewedRows.map(mapRow),
+    };
 };
 
 const createCommentStmt = db.prepare(`INSERT INTO comment (
@@ -321,48 +311,48 @@ const createCommentStmt = db.prepare(`INSERT INTO comment (
 `);
 
 export const createComment = (
-  opts: Omit<z.infer<typeof createCommentSchema>, "captcha">,
+    opts: Omit<z.infer<typeof createCommentSchema>, "captcha">,
 ) => {
-  const posted = Date.now();
-  const id = ulid();
+    const posted = Date.now();
+    const id = ulid();
 
-  createCommentStmt.run({
-    id,
-    posted,
-    ...opts,
-    for: unhashPostId(opts.for),
-  });
-  return id;
+    createCommentStmt.run({
+        id,
+        posted,
+        ...opts,
+        for: unhashPostId(opts.for),
+    });
+    return id;
 };
 
 const randomPostQuery = db.prepare(
-  "select id from post where deleted = 0 order by random() limit 1",
+    "select id from post where deleted = 0 order by random() limit 1",
 );
 
 export const randomPost = () => {
-  const res = randomPostQuery.get();
-  if (!res) return null;
-  return hashPostId(res.id as number);
+    const res = randomPostQuery.get();
+    if (!res) return null;
+    return hashPostId(res.id as number);
 };
 
 const postCountQuery = db.prepare(
-  "select distinct count(id) as count from post",
+    "select distinct count(id) as count from post",
 );
 
 export const getPostCount = () => {
-  const res = postCountQuery.get();
-  if (!res) throw new Error("This should never happen");
-  return res.count as number || 0;
+    const res = postCountQuery.get();
+    if (!res) throw new Error("This should never happen");
+    return res.count as number || 0;
 };
 
 const aggViewCountQuery = db.prepare(
-  "select sum(views) as count from post",
+    "select sum(views) as count from post",
 );
 
 export const getViewCount = () => {
-  const res = aggViewCountQuery.get();
-  if (!res) throw new Error("This should never happen");
-  return res.count as number || 0;
+    const res = aggViewCountQuery.get();
+    if (!res) throw new Error("This should never happen");
+    return res.count as number || 0;
 };
 
 const postByIdQuery = db.prepare(`select
@@ -382,22 +372,22 @@ from post where
   id = ?`);
 
 export const getPostById = (id: string): Post | null => {
-  const res = postByIdQuery.get(unhashPostId(id));
-  if (!res) return null;
-  return {
-    content: res.content as string,
-    nsfw: !!res.nsfw,
-    views: Number(res.views) || 0,
-    reports: Number(res.reports) || 0,
-    id,
-    updated: Number(res.updated) || NaN,
-    deleted: false,
-    author: String(res.author || ""),
-    password: String(res.password || ""),
-    title: String(res.title || ""),
-    triggers: String(res.triggers || ""),
-    tags: JSON.parse(String(res.tags || "{}")),
-  };
+    const res = postByIdQuery.get(unhashPostId(id));
+    if (!res) return null;
+    return {
+        content: res.content as string,
+        nsfw: !!res.nsfw,
+        views: Number(res.views) || 0,
+        reports: Number(res.reports) || 0,
+        id,
+        updated: Number(res.updated) || NaN,
+        deleted: false,
+        author: String(res.author || ""),
+        password: String(res.password || ""),
+        title: String(res.title || ""),
+        triggers: String(res.triggers || ""),
+        tags: JSON.parse(String(res.tags || "{}")),
+    };
 };
 
 const getNewPostIdQuery = db.prepare(`select
@@ -409,9 +399,9 @@ where
 `);
 
 export const getNewPostId = (ulid: string): string | null => {
-  const result = getNewPostIdQuery.get(ulid);
-  if (!result || !result.new_id) return null;
-  return hashPostId(result.new_id as number);
+    const result = getNewPostIdQuery.get(ulid);
+    if (!result || !result.new_id) return null;
+    return hashPostId(result.new_id as number);
 };
 
 const getPostCommentsQuery = db.prepare(`select
@@ -426,35 +416,35 @@ order by posted desc
 `);
 
 export const getCommentsForPost = (id: string): Comment[] => {
-  return getPostCommentsQuery.all(unhashPostId(id)).map((
-    itm,
-  ) => ({
-    id: String(itm.id),
-    content: String(itm.content),
-    author: String(itm.author || "Anonymous"),
-    posted: Number(itm.posted),
-    for: id,
-  }));
+    return getPostCommentsQuery.all(unhashPostId(id)).map((
+        itm,
+    ) => ({
+        id: String(itm.id),
+        content: String(itm.content),
+        author: String(itm.author || "Anonymous"),
+        posted: Number(itm.posted),
+        for: id,
+    }));
 };
 
 const addPostViewStmt = db.prepare(
-  "update post set views = views + 1 where id = ?",
+    "update post set views = views + 1 where id = ?",
 );
 
 export const addPostView = (id: string) => {
-  addPostViewStmt.run(unhashPostId(id));
+    addPostViewStmt.run(unhashPostId(id));
 };
 
 const deletePostQuery = db.prepare(
-  "delete from post where id = ?",
+    "delete from post where id = ?",
 );
 
 export const deletePost = (id: string) => {
-  return deletePostQuery.run(unhashPostId(id));
+    return deletePostQuery.run(unhashPostId(id));
 };
 
 const updatePostStmt = db.prepare(
-  `UPDATE post
+    `UPDATE post
    SET title = :title, content = :content, triggers = :triggers, nsfw = :nsfw, updated = :updated, tags = :tags
    WHERE id = :id`,
 );
@@ -464,73 +454,73 @@ const getPostTagsStmt = db.prepare(`
 `);
 
 export const getPostTags = (id: number) => {
-  const result = getPostTagsStmt.get({ id });
-  if (!result) return null;
-  return JSON.parse(String(result.tags || "{}"));
+    const result = getPostTagsStmt.get({ id });
+    if (!result) return null;
+    return JSON.parse(String(result.tags || "{}"));
 };
 
 export const updatePost = (id: string, {
-  title,
-  content,
-  triggers,
-  nsfw,
-  edition,
-}: {
-  title: string;
-  content: string;
-  triggers?: string;
-  nsfw: boolean;
-  edition: number;
-}) => {
-  const updated = Date.now();
-  const rawId = unhashPostId(id);
-  return updatePostStmt.run({
-    id: rawId,
     title,
     content,
-    triggers: triggers || "",
-    nsfw: nsfw ? 1 : 0,
-    updated,
-    tags: getPostTagString({ edition: { value: edition } }, getPostTags(rawId)),
-  });
+    triggers,
+    nsfw,
+    edition,
+}: {
+    title: string;
+    content: string;
+    triggers?: string;
+    nsfw: boolean;
+    edition: number;
+}) => {
+    const updated = Date.now();
+    const rawId = unhashPostId(id);
+    return updatePostStmt.run({
+        id: rawId,
+        title,
+        content,
+        triggers: triggers || "",
+        nsfw: nsfw ? 1 : 0,
+        updated,
+        tags: getPostTagString({ edition: { value: edition } }, getPostTags(rawId)),
+    });
 };
 
 export type Edition = {
-  id: number;
-  name: string;
-  deleted: boolean;
+    id: number;
+    name: string;
+    deleted: boolean;
 };
 
 export const getAllEditions = (): Edition[] => {
-  const stmt = db.prepare(`
+    const stmt = db.prepare(`
     SELECT id, name, deleted
     FROM editions
     ORDER BY id DESC
   `);
-  return stmt.all() as unknown as Edition[];
+    return stmt.all() as unknown as Edition[];
 };
 
 export const createEdition = (name: string): Edition => {
-  const insertStmt = db.prepare(`
+    const insertStmt = db.prepare(`
     INSERT INTO editions (name)
     VALUES (?)
   `);
-  const info = insertStmt.run(name);
+    const info = insertStmt.run(name);
 
-  const selectStmt = db.prepare(`
+    const selectStmt = db.prepare(`
     SELECT id, name, deleted
     FROM editions
     WHERE id = ?
   `);
 
-  return selectStmt.get(info.lastInsertRowid as number) as unknown as Edition;
+    return selectStmt.get(info.lastInsertRowid as number) as unknown as Edition;
 };
 
 export const deleteEdition = (id: number): void => {
-  const stmt = db.prepare(`
+    const stmt = db.prepare(`
     UPDATE editions
     SET deleted = 1
     WHERE id = ?
   `);
-  stmt.run(id);
+    stmt.run(id);
 };
