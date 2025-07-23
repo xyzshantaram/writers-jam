@@ -203,40 +203,68 @@ export const getPosts = (
   return { posts, totalPages };
 };
 
+const homePageSelectFields = `
+  p.id, p.title, p.nsfw, p.password, p.triggers,
+  p.author, p.updated, p.views
+`;
+
+const latestStmt = db.prepare(`
+  SELECT ${homePageSelectFields}
+  FROM post p
+  WHERE p.deleted != 1 AND p.nsfw = 0
+  ORDER BY p.updated DESC
+  LIMIT 5
+`);
+
+const mostViewedStmt = db.prepare(`
+  SELECT ${homePageSelectFields}
+  FROM post p
+  WHERE p.deleted != 1 AND p.nsfw = 0
+  ORDER BY p.views DESC
+  LIMIT 5
+`);
+
+const sleptOnStmt = db.prepare(`
+  SELECT ${homePageSelectFields}
+  FROM post p
+  LEFT JOIN (
+    SELECT "for", COUNT(*) AS comment_count
+    FROM comment
+    GROUP BY "for"
+  ) c ON c."for" = p.id
+  WHERE p.deleted != 1 AND p.nsfw = 0
+    AND (IFNULL(p.views, 0) < 15 OR IFNULL(c.comment_count, 0) < 2)
+  ORDER BY RANDOM()
+  LIMIT 5
+`);
+
+const editionStmt = db.prepare(`
+  SELECT ${homePageSelectFields}
+  FROM post p
+  WHERE p.deleted != 1 AND p.nsfw = 0
+    AND json_extract(p.tags, '$.edition.value') = ?
+  ORDER BY RANDOM()
+  LIMIT 5
+`);
+
+export const getCurrentEdition = () => {
+  const editionRow = db.prepare(`
+    SELECT MAX(id) as id FROM editions WHERE deleted = 0
+  `).get();
+  return (editionRow?.id || 0) as number;
+}
+
 export const getHomepageFeeds = (): {
   latest: ReturnType<typeof getPosts>['posts'],
   sleptOn: ReturnType<typeof getPosts>['posts'],
+  currentEdition: ReturnType<typeof getPosts>['posts'],
+  mostViewed: ReturnType<typeof getPosts>['posts'],
 } => {
-  const selectFields = `
-    p.id, p.title, p.nsfw, p.password, p.triggers,
-    p.author, p.updated, p.views
-  `;
 
-  // latest posts
-  const latestStmt = db.prepare(`
-    SELECT ${selectFields}
-    FROM post p
-    WHERE p.deleted != 1 AND p.nsfw = 0
-    ORDER BY p.updated DESC
-    LIMIT 5
-  `);
   const latestRows = latestStmt.all();
-
-  // Slept-on posts: views < 20 OR comment count < 2
-  const sleptOnStmt = db.prepare(`
-    SELECT ${selectFields}
-    FROM post p
-    LEFT JOIN (
-      SELECT "for", COUNT(*) AS comment_count
-      FROM comment
-      GROUP BY "for"
-    ) c ON c."for" = p.id
-    WHERE p.deleted != 1 AND p.nsfw = 0
-      AND (IFNULL(p.views, 0) < 15 OR IFNULL(c.comment_count, 0) < 2)
-    ORDER BY RANDOM()
-    LIMIT 5
-  `);
+  const mostViewedRows = mostViewedStmt.all();
   const sleptOnRows = sleptOnStmt.all();
+  const editionRows = editionStmt.all(getCurrentEdition());
 
   const mapRow = (row: any) => ({
     id: hashPostId(row.id as number),
@@ -252,6 +280,8 @@ export const getHomepageFeeds = (): {
   return {
     latest: latestRows.map(mapRow),
     sleptOn: sleptOnRows.map(mapRow),
+    currentEdition: editionRows.map(mapRow),
+    mostViewed: mostViewedRows.map(mapRow)
   };
 };
 
