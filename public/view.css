@@ -44,15 +44,28 @@ body> :not(header):not(footer) {
     font-size: 0.9rem;
 }
 
-.comment-body {
-    white-space: pre-wrap;
-}
-
-.comment-time {
-    text-align: right;
-    color: #777;
+.comment-meta {
+    color: #555;
     font-size: 0.9rem;
     font-style: italic;
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.comment-reply {
+    font-style: normal;
+    color: black;
+}
+
+.comment-body blockquote {
+    font-size: 0.9rem;
+}
+
+.comment-first-line {
+    display: flex;
+    gap: 0.25rem;
 }
 
 .comments {

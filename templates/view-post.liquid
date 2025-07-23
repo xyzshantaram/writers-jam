@@ -114,11 +114,17 @@
 {% if comments.size %}
     <div class="comments">
     {% for comment in comments %}
-        <div class="comment">
-            <div class="comment-author">{{ comment.author }}</div>
+        <div class="comment" id="post-comment-{{ comment.id }}">
+            <div class="comment-first-line">
+            <a href="https://writersjam.shantaram.xyz/post/{{ post.id }}#comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
+            <span class="comment-author">{{ comment.author }}</span>
+            </div>
             <div class="comment-body">{{ comment.content }}</div>
-            <div class="comment-time">
-                <i class="iconoir-clock" aria-label="Comment posted at" title="Comment posted at"></i> {{ comment.posted | time_ago }}
+            <div class="comment-meta">
+                <span class="comment-reply"><a href="javascript:void(0)" aria-role="button">Reply</a></span>
+                <span class="comment-time">
+                    <i class="iconoir-clock" aria-label="comment time" title="Comment posted at"></i> {{ comment.posted | time_ago }}
+                </span>
             </div>
         </div>
     {% endfor %}
@@ -126,5 +132,31 @@
 {% else %}
     <p>No comments yet. Be the first to leave one!</p>
 {% endif %}
+
+<script type="module">
+    import { parseMd } from '/js/parse.js';
+    import { unescape } from 'https://esm.sh/jsr/@campfire/core@4.0.2';
+    window.addEventListener('DOMContentLoaded', () => {
+        const textarea = document.querySelector("#comment-body");
+        document.querySelectorAll('.comment-reply').forEach(item => {
+            const parent = item.closest('.comment');
+            const poster = parent.querySelector('.comment-author').innerHTML;
+            const body = parent.querySelector('.comment-body');
+            const contents = body.innerHTML;
+            const quoted = `> **_@${poster}_** wrote:  \n${unescape(contents).split('\n').map(item => `> ${item}`).join('\n')}\n\n`;
+            item.onclick = () => {
+                if (textarea.value.trim()) {
+                    textarea.value += `\n${quoted}`;
+                }
+                else {
+                    textarea.value = quoted;
+                }
+                textarea.focus();
+            }
+            body.innerHTML = parseMd(unescape(contents));
+            console.log(JSON.stringify(contents));
+        })
+    })
+</script>
 
 {% endblock %}
