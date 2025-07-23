@@ -76,4 +76,17 @@ body> :not(header):not(footer) {
     align-items: center;
 }
 
+.comment-body p {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.comment-body p:first-child {
+    margin-top: 0;
+}
+
+.comment-body p:last-child {
+    margin-bottom: 0;
+}
+
 @media screen and (max-aspect-ratio: 1/1) {}
