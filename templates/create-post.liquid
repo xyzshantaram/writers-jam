@@ -123,6 +123,17 @@ my second line
         <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
     </div>
 
+    <div class="form-group">
+        <label for="post-edition">Post edition (Select "No edition" if not sure)</label>
+        <select name="edition" id="post-edition" autocomplete="off">
+            {% for edition in editions %}
+                <option value="{{ edition.id }}"
+                    {% if latestEdition == edition.id %}selected{% endif %}
+                    >{{ edition.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
 
     <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
 
