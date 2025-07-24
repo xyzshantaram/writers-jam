@@ -81,7 +81,7 @@ export const view = (req: Request, res: Response) => {
             title: "Post not found",
         });
     }
-    
+
     res.render("view-post", {
         post: { ...post, edition: editionMap.get(post.tags.edition.value) },
         title: post.title && post.title.length

@@ -73,8 +73,8 @@ const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
     });
     liquid.registerFilter("parse_md", parseMd);
     liquid.registerFilter("get_post_edition", (post: Post) => {
-      return editionMap.get(post.tags.edition.value)?.name;
-    })
+        return editionMap.get(post.tags.edition.value)?.name;
+    });
 
     app.engine("liquid", liquid.express());
     app.set("view engine", "liquid");

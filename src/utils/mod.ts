@@ -9,23 +9,23 @@ export const die = (code: number, ...args: any[]): never => {
 export const fatal = (...args: any[]) => die(1, "fatal:", ...args);
 
 export const choose = <T>(arr: T[], count = 1): T[] => {
-  if (count === undefined) {
-      return [arr[Math.floor(Math.random() * arr.length)]];
-  }
+    if (count === undefined) {
+        return [arr[Math.floor(Math.random() * arr.length)]];
+    }
 
-  if (count >= arr.length) {
-      return [...arr];
-  }
+    if (count >= arr.length) {
+        return [...arr];
+    }
 
-  const copy = [...arr];
-  const result: T[] = [];
+    const copy = [...arr];
+    const result: T[] = [];
 
-  for (let i = 0; i < count; i++) {
-      const index = Math.floor(Math.random() * copy.length);
-      result.push(copy.splice(index, 1)[0]);
-  }
+    for (let i = 0; i < count; i++) {
+        const index = Math.floor(Math.random() * copy.length);
+        result.push(copy.splice(index, 1)[0]);
+    }
 
-  return result;
+    return result;
 };
 
 export const clamp = (val: number, min: number, max: number) =>
@@ -74,4 +74,26 @@ export const getPostTagString = (
     old?: Record<string, any>,
 ) => {
     return JSON.stringify({ ...old, ...val });
+};
+
+export const cache = <T>(fn: (...args: any[]) => T, waitMs: number): (...args: any[]) => T => {
+    const lastCalled = new Map<string, {
+        time: number;
+        result: T;
+    }>();
+
+    return (...args) => {
+        const key = JSON.stringify(args);
+        const now = Date.now();
+
+        const entry = lastCalled.get(key);
+
+        if (!entry || (now - entry.time) > waitMs) {
+            const result = fn(...args);
+            lastCalled.set(key, { time: now, result });
+            return result;
+        }
+
+        return entry.result;
+    };
 };

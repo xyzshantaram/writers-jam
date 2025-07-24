@@ -2,7 +2,8 @@ import { DatabaseSync } from "node:sqlite";
 import { z } from "zod/v4";
 import { Comment, createCommentSchema, createPostSchema, Post } from "./schemas/mod.ts";
 import { ulid } from "@std/ulid";
-import { choose, getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
+import { cache, choose, getPostTagString, hashPostId, unhashPostId } from "./utils/mod.ts";
+import { timeMs } from "./utils/time.ts";
 
 const db = new DatabaseSync("./writers-jam.db", {
     enableForeignKeyConstraints: true,
@@ -264,7 +265,7 @@ export const getCurrentEdition = () => {
     return (editionRow?.id || 0) as number;
 };
 
-export const getHomepageFeeds = (): {
+const getHomepageFeedsInternal = (): {
     latest: ReturnType<typeof getPosts>["posts"];
     sleptOn: ReturnType<typeof getPosts>["posts"];
     currentEdition: ReturnType<typeof getPosts>["posts"];
@@ -294,6 +295,8 @@ export const getHomepageFeeds = (): {
         mostViewed: mostViewedRows.map(mapRow),
     };
 };
+
+export const getHomepageFeeds = cache(getHomepageFeedsInternal, timeMs({ m: 10 }));
 
 const createCommentStmt = db.prepare(`INSERT INTO comment (
     id,

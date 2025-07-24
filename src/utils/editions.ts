@@ -14,7 +14,7 @@ const getEditionMap = () => {
         res.set(edition.id, edition);
     }
     return res;
-}
+};
 
 export const editionMap = getEditionMap();
 
