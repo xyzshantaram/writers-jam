@@ -9,7 +9,8 @@ The rules are simple:
 - **Any format is allowed**: essay, poem, short story, journal, play, etc.
 - **You must write an original piece for the event**. Please don't post something you've already
   written - the idea is for you to explore new concepts and themes in a low-stress, judgment-free
-  environment.
+  environment. A special theme category exists for posts submitted outside of an edition -- 
+  Select "No edition" when posting your piece!
 - **[Post your submission](/post) to this website when done**. Feel free to join us in the
   [WhatsApp group]($WHATSAPP_URL) to share and discuss!
 - Most importantly of all, have fun!
