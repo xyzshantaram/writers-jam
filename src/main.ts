@@ -6,6 +6,7 @@ import { config } from "./config.ts";
 import { errorHandler } from "./error.ts";
 import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
+import * as admin from "./routes/admin.ts";
 import * as search from "./routes/search.ts";
 import { timeMs } from "./utils/time.ts";
 import TimeAgo from "javascript-time-ago";
@@ -16,20 +17,6 @@ import { markedSmartypants } from "marked-smartypants";
 import * as captcha from "./routes/captcha.ts";
 import { Post } from "./schemas/mod.ts";
 import { editionMap } from "./utils/editions.ts";
-
-/*
-GET /post/:ulid/edit
-    - delete post
-    - edit post contents
-POST /post/:ulid/edit
-
-GET /admin/reports
-GET /admin/reports/:lid
-POST /admin/posts/:ulid/delete
-POST /admin/posts/:ulid/reset-reports
-POST /admin/posts/:ulid/comment/:ulid/delete
-POST /admin/post/:ulid/mark-safe
-*/
 
 let markedSetup = false;
 const setupMarked = () => {
@@ -124,6 +111,7 @@ const createApp = () => {
 
     const withUrl = { whatsappUrl: config.whatsappUrl };
 
+    app.get('/admin', admin.index);
     app.get("/terms", (_, res) => res.render("tos", withUrl));
     app.get("/privacy", (_, res) => res.render("privacy", withUrl));
 
