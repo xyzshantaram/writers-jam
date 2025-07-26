@@ -119,7 +119,7 @@
     {% for comment in comments %}
         <div class="comment" id="post-comment-{{ comment.id }}">
             <div class="comment-first-line">
-            <a href="https://writersjam.shantaram.xyz/post/{{ post.id }}#comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
+            <a href="https://writersjam.shantaram.xyz/post/{{ post.id }}#post-comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
             <span class="comment-author">{{ comment.author }}</span>
             </div>
             <div class="comment-body">{{ comment.content }}</div>

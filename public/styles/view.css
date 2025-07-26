@@ -74,6 +74,7 @@ body > :not(header):not(footer) {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 .comment-body p {
@@ -91,6 +92,25 @@ body > :not(header):not(footer) {
 
 .post-tags {
     margin-bottom: 0.5rem;
+}
+
+:root {
+    --highlight-color: #eefac4;
+}
+
+.comment:target {
+    box-shadow: 0 -10px 0 1.5rem var(--highlight-color);
+}
+
+.comment:target::before {
+    content: "Highlighted comment";
+    position: absolute;
+    left: 2.8rem;
+    top: -1.1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #666666; 
 }
 
 @media screen and (max-aspect-ratio: 1/1) {}
