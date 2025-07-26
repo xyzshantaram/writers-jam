@@ -25,9 +25,13 @@
     <div class="feed-wrapper">
         <h3 title="Random posts from the latest edition">Current Edition</h3>
         <div class="feed current-edition">
+            {% if feeds.currentEdition.size %}
             {% for post in feeds.currentEdition %}
                 {% render 'partials/post.liquid' post: post %}
             {% endfor %}
+            {% else %}
+                <p>No posts yet! <a href="/post">Be the first.</a></p>
+            {% endif %}
         </div>
     </div>
 
