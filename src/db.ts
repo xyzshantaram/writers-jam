@@ -342,7 +342,7 @@ export const randomPost = () => {
 };
 
 const postCountQuery = db.prepare(
-    "select distinct count(id) as count from post where deleted = 1",
+    "select distinct count(id) as count from post where deleted != 1",
 );
 
 export const getPostCount = () => {
