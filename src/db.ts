@@ -66,11 +66,14 @@ CREATE TRIGGER IF NOT EXISTS post_ai AFTER INSERT ON post BEGIN
   VALUES (new.id, new.content, new.title, new.author);
 END;
 
--- AFTER UPDATE: DELETE + INSERT to simulate update
-CREATE TRIGGER IF NOT EXISTS post_au AFTER UPDATE OF content, title, author ON post BEGIN
+CREATE TRIGGER IF NOT EXISTS post_au  AFTER UPDATE OF content, title, author, deleted ON post BEGIN
+  -- always remove from FTS
   DELETE FROM post_fts WHERE rowid = old.id;
+
+  -- reinsert only if not deleted
   INSERT INTO post_fts(rowid, content, title, author)
-  VALUES (new.id, new.content, new.title, new.author);
+  SELECT new.id, new.content, new.title, new.author
+  WHERE new.deleted = 0;
 END;
 
 -- AFTER DELETE: mirror the delete
@@ -339,7 +342,7 @@ export const randomPost = () => {
 };
 
 const postCountQuery = db.prepare(
-    "select distinct count(id) as count from post",
+    "select distinct count(id) as count from post where deleted = 1",
 );
 
 export const getPostCount = () => {
@@ -384,7 +387,7 @@ export const getPostById = (id: string): Post | null => {
         reports: Number(res.reports) || 0,
         id,
         updated: Number(res.updated) || NaN,
-        deleted: false,
+        deleted: res.deleted === 1 ? true : false,
         author: String(res.author || ""),
         password: String(res.password || ""),
         title: String(res.title || ""),
@@ -439,7 +442,7 @@ export const addPostView = (id: string) => {
 };
 
 const deletePostQuery = db.prepare(
-    "delete from post where id = ?",
+    "update post set deleted = 1 where id = ?",
 );
 
 export const deletePost = (id: string) => {
