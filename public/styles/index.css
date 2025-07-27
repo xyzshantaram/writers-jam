@@ -36,4 +36,8 @@
     .feed-wrapper {
         width: 95%;
     }
+
+    .feed .post-item {
+        width: calc(100% - 2rem);
+    }
 }
