@@ -330,6 +330,18 @@ section {
     font-weight: bold;
 }
 
+.tag.danger {
+    background-color: rgb(174, 41, 41);
+}
+
+.post-tags {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.6rem;
+}
+
 details > form {
     justify-content: center;
     margin-left: auto;

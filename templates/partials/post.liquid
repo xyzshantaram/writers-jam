@@ -1,7 +1,7 @@
 <a class="post-item" href="/post/{{ post.id }}">
     <div class="post-title">{{ post.title | default: "(Untitled)" }}
         {% if post.nsfw %}
-            <span class="badge danger invert">NSFW</span>
+            <span class="tag danger invert">NSFW</span>
         {% endif %}
     </div>
     <div class="post-author">by <strong>{{ post.author | default: "Anonymous" }}</strong></div>

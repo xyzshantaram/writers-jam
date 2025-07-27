@@ -33,6 +33,7 @@
 </div>
 
 <div class="post-tags">
+    {% if post.nsfw %} <span class="tag danger invert">NSFW</span> {% endif %}
     <div class="tag invert">{{ post | get_post_edition }}</div>
 </div>
 
