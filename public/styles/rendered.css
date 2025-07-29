@@ -37,6 +37,16 @@
     margin-bottom: 0.6rem;
 }
 
+#content-rendered hr {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: 50%;
+    height: 1.5px;
+    background: var(--body-secondary);
+    border-radius: 4px;
+    border-color: var(--body-secondary);
+}
+
 #content-rendered-label {
     text-align: left;
     width: 100%;

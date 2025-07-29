@@ -221,7 +221,7 @@ my second line
 
         textarea.addEventListener('input', () => {
             if (timeout) window.clearTimeout(timeout);
-            timeout = window.setTimeout(oninput, 1000);
+            timeout = window.setTimeout(oninput, 500);
         });
 
         oninput();
