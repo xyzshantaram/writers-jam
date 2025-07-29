@@ -225,7 +225,7 @@ const homePageSelectFields = `
 const latestStmt = db.prepare(`
   SELECT ${homePageSelectFields}
   FROM post p
-  WHERE p.deleted != 1 AND p.nsfw = 0
+  WHERE p.deleted != 1
   ORDER BY p.updated DESC
   LIMIT 15
 `);
@@ -233,7 +233,7 @@ const latestStmt = db.prepare(`
 const mostViewedStmt = db.prepare(`
   SELECT ${homePageSelectFields}
   FROM post p
-  WHERE p.deleted != 1 AND p.nsfw = 0
+  WHERE p.deleted != 1
   ORDER BY p.views DESC
   LIMIT 15
 `);
@@ -246,7 +246,7 @@ const sleptOnStmt = db.prepare(`
     FROM comment
     GROUP BY "for"
   ) c ON c."for" = p.id
-  WHERE p.deleted != 1 AND p.nsfw = 0
+  WHERE p.deleted != 1
     AND (IFNULL(p.views, 0) < 15 OR IFNULL(c.comment_count, 0) < 2)
   ORDER BY RANDOM()
   LIMIT 5
@@ -255,7 +255,7 @@ const sleptOnStmt = db.prepare(`
 const editionStmt = db.prepare(`
   SELECT ${homePageSelectFields}
   FROM post p
-  WHERE p.deleted != 1 AND p.nsfw = 0
+  WHERE p.deleted != 1
     AND json_extract(p.tags, '$.edition.value') = ?
   ORDER BY RANDOM()
   LIMIT 5

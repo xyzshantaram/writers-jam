@@ -15,7 +15,7 @@ export const index = (req: Request, res: Response) => {
         edition: rawEdition,
     } = req.query;
     const page = Number(req.query.page) || 1;
-    const nsfw = rawNsfw === "yes" ? rawNsfw : "no";
+    const nsfw = rawNsfw === "no" ? rawNsfw : "yes";
     const sort = rawSort === "views" ? rawSort : "updated";
     const order = rawOrder === "asc" ? rawOrder : "desc";
 
@@ -47,6 +47,7 @@ export const index = (req: Request, res: Response) => {
         page,
         order,
         search,
+        hasQuery: Object.keys(req.query).length > 0,
         whatsappUrl: config.whatsappUrl,
     });
 };
