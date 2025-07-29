@@ -324,6 +324,10 @@ section {
     font-weight: bold;
 }
 
+.tag a {
+    text-decoration: none;
+}
+
 .danger {
     background-color: rgb(174, 41, 41);
     color: var(--body-bg);

@@ -34,7 +34,9 @@
 
 <div class="post-tags">
     {% if post.nsfw %} <span class="tag danger invert">NSFW</span> {% endif %}
-    <div class="tag invert">{{ post | get_post_edition }}</div>
+    <div class="tag invert">
+        <a href="/posts?nsfw=yes&edition={{ post.edition.id }}&sort=updated&order=desc&search=">{{ post | get_post_edition }}</a>
+    </div>
 </div>
 
 {% if post.triggers.size %}
@@ -120,7 +122,7 @@
     {% for comment in comments %}
         <div class="comment" id="post-comment-{{ comment.id }}">
             <div class="comment-first-line">
-            <a href="https://writersjam.shantaram.xyz/post/{{ post.id }}#post-comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
+            <a href="/post/{{ post.id }}#post-comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
             <span class="comment-author">{{ comment.author }}</span>
             </div>
             <div class="comment-body">{{ comment.content }}</div>
