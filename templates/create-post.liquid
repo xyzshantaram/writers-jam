@@ -158,13 +158,14 @@ my second line
         <input type="hidden" name="session" value="{{ session }}">
         <input type="hidden" name="action" value="delete">
         <div class="form-group submit-group">
-            <input type="submit" value="Delete post">
+            <button type="submit" class="danger">Delete post</button>
         </div>
     </form>
 {% endif %}
 
 <script type="module">
     import { parseMd } from '/js/parse.js';
+    import { maybeMarkdown, isLikelyVSCodeHtml } from '/js/detect-markdown.js';
     import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
     import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
     import TurndownService from "https://esm.sh/turndown@7.2.0";
@@ -193,7 +194,7 @@ my second line
             const htmlData = clipboardData.getData('text/html');
             const textData = clipboardData.getData('text/plain');
 
-            if (htmlData) {
+            if (htmlData && !isLikelyVSCodeHtml(textData) && !maybeMarkdown(textData)) {
                 e.preventDefault();
                 const markdown = htmlToMarkdown(htmlData);
                 insertMarkdownAtCursor(markdown);
