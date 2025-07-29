@@ -24,7 +24,7 @@ footer {
     margin: 0;
 }
 
-header > * {
+header>* {
     background: var(--body-secondary);
     border-radius: 0.5rem;
     padding: 0.2rem;
@@ -41,7 +41,7 @@ header a {
     width: 2rem;
 }
 
-header h1 > a {
+header h1>a {
     width: unset;
 }
 
@@ -105,7 +105,7 @@ body {
     flex-direction: column;
 }
 
-body > *:not(header):not(footer) {
+body>*:not(header):not(footer) {
     max-width: 60ch;
 }
 
@@ -228,6 +228,7 @@ footer ul {
     margin-top: auto;
 }
 
+button,
 input,
 label {
     font-family: inherit;
@@ -236,6 +237,7 @@ label {
 }
 
 input:not([type="radio"]):not([type="checkbox"]),
+button,
 textarea {
     border: 2px solid var(--body-secondary);
     border-radius: 0.25rem;
@@ -260,14 +262,6 @@ button {
 input[type="submit"],
 button {
     cursor: pointer;
-}
-
-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    padding: 0.25rem;
 }
 
 form {
@@ -330,8 +324,9 @@ section {
     font-weight: bold;
 }
 
-.tag.danger {
+.danger {
     background-color: rgb(174, 41, 41);
+    color: var(--body-bg);
 }
 
 .post-tags {
@@ -342,7 +337,7 @@ section {
     margin-top: 0.6rem;
 }
 
-details > form {
+details>form {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -393,7 +388,7 @@ form .submit-group {
         padding-right: 0.25rem;
     }
 
-    header > * {
+    header>* {
         min-height: 3rem;
     }
 
