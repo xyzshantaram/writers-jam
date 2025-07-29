@@ -219,10 +219,17 @@ my second line
             wc.innerHTML = count(value, 'words');
         };
 
-        textarea.addEventListener('input', () => {
+        const listener =  () => {
             if (timeout) window.clearTimeout(timeout);
             timeout = window.setTimeout(oninput, 500);
-        });
+        }
+
+        textarea.addEventListener('input', listener);
+        textarea.addEventListener('keyup', (e) {
+            if (e.key === 'Backspace') {
+                listener();
+            }
+        })
 
         oninput();
     });
