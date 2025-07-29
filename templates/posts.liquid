@@ -46,7 +46,7 @@
         
         <div class="search-line">
             <input aria-label="search" type="text" id="search-text" name="search" placeholder="Search..." value="{{ search }}">
-            <input type="submit" value="Search">
+            <input type="submit" value="{% if hasQuery %}Refine{% else %}Search{% endif %}">
         </div>
     </div>
 </form>
