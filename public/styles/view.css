@@ -1,3 +1,7 @@
+:root {
+    --highlight-color: rgba(238, 250, 196, 1);
+}
+
 .updated-time,
 .view-count {
     color: #555;
@@ -28,7 +32,7 @@ h3 {
     min-height: 6ch;
 }
 
-body > :not(header):not(footer) {
+body> :not(header):not(footer) {
     max-width: calc(100% - 2rem);
 }
 
@@ -37,6 +41,7 @@ body > :not(header):not(footer) {
     border: 2px solid;
     padding: 0.5rem;
     margin: 0.5rem;
+    position: relative;
 }
 
 .comment-author {
@@ -74,7 +79,6 @@ body > :not(header):not(footer) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
 }
 
 .comment-body p {
@@ -94,23 +98,21 @@ body > :not(header):not(footer) {
     margin-bottom: 0.5rem;
 }
 
-:root {
-    --highlight-color: #eefac4;
-}
-
 .comment:target {
-    box-shadow: 0 -10px 0 1.5rem var(--highlight-color);
+    box-shadow: 0 -10px 0 1.2rem var(--highlight-color);
+    margin-top: 1.9rem;
+    margin-bottom: 0.75rem;
 }
 
 .comment:target::before {
     content: "Highlighted comment";
     position: absolute;
-    left: 2.8rem;
-    top: -1.1rem;
+    left: -0.2rem;
+    top: -1.6rem;
     text-align: center;
     font-size: 0.8rem;
     font-style: italic;
-    color: #666666; 
+    color: #444;
 }
 
 @media screen and (max-aspect-ratio: 1/1) {}
