@@ -132,9 +132,29 @@ interface PaginatedPosts {
     totalPages: number;
 }
 
+const postPreviewRowMapper = (row: Record<string, any>) => ({
+    id: hashPostId(row.id),
+    title: row.title,
+    nsfw: !!row.nsfw,
+    password: String(row.password || ""),
+    triggers: String(row.triggers || ""),
+    author: row.author,
+    updated: Number(row.updated),
+    views: Number(row.views),
+    tags: JSON.parse(String(row.tags || "{}")),
+});
+
+function escapeFtsQuery(str?: string): string {
+    if (!str) return "";
+    // Match Unicode word characters using built-in JS regex
+    const words = str.match(/\w+/gu) || [];
+    return words.map((word) => word.toLowerCase()).join(" ");
+}
+
 export const getPosts = (
     opts?: GetPostOpts,
 ): PaginatedPosts => {
+    // these are ensured to be safe by the caller
     const { sort = "updated", nsfw, page = 1, search, order = "desc", edition } = opts || {};
     const pageSize = 10;
     const offset = (page - 1) * pageSize;
@@ -144,77 +164,45 @@ export const getPosts = (
         conditions.push("p.nsfw = 0");
     }
 
+    const params: Record<string, string | number> = {};
+
     if (typeof edition === "number") {
-        conditions.push(`json_extract(p.tags, '$.edition.value') = ${edition}`);
+        conditions.push("json_extract(p.tags, '$.edition.value') = :edition");
+        params.edition = edition;
     }
 
+    const fts = escapeFtsQuery(search?.trim());
+
+    if (fts) {
+        // 1. Add the MATCH condition to the conditions array instead of a separate clause.
+        conditions.push("p.id IN (SELECT rowid FROM post_fts WHERE post_fts MATCH :fts)");
+        params.fts = fts;
+    }
+
+    // 2. Build the WHERE clause once, after all conditions have been added.
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
-    let joinClause = "";
-    let searchClause = "";
-    let countQuery = "";
-    let mainQuery = "";
+    const countQuery = `
+        SELECT COUNT(p.id) as count
+        FROM post p
+        ${whereClause}`;
 
-    if (search && search.trim() !== "") {
-        // Join post_fts on post.id
-        joinClause = `JOIN post_fts fts ON fts.rowid = p.id`;
-        searchClause = `AND post_fts MATCH ?`;
-
-        countQuery = `
-      SELECT COUNT(*) as count
-      FROM post p
-      ${joinClause}
-      ${whereClause}
-      ${searchClause}
-    `;
-
-        mainQuery = `
-      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
-      FROM post p
-      ${joinClause}
-      ${whereClause}
-      ${searchClause}
-    `;
-    } else {
-        countQuery = `
-      SELECT COUNT(*) as count
-      FROM post p
-      ${whereClause}
-    `;
-
-        mainQuery = `
-      SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
-      FROM post p
-      ${whereClause}
-    `;
-    }
-
-    mainQuery += sort === "views" ? ` ORDER BY p.views ${order}` : ` ORDER BY p.updated ${order}`;
-    mainQuery += ` LIMIT ${pageSize} OFFSET ${offset}`;
+    const mainQuery = `
+        SELECT p.id, p.title, p.nsfw, p.password, p.triggers, p.author, p.updated, p.views, p.tags
+        FROM post p
+        ${whereClause}
+        ORDER BY p.${sort} ${order}
+        LIMIT ${pageSize} OFFSET ${offset};
+    `.trim();
 
     const countStmt = db.prepare(countQuery);
-    const count = search && search.trim() !== ""
-        ? (countStmt.get(search) as { count: number }).count
-        : (countStmt.get() as { count: number }).count;
+    const count = countStmt.get({ ...params }) as { count: number };
 
-    const totalPages = Math.ceil(count / pageSize);
-
+    const totalPages = Math.ceil(count.count / pageSize);
     const stmt = db.prepare(mainQuery);
-    const rows = search && search.trim() !== "" ? stmt.all(search) : stmt.all();
+    const rows = stmt.all({ ...params }) as any[];
 
-    const posts = rows.map((row) => ({
-        id: hashPostId(row.id as number),
-        title: row.title as string,
-        nsfw: !!row.nsfw,
-        password: String(row.password || ""),
-        triggers: String(row.triggers || ""),
-        author: row.author as string,
-        updated: Number(row.updated),
-        views: Number(row.views),
-        tags: JSON.parse(String(row.tags || "{}")),
-    }));
-
-    return { posts, totalPages };
+    return { posts: rows.map(postPreviewRowMapper), totalPages };
 };
 
 const homePageSelectFields = `
@@ -279,23 +267,11 @@ const getHomepageFeedsInternal = (): {
     const sleptOnRows = sleptOnStmt.all();
     const editionRows = editionStmt.all(getCurrentEdition());
 
-    const mapRow = (row: any) => ({
-        id: hashPostId(row.id as number),
-        title: row.title as string,
-        nsfw: !!row.nsfw,
-        password: String(row.password || ""),
-        triggers: String(row.triggers || ""),
-        author: row.author as string,
-        updated: Number(row.updated),
-        views: Number(row.views),
-        tags: JSON.parse(String(row.tags || "{}")),
-    });
-
     return {
-        latest: latestRows.map(mapRow),
-        sleptOn: sleptOnRows.map(mapRow),
-        currentEdition: editionRows.map(mapRow),
-        mostViewed: mostViewedRows.map(mapRow),
+        latest: latestRows.map(postPreviewRowMapper),
+        sleptOn: sleptOnRows.map(postPreviewRowMapper),
+        currentEdition: editionRows.map(postPreviewRowMapper),
+        mostViewed: mostViewedRows.map(postPreviewRowMapper),
     };
 };
 
