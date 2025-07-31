@@ -18,7 +18,6 @@ export const index = (req: Request, res: Response) => {
     const nsfw = rawNsfw === "no" ? rawNsfw : "yes";
     const sort = rawSort === "views" ? rawSort : "updated";
     const order = rawOrder === "asc" ? rawOrder : "desc";
-
     const edition = parseEdition(rawEdition);
 
     const results = getPosts({

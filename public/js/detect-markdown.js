@@ -20,7 +20,8 @@ const ol = /(?:^|\n)\s{0,5}\d+\.\s{1}[^\n]+\n\s{0,15}\d+\.\s/;
 const hr = /\n{2} {0,3}\-{2,48}\n{2}/;
 
 // Fenced code block.
-const fences = /(?:\n|^)(```|~~~|\$\$)(?!`|~)[^\s]{0,64} {0,64}[^\n]{0,64}\n[\s\S]{0,9999}?\s*\1 {0,64}(?:\n+|$)/;
+const fences =
+    /(?:\n|^)(```|~~~|\$\$)(?!`|~)[^\s]{0,64} {0,64}[^\n]{0,64}\n[\s\S]{0,9999}?\s*\1 {0,64}(?:\n+|$)/;
 
 // Classical underlined H1 and H2 headings.
 const title = /(?:\n|^)(?!\s)\w[^\n]{0,64}\r?\n(\-|=)\1{0,64}\n\n\s{0,64}(\w|$)/;
@@ -52,4 +53,4 @@ export const isLikelyVSCodeHtml = (html) => {
         /<span[^>]+style=.*color:/.test(html) &&
         !/<p>|<b>|<i>|<strong>|<em>/.test(html)
     );
-}
+};

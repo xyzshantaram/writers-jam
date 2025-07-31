@@ -18,8 +18,8 @@ POST /admin/edition
 POST /admin/edition/delete
 */
 
-export const index = (req: Request, res: Response) => {
-    res.render('admin', {
-        whatsappUrl: config.whatsappUrl
+export const index = (_: Request, res: Response) => {
+    res.render("admin", {
+        whatsappUrl: config.whatsappUrl,
     });
-}
+};

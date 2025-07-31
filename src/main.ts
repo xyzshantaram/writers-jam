@@ -111,7 +111,7 @@ const createApp = () => {
 
     const withUrl = { whatsappUrl: config.whatsappUrl };
 
-    app.get('/admin', admin.index);
+    app.get("/admin", admin.index);
     app.get("/terms", (_, res) => res.render("tos", withUrl));
     app.get("/privacy", (_, res) => res.render("privacy", withUrl));
 
