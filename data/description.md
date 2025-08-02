@@ -15,10 +15,8 @@ The rules are simple:
   [WhatsApp group]($WHATSAPP_URL) to share and discuss!
 - Most importantly of all, have fun!
 
-The theme for this week is "**tell a tale of time travel**". _This is not a format restriction_ -
-you can still submit poem, short story, play, or any other format. You are encouraged to get
-creative with the theme. Write about mad scientists, a nostalgia trip to one's own past, a
-bureaucrat processing visas, a wizard in another realm hurtling into the future... or something else
-entirely. All of time is yours for the taking.
+The theme for this week is "**Flavours of Love**". You are encouraged to get creative with the
+theme. Talk about, the types of love you've experienced, family drama... give the reader a taste of
+what love is like for you.
 
 What are you waiting for?
