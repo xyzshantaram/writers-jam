@@ -1,12 +1,19 @@
 :root {
-    --body-bg: #f5f5dc;
+    --body-bg: white;
     --body-primary: #303030;
     --body-secondary: #3f3f3f;
-    --accent: #e8d0ad;
+    --accent: #ebe9e5;
     --border: #aaaaaa;
     --gray: #555555;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
+}
+
+:root:has(body.sepia) {
+    --body-bg: #f5f5dc;
+    --body-primary: #303030;
+    --body-secondary: #3f3f3f;
+    --accent: #e8d0ad;
 }
 
 header {
@@ -24,6 +31,10 @@ footer {
     width: calc(100% - 0.5rem);
     padding: 0.25rem;
     margin: 0;
+}
+
+footer {
+    margin-top: 1rem;
 }
 
 header>* {
@@ -226,7 +237,6 @@ footer ul {
 .footer-socials {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
     margin-top: auto;
 }
 
