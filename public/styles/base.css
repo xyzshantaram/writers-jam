@@ -1,8 +1,10 @@
 :root {
-    --body-bg: white;
+    --body-bg: #f5f5dc;
     --body-primary: #303030;
     --body-secondary: #3f3f3f;
-    --accent: #ebe9e5;
+    --accent: #e8d0ad;
+    --border: #aaaaaa;
+    --gray: #555555;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
 }
@@ -24,7 +26,7 @@ footer {
     margin: 0;
 }
 
-header > * {
+header>* {
     background: var(--body-secondary);
     border-radius: 0.5rem;
     padding: 0.2rem;
@@ -41,7 +43,7 @@ header a {
     width: 2rem;
 }
 
-header h1 > a {
+header h1>a {
     width: unset;
 }
 
@@ -105,12 +107,12 @@ body {
     flex-direction: column;
 }
 
-body > *:not(header):not(footer) {
+body>*:not(header):not(footer) {
     max-width: 60ch;
 }
 
 blockquote {
-    border-left: 3px solid #aaa;
+    border-left: 3px solid var(--border);
     padding-left: 0.5rem;
     margin-left: 0.5rem;
 }
@@ -341,7 +343,7 @@ section {
     margin-top: 0.6rem;
 }
 
-details > form {
+details>form {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -349,7 +351,7 @@ details > form {
 }
 
 cap-widget {
-    --cap-background: #fdfdfd;
+    --cap-background: var(--body-bg, #fdfdfd);
     --cap-border-color: var(--body-primary);
     --cap-border-radius: 0.25rem;
     --cap-checkbox-margin: 4px;
@@ -392,7 +394,7 @@ form .submit-group {
         padding-right: 0.25rem;
     }
 
-    header > * {
+    header>* {
         min-height: 3rem;
     }
 

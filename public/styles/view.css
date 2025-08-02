@@ -4,7 +4,7 @@
 
 .updated-time,
 .view-count {
-    color: #555;
+    color: var(--gray);
 }
 
 .post-meta {
@@ -32,7 +32,7 @@ h3 {
     min-height: 6ch;
 }
 
-body > :not(header):not(footer) {
+body> :not(header):not(footer) {
     max-width: calc(100% - 2rem);
 }
 
@@ -50,7 +50,7 @@ body > :not(header):not(footer) {
 }
 
 .comment-meta {
-    color: #555;
+    color: var(--gray);
     font-size: 0.9rem;
     font-style: italic;
     display: flex;
@@ -112,7 +112,7 @@ body > :not(header):not(footer) {
     text-align: center;
     font-size: 0.8rem;
     font-style: italic;
-    color: #444;
+    color: var(--gray);
 }
 
 @media screen and (max-aspect-ratio: 1/1) {}

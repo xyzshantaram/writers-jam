@@ -14,7 +14,7 @@
     padding: 0.5rem;
     padding-left: none;
     text-decoration: none;
-    border: 3px solid #aaa;
+    border: 3px solid var(--border);
 }
 
 .post-item .tag {
@@ -30,7 +30,7 @@
 
 .updated-time,
 .view-count {
-    color: #555;
+    color: var(--gray);
     font-size: 0.8rem;
 }
 
