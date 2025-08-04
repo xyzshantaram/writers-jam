@@ -9,6 +9,17 @@
 
 {% block content %}
 <form class="create-post" {% if mode != "edit" %} action="/post" {% else %} action="/post/{{ post.id }}/update" {% endif %} method="post">
+    {% if mode != "edit" %}
+
+    <div class="form-group">
+        <label for="post-author" class="icon-tooltip">Your name
+            <i class="iconoir-help-circle-solid" title="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'."></i>
+        </label>
+        <input type="text" name="author" id="post-author">
+    </div>
+
+    {% endif %}
+
     <div class="form-group">
         <label for="post-title">Title</label>
         <input type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
@@ -32,14 +43,6 @@
     <div id='post-preview' aria-labelledby="post-preview-label" class="content-rendered"></div>
 
     {% if mode != "edit" %}
-
-    <div class="nag">
-        This is just a nickname! Setting it here does not reserve it. If not entered, this will be "Anonymous".
-    </div>
-    <div class="form-group">
-        <label for="post-author">Your name</label>
-        <input type="text" name="author" id="post-author">
-    </div>
 
     <div class="nag">
         Setting an edit code is highly recommended. You can use this to edit or delete your post later on. 
