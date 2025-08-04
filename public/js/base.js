@@ -19,8 +19,9 @@ globalThis.addEventListener('DOMContentLoaded', () => {
 
     const themeStore = cf.store({ value: 'theme-default' });
 
+    const themeClasses = themes.map(itm => `theme-${itm.class}`)
     themeStore.on('update', (v) => {
-        document.body.classList.remove(themes.map(itm => `theme-${itm.class}`));
+        document.body.classList.remove(...themeClasses);
         const { value } = v;
         document.body.classList.add(`theme-${value}`);
         localStorage.setItem('theme', value);
