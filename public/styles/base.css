@@ -12,14 +12,15 @@
     font-family: "Inter", sans-serif;
 }
 
-:root:has(body.sepia) {
+:root:has(body.theme-coffee) {
     --body-bg: #f5f5dc;
-    --body-primary: #303030;
-    --body-secondary: #3f3f3f;
+    --body-primary: #292517;
+    --body-secondary: #2e2a19;
     --accent: #e8d0ad;
+    --border: #685f38;
 }
 
-:root:has(body.dark) {
+:root:has(body.theme-night) {
     --body-bg: #202020;
     --body-primary: #f5f5dc;
     --body-secondary: #eeeeee;
@@ -174,6 +175,18 @@ img {
 .small {
     font-size: 0.8rem;
     color: var(--body-secondary);
+}
+
+dialog::backdrop {
+    background-color: rgb(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+}
+
+dialog {
+    background-color: var(--body-bg);
+    color: var(--body-primary);
+    min-width: 30ch;
+    padding: 1rem;
 }
 
 .btn {
