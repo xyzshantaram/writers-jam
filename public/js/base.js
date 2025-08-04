@@ -44,11 +44,6 @@ globalThis.addEventListener('DOMContentLoaded', () => {
                 <cf-slot name="theme"></cf-slot>
             </div>
 
-            <div class=form-group>
-                <label for='font-select'>Display font</label>
-                <cf-slot name="font"></cf-slot>
-            </div>
-
             <div class="form-group submit-group">
                 <cf-slot name="close"></cf-slot>
             </div>
