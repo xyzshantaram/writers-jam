@@ -464,3 +464,29 @@ form .submit-group {
         --border: #777777;
     }
 }
+
+label.icon-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+@media (pointer: coarse),
+(hover: none) {
+    [title] {
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    [title]:focus::after {
+        content: attr(title);
+        position: absolute;
+        top: 90%;
+        color: var(--body-bg);
+        background-color: var(--body-primary);
+        border: 1px solid var(--body-secondary);
+        width: fit-content;
+        padding: 3px;
+    }
+}
