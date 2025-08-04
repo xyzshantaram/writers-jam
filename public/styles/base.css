@@ -5,6 +5,9 @@
     --accent: #ebe9e5;
     --border: #aaaaaa;
     --gray: #555555;
+    --badge-text: white;
+    --highlight-color: rgba(238, 250, 196, 0.5);
+    --danger: #AE2929;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
 }
@@ -14,6 +17,15 @@
     --body-primary: #303030;
     --body-secondary: #3f3f3f;
     --accent: #e8d0ad;
+}
+
+:root:has(body.dark) {
+    --body-bg: #202020;
+    --body-primary: #f5f5dc;
+    --body-secondary: #eeeeee;
+    --accent: #333333;
+    --gray: #aaaaaa;
+    --border: #777777;
 }
 
 header {
@@ -251,18 +263,19 @@ label {
 input:not([type="radio"]):not([type="checkbox"]),
 button,
 textarea {
-    border: 2px solid var(--body-secondary);
+    border: 2px solid var(--border);
     border-radius: 0.25rem;
     background-color: transparent;
-    color: inherit;
+    color: var(--body-primary);
     min-width: 12ch;
 }
 
 select {
-    border: 2px solid;
+    border: 2px solid var(--border);
     border-radius: 0.25rem;
     background-color: inherit;
     padding: 0.25rem;
+    color: var(--body-primary);
     height: 2rem;
 }
 
@@ -341,7 +354,7 @@ section {
 }
 
 .danger {
-    background-color: rgb(174, 41, 41);
+    background-color: var(--danger);
     color: var(--body-bg);
 }
 
