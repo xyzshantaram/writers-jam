@@ -32,3 +32,13 @@
     text-decoration: underline;
     font-weight: bold;
 }
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .tutorial-pane {
+        grid-template-columns: 1fr;
+    }
+
+    .tutorial-description {
+        grid-column: 1;
+    }
+}
