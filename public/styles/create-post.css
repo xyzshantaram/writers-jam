@@ -1,5 +1,52 @@
-.create-post {
-    margin: 1rem;
+fieldset>input,
+fieldset>select {
+    margin: 0;
+    border: none !important;
+}
+
+fieldset>select {
+    font-size: 1rem;
+    width: 100%;
+}
+
+fieldset {
+    padding: 0;
+    border: 2px solid var(--body-primary);
+    border-radius: 0.25rem;
+}
+
+fieldset:has(input:focus),
+fieldset:has(select:focus) {
+    border: 3px solid blueviolet;
+}
+
+fieldset:has(input:focus) legend,
+fieldset:has(select:focus) legend {
+    font-weight: bold;
+}
+
+fieldset legend {
+    margin-left: 0.5rem;
+    margin-bottom: -0.5rem;
+}
+
+fieldset input:focus,
+fieldset select:focus {
+    outline: none;
+}
+
+.title-line {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.title-line .title-wrapper {
+    flex: 7;
+}
+
+.title-line .edition-wrapper {
+    flex: 3;
 }
 
 .editing-help {
