@@ -7,20 +7,8 @@ const themes = [
     { name: "Night", class: "night" }
 ];
 
-const themeStore = cf.store({ value: 'theme-default' });
-
-themeStore.on('update', (v) => {
-    document.body.classList.remove(themes.map(itm => `theme-${itm.class}`));
-    const { value } = v;
-    document.body.classList.add(`theme-${value}`);
-    localStorage.setItem('theme', value);
-})
-
 globalThis.addEventListener('DOMContentLoaded', () => {
     const [dialog] = cf.select({ s: 'dialog' });
-
-    const theme = localStorage.getItem('theme');
-    if (theme) themeStore.update(theme);
 
     const [themeSelect] = cf.nu('select#theme-select').html`
             ${cf.r(
@@ -28,6 +16,20 @@ globalThis.addEventListener('DOMContentLoaded', () => {
             cf.html`<option value="${itm.class}">${itm.name}</option>`
         ).join(''))}
             `.done();
+
+    const themeStore = cf.store({ value: 'theme-default' });
+
+    themeStore.on('update', (v) => {
+        document.body.classList.remove(themes.map(itm => `theme-${itm.class}`));
+        const { value } = v;
+        document.body.classList.add(`theme-${value}`);
+        localStorage.setItem('theme', value);
+        themeSelect.querySelector('selected')?.removeAttribute('selected');
+        themeSelect.querySelector(`[value=${value}]`)?.setAttribute('selected', 'selected');
+    })
+
+    const theme = localStorage.getItem('theme');
+    if (theme) themeStore.update(theme);
 
     const [btn] = cf.nu('button').on('click', () => {
         themeStore.update(themeSelect.value);
