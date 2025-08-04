@@ -452,3 +452,14 @@ form .submit-group {
         margin-right: 0.4rem;
     }
 }
+
+@media screen and (prefers-color-scheme: dark) {
+    :root:not(.theme-sepia):not(.theme-default) {
+        --body-bg: #202020;
+        --body-primary: #f5f5dc;
+        --body-secondary: #eeeeee;
+        --accent: #333333;
+        --gray: #aaaaaa;
+        --border: #777777;
+    }
+}
