@@ -5,8 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writers Jam{% if title %} - {{ title | escape }}{% endif %}</title>
-    {% block head %}
-    {% endblock %}
+    
+    <style>
+        html.customizing {
+            visibility: hidden;
+        }
+    </style>
+
+    <script>
+        document.documentElement.classList.add('customizing');
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +82,11 @@
 
     <dialog></dialog>
 
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.classList.remove('customizing');
+        })
+    </script>
     <script type="module" src="/js/base.js"></script>
 </body>
 
