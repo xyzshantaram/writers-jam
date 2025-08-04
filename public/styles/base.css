@@ -14,8 +14,8 @@
 
 :root:has(body.theme-coffee) {
     --body-bg: #f5f5dc;
-    --body-primary: #292517;
-    --body-secondary: #2e2a19;
+    --body-primary: #37321f;
+    --body-secondary: #3e3921;
     --accent: #e8d0ad;
     --border: #685f38;
 }
