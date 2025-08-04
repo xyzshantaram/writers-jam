@@ -118,6 +118,7 @@ pre {
 
 body {
     background-color: var(--body-bg);
+    transition: background-color 1s, color 1s, border-color 1s;
     max-width: 70ch;
     width: 100%;
     min-height: max(100vh, 100%);
@@ -388,10 +389,11 @@ details>form {
 
 cap-widget {
     --cap-background: var(--body-bg, #fdfdfd);
-    --cap-border-color: var(--body-primary);
+    --cap-border-color: var(--body-secondary);
     --cap-border-radius: 0.25rem;
     --cap-checkbox-margin: 4px;
     --cap-credits-font-size: 10px;
+    --cap-color: var(--body-primary);
     --cap-font: "Inter", sans-serif;
     margin: 1rem;
 }
