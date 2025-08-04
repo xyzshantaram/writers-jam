@@ -3,6 +3,7 @@
 {% block head_extras %}
 <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
 <link rel="stylesheet" href="/styles/create-post.css">
+<link rel="stylesheet" href="/styles/tutorial.css">
 <link rel="stylesheet" href="/styles/rendered.css">
 {% endblock %}
 
@@ -89,8 +90,8 @@ my second line
 <textarea id="post-content" name="content">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
     </div>
 
-    <div id="content-rendered-label" aria-roledescription="label">Post preview</div>
-    <div aria-labelledby="content-rendered-label" id="content-rendered"></div>
+    <div id="post-preview-label" aria-roledescription="label">Post preview</div>
+    <div aria-labelledby="post-preview-label" class="content-rendered"></div>
 
     {% if mode != "edit" %}
 
@@ -163,75 +164,5 @@ my second line
     </form>
 {% endif %}
 
-<script type="module">
-    import { parseMd } from '/js/parse.js';
-    import { maybeMarkdown, isLikelyVSCodeHtml } from '/js/detect-markdown.js';
-    import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
-    import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
-    import TurndownService from "https://esm.sh/turndown@7.2.0";
-    import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const textarea = document.querySelector('textarea');
-        const preview = document.querySelector('#content-rendered');
-        const wc = document.querySelector('#content-word-count');
-        let timeout = null;
-
-        const turndownService = new TurndownService({
-            headingStyle: 'atx'
-        });
-
-        turndownService.use([turndownGfm.gfm, turndownGfm.strikethrough, turndownGfm.taskListItems]);
-
-        function htmlToMarkdown(html) {
-            return turndownService.turndown(html);
-        }
-
-        textarea.addEventListener('paste', async (e) => {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            if (!clipboardData) return;
-
-            const htmlData = clipboardData.getData('text/html');
-            const textData = clipboardData.getData('text/plain');
-
-            if (htmlData && !isLikelyVSCodeHtml(textData) && !maybeMarkdown(textData)) {
-                e.preventDefault();
-                const markdown = htmlToMarkdown(htmlData);
-                insertMarkdownAtCursor(markdown);
-            }
-        });
-
-        function insertMarkdownAtCursor(markdown) {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const value = textarea.value;
-
-            textarea.value = value.slice(0, start) + markdown + value.slice(end);
-            const newCursorPos = start + markdown.length;
-            textarea.selectionStart = textarea.selectionEnd = newCursorPos;
-            textarea.focus();
-        }
-
-        const oninput = () => {
-            const value = textarea.value;
-            if (!value.trim()) return;
-            preview.innerHTML = parseMd(value);
-            wc.innerHTML = count(value, 'words');
-        };
-
-        const listener =  () => {
-            if (timeout) window.clearTimeout(timeout);
-            timeout = window.setTimeout(oninput, 500);
-        }
-
-        textarea.addEventListener('input', listener);
-        textarea.addEventListener('keyup', (e) => {
-            if (e.key === 'Backspace') {
-                listener();
-            }
-        })
-
-        oninput();
-    });
-</script>
+<script type="module" src="/js/create-post.js"></script>
 {% endblock %}

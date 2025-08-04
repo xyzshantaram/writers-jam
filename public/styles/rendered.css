@@ -1,4 +1,4 @@
-#content-rendered {
+.content-rendered {
     width: calc(100% - 1rem);
     border: 2px solid var(--body-secondary);
     border-radius: 0.25rem;
@@ -7,37 +7,41 @@
     padding-right: 0.5rem;
 }
 
-#content-rendered.monospace {
+.content-rendered.monospace {
     font-family: "Courier Prime", monospace;
 }
 
-#content-rendered.serif {
+.content-rendered.serif {
     font-family: "Literata", serif;
 }
 
-#content-rendered.sans {
+.content-rendered.sans {
     font-family: "Inter", sans-serif;
 }
 
-#content-rendered.noborder {
+.content-rendered.noborder {
     border: none;
 }
 
-#content-rendered:empty {
+.content-rendered .visible-space {
+    display: none;
+}
+
+.content-rendered:empty {
     min-height: 5ch;
 }
 
-#content-rendered:empty::after {
+.content-rendered:empty::after {
     content: "No content yet! Write something fun.";
     color: grey;
 }
 
-#content-rendered p {
+.content-rendered p {
     margin-top: 0.6rem;
     margin-bottom: 0.6rem;
 }
 
-#content-rendered hr {
+.content-rendered hr {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     width: 50%;
@@ -47,7 +51,7 @@
     border-color: var(--body-secondary);
 }
 
-#content-rendered-label {
+#post-preview-label {
     text-align: left;
     width: 100%;
 }

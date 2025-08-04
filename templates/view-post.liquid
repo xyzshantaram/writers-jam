@@ -54,14 +54,14 @@
     </div>
 </div>
 
-<div id="content-rendered" class="noborder">
+<div class="content-rendered noborder" id="post-contents">
     {{ post.content | parse_md | raw }}
 </div>
 
 <script>
     window.addEventListener("DOMContentLoaded", () => {
         const fontSelector = document.querySelector('#font-selector');
-        const pane = document.querySelector('#content-rendered');
+        const pane = document.querySelector('#post-contents');
         const pref = localStorage.getItem('user-font-preference');
         fontSelector.onchange = () => {
             pane.classList.remove("monospace", "serif", "sans");

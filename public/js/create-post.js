@@ -1,0 +1,70 @@
+import { parseMd } from './parse.js';
+import { maybeMarkdown, isLikelyVSCodeHtml } from './detect-markdown.js';
+import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
+import TurndownService from "https://esm.sh/turndown@7.2.0";
+import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
+import { initTutorial } from "./tutorial.js";
+
+globalThis.addEventListener('DOMContentLoaded', async () => {
+    const textarea = document.querySelector('textarea');
+    const preview = document.querySelector('#post-preview');
+    const wc = document.querySelector('#content-word-count');
+    let timeout = null;
+
+    const turndownService = new TurndownService({
+        headingStyle: 'atx'
+    });
+
+    turndownService.use([turndownGfm.gfm, turndownGfm.strikethrough, turndownGfm.taskListItems]);
+
+    function htmlToMarkdown(html) {
+        return turndownService.turndown(html);
+    }
+
+    textarea.addEventListener('paste', (e) => {
+        const clipboardData = e.clipboardData || globalThis.clipboardData;
+        if (!clipboardData) return;
+
+        const htmlData = clipboardData.getData('text/html');
+        const textData = clipboardData.getData('text/plain');
+
+        if (htmlData && !isLikelyVSCodeHtml(textData) && !maybeMarkdown(textData)) {
+            e.preventDefault();
+            const markdown = htmlToMarkdown(htmlData);
+            insertMarkdownAtCursor(markdown);
+        }
+    });
+
+    function insertMarkdownAtCursor(markdown) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+
+        textarea.value = value.slice(0, start) + markdown + value.slice(end);
+        const newCursorPos = start + markdown.length;
+        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+        textarea.focus();
+    }
+
+    const oninput = () => {
+        const value = textarea.value;
+        if (!value.trim()) return;
+        preview.innerHTML = parseMd(value);
+        wc.innerHTML = count(value, 'words');
+    };
+
+    const listener = () => {
+        if (timeout) globalThis.clearTimeout(timeout);
+        timeout = globalThis.setTimeout(oninput, 500);
+    }
+
+    textarea.addEventListener('input', listener);
+    textarea.addEventListener('keyup', (e) => {
+        if (e.key === 'Backspace') {
+            listener();
+        }
+    })
+
+    oninput();
+    await initTutorial();
+});
