@@ -19,71 +19,9 @@
         <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
     </div>
 
-    <details class="editing-help">
-        <summary class="invert">Editing help</summary>
-        <p>The editor uses Markdown for formatting. You may have used it before in messaging apps and 
-            not known it. Don't worry if you haven't though, you'll pick it up in no time! 
-            <strong>
-                You can also paste directly from your word processor (Google Docs/Microsoft Word etc)
-                and it gets converted automatically.
-            </strong> A live preview is available at all times below the editor! Check it often.</p>
-        <ul>
-            <li>
-                Putting a number of <code>#</code>s at the beginning of a line will make a heading.
-                <div>
-                    Example:
-<pre><code># My cool heading
-## My cool second heading
-### My cool third heading</code></pre>
-                    Becomes:
-                    <div>
-                        <div class="heading-1">My cool heading</div>
-                        <div class="heading-2">My cool second heading</div>
-                        <div class="heading-3">My cool third heading</div>
-                    </div>
-                </div>
-            </li>
-
-            <li>
-                To add a soft break (Shift+Enter in Google Docs), end a line with two spaces.
-                <pre><code>my first line<span class="visible-space"> </span><span class="visible-space"> </span>
-my second line
-</code></pre>
-            </li>
-
-            <li>
-                To add a paragraph break, simply leave an empty line between paragraphs.
-            </li>
-
-            <li>
-                <code>**Double asterisks**</code> or <code>__underscores__</code> make <strong>bold text</strong>.
-            </li>
-
-            <li>
-                <code>*Single asterisks*</code> or <code>_underscores_</code> make <em>italic text</em>.
-            </li>
-
-            <li>
-                <code>~~Double tildes~</code> make <del>strikethrough text</del>.
-            </li>
-
-            <li>
-                To make a bulleted list, begin a line with an asterisk (*).
-<pre><code>* first thing
-* second thing
-* third thing</code></pre>
-            </li>
-
-            <li>
-                To make a block quote, prefix each line of the quote with <code>&gt;</code>.
-                <pre><code>&gt; "The story so far: In the beginning the Universe was created.
-&gt; This has made a lot of people very angry and been widely regarded as a bad move."
-&gt; 
-&gt; -- Douglas Adams, The Restaurant at the End of the Universe
-</code></pre>
-            </li>
-        </ul>
-    </details>
+    <div id="tutorial-nag" class="nag">
+        Click here for help with editing.
+    </div>
 
     <div class="form-group textarea-group">
         <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>

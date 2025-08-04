@@ -66,5 +66,14 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
     })
 
     oninput();
-    await initTutorial();
+    const tutorialShown = localStorage.getItem('tutorial-shown');
+    if (!tutorialShown) {
+        await initTutorial();
+        localStorage.setItem('tutorial-shown', true);
+    }
+
+    const tutorialNag = document.querySelector('#tutorial-nag');
+    tutorialNag.onclick = async () => {
+        await initTutorial();
+    }
 });

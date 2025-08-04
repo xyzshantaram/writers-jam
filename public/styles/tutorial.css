@@ -1,0 +1,34 @@
+.tutorial-pane {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.tutorial-description {
+    grid-column: 1 / span 2;
+}
+
+.tutorial-text {
+    padding: 1rem;
+    padding-left: 0.5rem;
+    border: 2px solid var(--body-secondary);
+    white-space: pre;
+    overflow-x: scroll;
+    font-family: monospace;
+}
+
+.paginate-group {
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#tutorial-next {
+    margin-left: auto;
+}
+
+#tutorial-nag {
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: bold;
+}
