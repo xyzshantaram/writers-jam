@@ -18,6 +18,7 @@
     --body-secondary: #3e3921;
     --accent: #e8d0ad;
     --border: #685f38;
+    --gray: #666666;
 }
 
 :root:has(body.theme-night) {
@@ -454,7 +455,7 @@ form .submit-group {
 }
 
 @media screen and (prefers-color-scheme: dark) {
-    :root:not(.theme-sepia):not(.theme-default) {
+    :root:not(:has(body.theme-default)):not(:has(body.theme-coffee)) {
         --body-bg: #202020;
         --body-primary: #f5f5dc;
         --body-secondary: #eeeeee;
