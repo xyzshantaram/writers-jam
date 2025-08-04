@@ -892,8 +892,10 @@
     }
   },
   "redirects": {
+    "https://esm.sh/@mixmark-io/domino@^2.2.0?target=denonext": "https://esm.sh/@mixmark-io/domino@2.2.0?target=denonext",
     "https://esm.sh/@types/parse-srcset@~1.0.0/index.d.ts": "https://esm.sh/@types/parse-srcset@1.0.0/index.d.ts",
     "https://esm.sh/@types/sanitize-html@~2.16.0/index.d.ts": "https://esm.sh/@types/sanitize-html@2.16.0/index.d.ts",
+    "https://esm.sh/@wordpress/wordcount@^4.26.0": "https://esm.sh/@wordpress/wordcount@4.27.0",
     "https://esm.sh/deepmerge@^4.2.2?target=denonext": "https://esm.sh/deepmerge@4.3.1?target=denonext",
     "https://esm.sh/dom-serializer@^2.0.0?target=denonext": "https://esm.sh/dom-serializer@2.0.0?target=denonext",
     "https://esm.sh/domelementtype@^2.3.0?target=denonext": "https://esm.sh/domelementtype@2.3.0?target=denonext",
@@ -910,10 +912,15 @@
     "https://esm.sh/picocolors@^1.1.1?target=denonext": "https://esm.sh/picocolors@1.1.1?target=denonext",
     "https://esm.sh/postcss@^8.3.11?target=denonext": "https://esm.sh/postcss@8.5.6?target=denonext",
     "https://esm.sh/sanitize-html@^2.17.0": "https://esm.sh/sanitize-html@2.17.0",
-    "https://esm.sh/source-map-js@^1.2.1?target=denonext": "https://esm.sh/source-map-js@1.2.1?target=denonext"
+    "https://esm.sh/source-map-js@^1.2.1?target=denonext": "https://esm.sh/source-map-js@1.2.1?target=denonext",
+    "https://esm.sh/turndown-plugin-gfm": "https://esm.sh/turndown-plugin-gfm@1.0.2"
   },
   "remote": {
     "https://esm.sh/@jsr/campfire__core@4.0.2/denonext/campfire__core.mjs": "0fb86cff86201c0ad17b65ee71e0749b947da17662215c31cc51281bd0811f3e",
+    "https://esm.sh/@mixmark-io/domino@2.2.0/denonext/domino.mjs": "76ecda631c0e92fee3fb5eab84129586e98a5ef519dccbc5e8108c22a39c8ca6",
+    "https://esm.sh/@mixmark-io/domino@2.2.0?target=denonext": "938f0343bd6cd34f0e5267549a8621b222fcb34fb853a92135c8a14dc5aa5618",
+    "https://esm.sh/@wordpress/wordcount@4.27.0": "02a78c852b86581648a006d60701f88953ce5c6fa2bb5b66a5cb14f5cf201ec7",
+    "https://esm.sh/@wordpress/wordcount@4.27.0/denonext/wordcount.mjs": "ce24a1bc25d356b8f6b115573efe815d3120379a9e25899f00d5177966b4ce41",
     "https://esm.sh/deepmerge@4.3.1/denonext/deepmerge.mjs": "1f448aaa83a52514faecb2edc02eb766c9eb10b935b9ac4c1c2a877a0bb56b80",
     "https://esm.sh/deepmerge@4.3.1?target=denonext": "a8faef33b536441a2c63f8c967d160848eb1f898a8e83a35a9f0623ecd9063d3",
     "https://esm.sh/dom-serializer@2.0.0/denonext/dom-serializer.mjs": "545028b1d2c25bae5cbfe6930a28a2e4f7f05e1a0d09bbd0f3f5f9a33df8e3bd",
@@ -978,7 +985,11 @@
     "https://esm.sh/sanitize-html@2.17.0": "f6a8fc5e040ad6576fe7fa312689f21ad74b241b9617ef627399b67378a8c216",
     "https://esm.sh/sanitize-html@2.17.0/denonext/sanitize-html.mjs": "557a468fd47c8c255a83e2a6d9c99b8c7b76a1bf3b6977ae7cd761c7ff3415fd",
     "https://esm.sh/source-map-js@1.2.1/denonext/source-map-js.mjs": "2129223e17c258b391a47907a69c0b86d1c87cbb66eea7e9b25ff555ec0bbc7c",
-    "https://esm.sh/source-map-js@1.2.1?target=denonext": "33ba5cf2ee7c1fe6b63b36c31e9075e290bc5c574055acbdc48c2f24a21d2f83"
+    "https://esm.sh/source-map-js@1.2.1?target=denonext": "33ba5cf2ee7c1fe6b63b36c31e9075e290bc5c574055acbdc48c2f24a21d2f83",
+    "https://esm.sh/turndown-plugin-gfm@1.0.2": "8837184fc6c0577ae6e2feb1aba6badc97b14781537feb8cb3d50806c307df1f",
+    "https://esm.sh/turndown-plugin-gfm@1.0.2/denonext/turndown-plugin-gfm.mjs": "06c5dba034a06cdb3c5e3da0ca187a5b954a36ef145c5e572b5bc165f8ce6b06",
+    "https://esm.sh/turndown@7.2.0": "c51cae7fc0858d7a3e2bb3abe1cc974e75d35b6fb8776dc6aded046d778e980d",
+    "https://esm.sh/turndown@7.2.0/denonext/turndown.mjs": "da88bdb387d69e378f2f2da2805ea2bf1c9edb65361400ac57e0c0ad8c426152"
   },
   "workspace": {
     "dependencies": [

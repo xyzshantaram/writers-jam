@@ -26,6 +26,9 @@ export function parseMd(markdown) {
                 "heading-5",
                 "heading-6",
             ],
+            "span": [
+                "visible-space"
+            ]
         },
     });
 }
