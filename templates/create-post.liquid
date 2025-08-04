@@ -20,9 +20,32 @@
 
     {% endif %}
 
-    <div class="form-group">
-        <label for="post-title">Title</label>
-        <input type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
+    <div id="tutorial-nag" class="nag">
+        Click here for help with editing.
+    </div>
+
+    <div class="title-line">
+        <fieldset class="title-wrapper">
+            <legend id="post-title-label">Title</legend>
+            <input aria-labelledby="post-title-label" type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
+        </fieldset>
+
+        <fieldset class="edition-wrapper">
+            <legend id="post-edition-label">Edition</legend>
+            <select name="edition" id="post-edition" autocomplete="off">
+            {% for edition in editions %}
+                <option value="{{ edition.id }}"
+                    {% if mode != "edit" and latestEdition == edition.id %}selected{% endif %}
+                    {% if mode == "edit" and edition.id == currentEdition %}selected{% endif %}
+                    >{{ edition.name }}</option>
+            {% endfor %}
+            </select>
+        </fieldset>
+    </div>
+    
+    <div class="form-group textarea-group">
+        <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>
+<textarea id="post-content" name="content">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
     </div>
 
     <div class="form-group">
@@ -30,13 +53,9 @@
         <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
     </div>
 
-    <div id="tutorial-nag" class="nag">
-        Click here for help with editing.
-    </div>
-
-    <div class="form-group textarea-group">
-        <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>
-<textarea id="post-content" name="content">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
+    <div class="form-group">
+        <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
+        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
     </div>
 
     <div id="post-preview-label" aria-roledescription="label">Post preview</div>
@@ -59,24 +78,6 @@
     <input type="hidden" name="session" value="{{ session }}">
     <input type="hidden" name="action" value="update">
     {% endif %}
-
-    <div class="form-group">
-        <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
-        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
-    </div>
-
-    <div class="form-group">
-        <label for="post-edition">Post edition (Select "No edition" if not sure)</label>
-        <select name="edition" id="post-edition" autocomplete="off">
-            {% for edition in editions %}
-                <option value="{{ edition.id }}"
-                    {% if mode != "edit" and latestEdition == edition.id %}selected{% endif %}
-                    {% if mode == "edit" and edition.id == currentEdition %}selected{% endif %}
-                    >{{ edition.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
 
     <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
 
