@@ -903,6 +903,7 @@
     "https://esm.sh/entities@^4.4.0/lib/decode?target=denonext": "https://esm.sh/entities@4.5.0/lib/decode?target=denonext",
     "https://esm.sh/escape-string-regexp@^4.0.0?target=denonext": "https://esm.sh/escape-string-regexp@4.0.0?target=denonext",
     "https://esm.sh/htmlparser2@^8.0.0?target=denonext": "https://esm.sh/htmlparser2@8.0.2?target=denonext",
+    "https://esm.sh/jsr/@campfire/core": "https://esm.sh/jsr/@campfire/core@4.0.2",
     "https://esm.sh/marked@^16.0.0": "https://esm.sh/marked@16.1.1",
     "https://esm.sh/nanoid@^3.3.11/non-secure?target=denonext": "https://esm.sh/nanoid@3.3.11/non-secure?target=denonext",
     "https://esm.sh/parse-srcset@^1.0.2?target=denonext": "https://esm.sh/parse-srcset@1.0.2?target=denonext",
@@ -912,6 +913,7 @@
     "https://esm.sh/source-map-js@^1.2.1?target=denonext": "https://esm.sh/source-map-js@1.2.1?target=denonext"
   },
   "remote": {
+    "https://esm.sh/@jsr/campfire__core@4.0.2/denonext/campfire__core.mjs": "0fb86cff86201c0ad17b65ee71e0749b947da17662215c31cc51281bd0811f3e",
     "https://esm.sh/deepmerge@4.3.1/denonext/deepmerge.mjs": "1f448aaa83a52514faecb2edc02eb766c9eb10b935b9ac4c1c2a877a0bb56b80",
     "https://esm.sh/deepmerge@4.3.1?target=denonext": "a8faef33b536441a2c63f8c967d160848eb1f898a8e83a35a9f0623ecd9063d3",
     "https://esm.sh/dom-serializer@2.0.0/denonext/dom-serializer.mjs": "545028b1d2c25bae5cbfe6930a28a2e4f7f05e1a0d09bbd0f3f5f9a33df8e3bd",
@@ -933,6 +935,7 @@
     "https://esm.sh/htmlparser2@8.0.2/denonext/lib/esm/Parser.mjs": "d58fb2f87f8fead8e7ac03c544690908b4db21ab0513415b0cfe9311ab31aaa3",
     "https://esm.sh/htmlparser2@8.0.2/denonext/lib/esm/Tokenizer.mjs": "09109e601c7acd75b99c2a34e53e339a46301d9937e1495eaca8f9019a7b3040",
     "https://esm.sh/htmlparser2@8.0.2?target=denonext": "fd3edaa58a00e79f11b3510cc3930c9f5345486cdcc52c0afe24bbb36aece028",
+    "https://esm.sh/jsr/@campfire/core@4.0.2": "cc16dc903673227100588f7c80c9e161e3fb49512040869ac741037f49b6d48d",
     "https://esm.sh/marked-smartypants@1.1.10": "8e254761d9a9d5ada9e83bc9b00d537088bf7989df9c43fc775eca2fe4c8bf85",
     "https://esm.sh/marked-smartypants@1.1.10/denonext/marked-smartypants.mjs": "c636a498c91b46da3aa0fa38985454a16bc1d41aa7e7a3a68fb9972aa3443b59",
     "https://esm.sh/marked@16.1.1": "ef475a6492e98bf0836a8772cbbf9765a5a8b9fdc79113e3d1b277cad9fac9fb",
