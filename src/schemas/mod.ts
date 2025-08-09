@@ -10,15 +10,31 @@ z.config({
 });
 
 export const createPostSchema = z.object({
-    title: z.string().default("").transform((s) => s.trim()),
-    author: z.string().default("").transform((s) => s.trim()),
-    triggers: z.string().default("").transform((s) => s.trim()),
-    nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
-    content: z.string().nonempty().refine((v) => count(v, "words") >= 100, {
-        error: "Your submission must have greater than or exactly 100 words!",
-    }).transform((s) => s.trim()),
+    title: z.string()
+        .min(1, { error: "Title cannot be empty." })
+        .max(80, { error: "Title cannot be longer than 80 characters." })
+        .default("")
+        .transform((s) => s.trim()),
+    author: z.string()
+        .max(40, { error: "Author name cannot be longer than 40 characters." })
+        .default("")
+        .transform((s) => s.trim()),
+    triggers: z.string()
+        .max(100, { error: "Trigger warning text is too long (max 100 characters)." })
+        .default("")
+        .transform((s) => s.trim()),
+    nsfw: z.string()
+        .default("")
+        .transform((s) => s === "yes" ? 1 : 0),
+    content: z.string()
+        .nonempty({ error: "Content cannot be empty. Please enter your story." })
+        .refine((v) => count(v, "words") >= 100, {
+            error: "Your submission must have greater than or exactly 100 words!",
+        })
+        .transform((s) => s.trim()),
     password: z.string().default(""),
-    captcha: z.string().nonempty(),
+    captcha: z.string()
+        .nonempty({ error: "Captcha is required. Please solve the captcha." }),
     edition: editionSchema.nonoptional(),
 });
 
@@ -41,10 +57,17 @@ export interface Post {
 }
 
 export const createCommentSchema = z.object({
-    for: z.string(),
-    content: z.string().nonempty().transform((s) => s.trim()),
-    author: z.string().default("").transform((s) => s.trim()),
-    captcha: z.string().nonempty(),
+    for: z.string()
+        .min(1, { error: "Missing post reference: comment must have a parent post." }),
+    content: z.string()
+        .nonempty({ error: "Comment cannot be empty. Say something!" })
+        .transform((s) => s.trim()),
+    author: z.string()
+        .max(40, { message: "Author name cannot be longer than 40 characters." })
+        .default("")
+        .transform((s) => s.trim()),
+    captcha: z.string()
+        .nonempty({ message: "Captcha is required. Please solve the captcha." }),
 });
 
 export interface Comment {
@@ -55,4 +78,6 @@ export interface Comment {
     posted: number;
 }
 
-export const postIdSchema = z.string().length(8);
+export const postIdSchema = z.string().length(8, {
+    message: "Invalid post ID. Post IDs must be 8 characters long.",
+});
