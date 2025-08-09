@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/styles/create-post.css">
 <link rel="stylesheet" href="/styles/tutorial.css">
 <link rel="stylesheet" href="/styles/rendered.css">
+<script src="/js/help-tooltip.js" async></script>
 {% endblock %}
 
 {% block content %}
@@ -13,10 +14,12 @@
         {% if mode != "edit" %}
 
         <div class="form-group">
-            <label for="post-author" class="icon-tooltip">Your name
-                <i class="iconoir-help-circle-solid" title="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'."></i>
-            </label>
-            <input type="text" name="author" id="post-author">
+            <div class="label-row">
+            <label for="post-author">Your name</label>&nbsp;<help-tooltip text="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'.">
+            <i class="iconoir-help-circle-solid"></i>
+            </help-tooltip>
+            </div>
+            <input type="text" id="post-author" name="author">
         </div>
 
         {% endif %}
