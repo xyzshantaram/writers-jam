@@ -107,6 +107,19 @@ fieldset:has(textarea) {
     text-align: center;
 }
 
+#preview-btn {
+    margin-bottom: 1rem;
+}
+
+#post-confirmation .paginate-group {
+    margin-bottom: 1rem;
+}
+
+#post-content-label {
+    background: var(--body-bg);
+    padding: 0.4rem;
+}
+
 #post-content {
     min-height: 60vh;
 }
