@@ -1,44 +1,43 @@
 import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
 import { r } from "https://esm.sh/jsr/@campfire/core@4.0.2";
-import { parseMd } from './parse.js';
+import { parseMd } from "./parse.js";
 import { showDialog } from "./dialog.js";
 
 const TutorialPane = (description, content) => {
     console.log(description);
-    const [wrapper] = cf.nu('div.tutorial-pane')
+    const [wrapper] = cf.nu("div.tutorial-pane")
         .html`
         <div class='tutorial-description'>${r(parseMd(description))}</div>
         <div class=tutorial-text>${r(content)}</div>
         <div class=content-rendered>${r(parseMd(content))}</div>`
-        .gimme('.preview')
+        .gimme(".preview")
         .done();
 
     return wrapper;
-}
+};
 
 const PaneSwitcher = (panes, ondone) => {
     const current = cf.store({ value: 0 });
-    const [elt] = cf.nu('div')
+    const [elt] = cf.nu("div")
         .html`<cf-slot name='panes'></cf-slot>`
         .children({ panes })
         .done();
-    const hide = () => panes.forEach(pane => pane.style.display = 'none');
+    const hide = () => panes.forEach((pane) => pane.style.display = "none");
     let done = false;
-    current.on('update', ({ value }) => {
+    current.on("update", ({ value }) => {
         if (value >= panes.length) {
             if (done) return;
             ondone();
             done = true;
-        }
-        else {
+        } else {
             hide();
-            panes[value].style.display = 'grid';
+            panes[value].style.display = "grid";
         }
     });
     hide();
-    panes[0].style.display = 'grid';
+    panes[0].style.display = "grid";
     return { switcher: elt, currentPane: current };
-}
+};
 
 const BASIC_FORMATTING = `
 Basic formatting is the same as you might be familiar with. **bold**, _italic_, ~~strikethrough~~
@@ -99,31 +98,40 @@ make sure it has a blank line before it:
 ----
 
 Enjoy writing!
-`.trim()
+`.trim();
 
 const TUTORIAL_PANES = [
-    TutorialPane(`Hi! Welcome to the Writers Jam tutorial. 
+    TutorialPane(
+        `Hi! Welcome to the Writers Jam tutorial. 
         On the left you will see text as you might enter into the Writers 
         Jam editor, and on the right you will see text as it will 
-        be displayed when you complete your post.`, BASIC_FORMATTING),
-    TutorialPane('Here\'s how to make a heading/sub-heading in your post.', HEADINGS),
-    TutorialPane('Here\'s how to add a list to your post.', LISTS),
-    TutorialPane(`Now, **if you write poetry**, look closely.
+        be displayed when you complete your post.`,
+        BASIC_FORMATTING,
+    ),
+    TutorialPane("Here's how to make a heading/sub-heading in your post.", HEADINGS),
+    TutorialPane("Here's how to add a list to your post.", LISTS),
+    TutorialPane(
+        `Now, **if you write poetry**, look closely.
         '<span class='visible-space'> </span>' denotes pressing Space once.
-    `, POEMS),
-    TutorialPane('To add a block quote to your work:', QUOTES),
-    TutorialPane(`We\'re done! You can visit this tutorial
+    `,
+        POEMS,
+    ),
+    TutorialPane("To add a block quote to your work:", QUOTES),
+    TutorialPane(
+        `We\'re done! You can visit this tutorial
         anytime by clicking the Help icon on the edit page. Some miscellaneous tips
-        if you want to get even fancier:`, MISC)
-]
+        if you want to get even fancier:`,
+        MISC,
+    ),
+];
 
 export const initTutorial = async () => {
-    const dialog = document.querySelector('dialog');
+    const dialog = document.querySelector("dialog");
     const { switcher, currentPane } = PaneSwitcher(TUTORIAL_PANES, () => {
         dialog.close();
     });
 
-    const [tutorial, prevBtn, nextBtn] = cf.nu('div.tutorial')
+    const [tutorial, prevBtn, nextBtn] = cf.nu("div.tutorial")
         .html`
             <cf-slot name=switcher></cf-slot>
             <div class='form-group paginate-group'>
@@ -131,27 +139,27 @@ export const initTutorial = async () => {
                 <button id='tutorial-next'>Next</button>
             </div>
         `
-        .gimme('#tutorial-prev', '#tutorial-next')
+        .gimme("#tutorial-prev", "#tutorial-next")
         .children({ switcher })
         .done();
 
     const updateBtns = () => {
         const current = currentPane.current();
-        prevBtn.style.display = current === 0 ? 'none' : 'inline';
-        nextBtn.innerHTML = current >= TUTORIAL_PANES.length - 1 ? 'Done' : 'Next';
-    }
+        prevBtn.style.display = current === 0 ? "none" : "inline";
+        nextBtn.innerHTML = current >= TUTORIAL_PANES.length - 1 ? "Done" : "Next";
+    };
 
     nextBtn.onclick = () => {
         currentPane.update((current) => current + 1);
         updateBtns();
-    }
+    };
 
-    prevBtn.style.display = 'none';
+    prevBtn.style.display = "none";
 
     prevBtn.onclick = () => {
         currentPane.update((current) => current - 1 < 0 ? current : current - 1);
         updateBtns();
-    }
+    };
 
     await showDialog(tutorial);
-}
+};
