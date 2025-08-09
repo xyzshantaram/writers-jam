@@ -15,8 +15,8 @@ The rules are simple:
   [WhatsApp group]($WHATSAPP_URL) to share and discuss!
 - Most importantly of all, have fun!
 
-The theme for this week is "**Flavours of Love**". You are encouraged to get creative with the
-theme. Talk about, the types of love you've experienced, family drama... give the reader a taste of
-what love is like for you.
+The theme for this week is "**Two Stories**". You are encouraged to get creative with the theme.
+Write a poem that reads differently top to bottom and bottom to top, two literal separate stories,
+about the House M.D. episode, or tell the same events from two different perspectives.
 
 What are you waiting for?

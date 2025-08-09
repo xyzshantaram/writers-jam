@@ -9,80 +9,93 @@
 
 {% block content %}
 <form class="create-post" {% if mode != "edit" %} action="/post" {% else %} action="/post/{{ post.id }}/update" {% endif %} method="post">
-    {% if mode != "edit" %}
+    <div id="post-details">
+        {% if mode != "edit" %}
 
-    <div class="form-group">
-        <label for="post-author" class="icon-tooltip">Your name
-            <i class="iconoir-help-circle-solid" title="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'."></i>
-        </label>
-        <input type="text" name="author" id="post-author">
-    </div>
+        <div class="form-group">
+            <label for="post-author" class="icon-tooltip">Your name
+                <i class="iconoir-help-circle-solid" title="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'."></i>
+            </label>
+            <input type="text" name="author" id="post-author">
+        </div>
 
-    {% endif %}
+        {% endif %}
 
-    <div id="tutorial-nag" class="nag">
-        Click here for help with editing.
-    </div>
+        <div id="tutorial-nag" class="nag">
+            Click here for help with editing.
+        </div>
 
-    <div class="title-line">
-        <fieldset class="title-wrapper">
-            <legend id="post-title-label">Title</legend>
-            <input aria-labelledby="post-title-label" type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
+        <div class="title-line">
+            <fieldset class="title-wrapper">
+                <legend id="post-title-label">Title</legend>
+                <input aria-labelledby="post-title-label" type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
+            </fieldset>
+
+            <fieldset class="edition-wrapper">
+                <legend id="post-edition-label">Edition</legend>
+                <select name="edition" id="post-edition" autocomplete="off">
+                {% for edition in editions %}
+                    <option value="{{ edition.id }}"
+                        {% if mode != "edit" and latestEdition == edition.id %}selected{% endif %}
+                        {% if mode == "edit" and edition.id == currentEdition %}selected{% endif %}
+                        >{{ edition.name }}</option>
+                {% endfor %}
+                </select>
+            </fieldset>
+        </div>
+
+        <fieldset id="post-content-container">
+            <legend id="post-content-label">Post content (Words: <span id="content-word-count">0</span>)</legend>
+            <textarea id="post-content" name="content" aria-labelledby="post-content-label">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
         </fieldset>
+        
+        <div class="form-group">
+            <label for="post-tws">Notes (things like trigger/age/content warnings, if any)</label>
+            <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
+        </div>
 
-        <fieldset class="edition-wrapper">
-            <legend id="post-edition-label">Edition</legend>
-            <select name="edition" id="post-edition" autocomplete="off">
-            {% for edition in editions %}
-                <option value="{{ edition.id }}"
-                    {% if mode != "edit" and latestEdition == edition.id %}selected{% endif %}
-                    {% if mode == "edit" and edition.id == currentEdition %}selected{% endif %}
-                    >{{ edition.name }}</option>
-            {% endfor %}
-            </select>
-        </fieldset>
-    </div>
-    
-    <div class="form-group textarea-group">
-        <label for="post-content">Post content (Words: <span id="content-word-count">0</span>)</label>
-<textarea id="post-content" name="content">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
+        <div class="form-group">
+            <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
+            <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
+        </div>
+
+        <div class="form-group submit-group">
+            <button id='preview-btn' type="button">Continue</button>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="post-tws">Notes (things like trigger/age/content warnings, if any)</label>
-        <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
-    </div>
+    <div id="post-confirmation">
+        <div class="post-preview-wrapper">
+            <div id="preview-details">
+            </div>
 
-    <div class="form-group">
-        <label for="post-nsfw">Does this post contain material that could be considered not safe for work (NSFW)?</label>
-        <input type="checkbox" id="post-nsfw" name="nsfw" value="yes" {% if mode == "edit" and post.nsfw %} checked {% endif %}>
-    </div>
+            <div id='post-preview' aria-label="Post preview" class="content-rendered noborder"></div>
+        </div>
 
-    <div id="post-preview-label" aria-roledescription="label">Post preview</div>
-    <div id='post-preview' aria-labelledby="post-preview-label" class="content-rendered"></div>
+        {% if mode != "edit" %}
 
-    {% if mode != "edit" %}
+        <div class="nag">
+            Setting an edit code is highly recommended. You can use this to edit or delete your post later on. 
+            If you don't set this, you will have to contact the admins to edit your post. 
+            <strong>Keep this secret! Anyone with the code can change your posts.</strong>
+        </div>
 
-    <div class="nag">
-        Setting an edit code is highly recommended. You can use this to edit or delete your post later on. 
-        If you don't set this, you will have to contact the admins to edit your post. 
-        <strong>Keep this secret! Anyone with the code can change your posts.</strong>
-    </div>
+        <div class="form-group">
+            <label for="post-edit-code">Edit code</label>
+            <input type="text" name="password" id="post-edit-code">
+        </div>
 
-    <div class="form-group">
-        <label for="post-edit-code">Edit code</label>
-        <input type="text" name="password" id="post-edit-code">
-    </div>
+        {% else %}
+        <input type="hidden" name="session" value="{{ session }}">
+        <input type="hidden" name="action" value="update">
+        {% endif %}
 
-    {% else %}
-    <input type="hidden" name="session" value="{{ session }}">
-    <input type="hidden" name="action" value="update">
-    {% endif %}
+        <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
 
-    <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
-
-    <div class="form-group submit-group">
-        <input type="submit" {% if mode != "edit" %} value="Post!" {% else %} value="Update post" {% endif %}>
+        <div class="form-group paginate-group">
+            <button id="preview-cancel-btn" type="button">Back</button>
+            <input type="submit" {% if mode != "edit" %} value="Post!" {% else %} value="Update post" {% endif %}>
+        </div>
     </div>
 </form>
 

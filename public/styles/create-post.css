@@ -1,27 +1,54 @@
 fieldset>input,
-fieldset>select {
+fieldset>select,
+fieldset>textarea {
     margin: 0;
     border: none !important;
+    width: calc(100% - 0.8rem);
+}
+
+fieldset>textarea {
+    resize: none;
+    line-height: 1.2;
+    font-size: 1rem;
+    padding: 0.4rem;
+}
+
+fieldset>input {
+    overflow-x: auto;
+}
+
+#post-confirmation {
+    display: none;
+}
+
+#post-details {
+    display: contents;
+}
+
+#post-content-container {
+    margin-bottom: 1rem;
 }
 
 fieldset>select {
     font-size: 1rem;
-    width: 100%;
 }
 
 fieldset {
     padding: 0;
     border: 2px solid var(--body-primary);
     border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
 fieldset:has(input:focus),
-fieldset:has(select:focus) {
+fieldset:has(select:focus),
+fieldset:has(textarea:focus) {
     border: 3px solid blueviolet;
 }
 
 fieldset:has(input:focus) legend,
-fieldset:has(select:focus) legend {
+fieldset:has(select:focus) legend,
+fieldset:has(textarea:focus) legend {
     font-weight: bold;
 }
 
@@ -31,8 +58,13 @@ fieldset legend {
 }
 
 fieldset input:focus,
-fieldset select:focus {
+fieldset select:focus,
+fieldset textarea:focus {
     outline: none;
+}
+
+fieldset:has(textarea) {
+    width: 100%;
 }
 
 .title-line {
@@ -61,6 +93,36 @@ fieldset select:focus {
     border: 1px solid green;
 }
 
+#preview-details {
+    width: 100%;
+}
+
+#preview-details h3 {
+    margin: 0.25rem;
+    text-align: center;
+}
+
+#preview-details .badges {
+    width: 100%;
+    text-align: center;
+}
+
 #post-content {
     min-height: 60vh;
+}
+
+.post-preview-wrapper {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--border);
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .title-line .title-wrapper {
+        flex: 5;
+    }
+
+    .title-line .edition-wrapper {
+        flex: 5;
+    }
 }

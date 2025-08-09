@@ -4,6 +4,7 @@ import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
 import TurndownService from "https://esm.sh/turndown@7.2.0";
 import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
+import { template } from "https://esm.sh/jsr/@campfire/core@4.0.2";
 
 globalThis.addEventListener('DOMContentLoaded', async () => {
     const textarea = document.querySelector('textarea');
@@ -77,3 +78,46 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
         await initTutorial();
     }
 });
+
+globalThis.addEventListener('DOMContentLoaded', () => {
+    const previewBtn = document.querySelector("#preview-btn");
+    const previewCancelBtn = document.querySelector('#preview-cancel-btn');
+    const detailsContainer = document.querySelector('#post-details');
+    const confirmationContainer = document.querySelector('#post-confirmation');
+    const previewDetails = document.querySelector('#preview-details');
+
+    const previewTemplate = template(`
+        <h3>Preview "{{title}}"</h3>
+        <div class=badges>
+            <span class="tag invert">{{ edition }}</span>
+            {{#nsfw}}<span class="tag danger invert">NSFW</span>{{/nsfw}}
+        </div>
+        <div>by <strong>{{author}}</strong></div>
+        {{#notes}}
+        <div class="nag"><strong>NOTES</strong>: {{notes}}</div>
+        {{/notes}}
+    `);
+
+    const updatePreview = () => {
+        const title = document.querySelector('#post-title')?.value || "Untitled";
+        const author = document.querySelector('#post-author')?.value || "Anonymous";
+        const edition = document.querySelector('#post-edition>option[selected]').innerHTML;
+        const notes = document.querySelector('#post-tws').value;
+        const nsfw = document.querySelector('#post-nsfw').checked;
+
+        previewDetails.innerHTML = previewTemplate({
+            title, author, edition, notes: notes.trim(), nsfw
+        });
+    }
+
+    previewBtn.onclick = () => {
+        detailsContainer.style.display = 'none';
+        confirmationContainer.style.display = 'contents';
+        updatePreview();
+    }
+
+    previewCancelBtn.onclick = () => {
+        detailsContainer.style.display = 'contents';
+        confirmationContainer.style.display = 'none';
+    }
+})
