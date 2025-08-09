@@ -28,7 +28,7 @@ h3 {
     min-height: 6ch;
 }
 
-body> :not(header):not(footer) {
+body > :not(header):not(footer) {
     max-width: calc(100% - 2rem);
 }
 

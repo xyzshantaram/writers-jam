@@ -356,7 +356,11 @@ const postCountQuery = db.prepare(
 
 export const getPostCount = () => {
     const res = postCountQuery.get();
-    if (!res) throw new Error("This should never happen");
+    if (!res) {
+        throw new Error(
+            "Unable to retrieve post count. This should never happen, please report this on GitHub.",
+        );
+    }
     return res.count as number || 0;
 };
 
@@ -366,7 +370,11 @@ const aggViewCountQuery = db.prepare(
 
 export const getViewCount = () => {
     const res = aggViewCountQuery.get();
-    if (!res) throw new Error("This should never happen");
+    if (!res) {
+        throw new Error(
+            "Unable to retrieve aggregate view count. This should never happen, please report this on GitHub.",
+        );
+    }
     return res.count as number || 0;
 };
 

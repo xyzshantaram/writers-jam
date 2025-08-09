@@ -7,7 +7,7 @@
     --gray: #555555;
     --badge-text: white;
     --highlight-color: rgba(238, 250, 196, 0.5);
-    --danger: #AE2929;
+    --danger: #ae2929;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
 }
@@ -51,7 +51,7 @@ footer {
     margin-top: 1rem;
 }
 
-header>* {
+header > * {
     background: var(--body-secondary);
     border-radius: 0.5rem;
     padding: 0.2rem;
@@ -68,7 +68,7 @@ header a {
     width: 2rem;
 }
 
-header h1>a {
+header h1 > a {
     width: unset;
 }
 
@@ -132,7 +132,7 @@ body {
     flex-direction: column;
 }
 
-body>*:not(header):not(footer) {
+body > *:not(header):not(footer) {
     max-width: 60ch;
 }
 
@@ -380,7 +380,7 @@ section {
     margin-top: 0.6rem;
 }
 
-details>form {
+details > form {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -432,7 +432,7 @@ form .submit-group {
         padding-right: 0.25rem;
     }
 
-    header>* {
+    header > * {
         min-height: 3rem;
     }
 

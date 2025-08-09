@@ -34,10 +34,13 @@ export const parseEdition = (rawEdition: any): {
     return { number: parsed };
 };
 
-export const editionSchema = z.preprocess((val) => {
-    if (typeof val === "number") return val;
-    if (typeof val === "string" && val.trim() !== "" && !isNaN(Number(val))) {
-        return Number(val);
-    }
-    return val; // triggers error if not number or number-like string
-}, z.number());
+export const editionSchema = z.preprocess(
+    (val) => {
+        if (typeof val === "number") return val;
+        if (typeof val === "string" && val.trim() !== "" && !isNaN(Number(val))) {
+            return Number(val);
+        }
+        return val; // triggers error if not number or number-like string
+    },
+    z.int({ error: "Edition must be an integer." }),
+);
