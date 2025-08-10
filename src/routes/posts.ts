@@ -148,30 +148,30 @@ const editSessions: Record<string, {
 }> = {};
 
 const manageSchema = z.object({
-    password: z.string().min(1, { error: "Password is required to manage this post." }),
+    password: z.string().min(1, { error: "Password is required to manage this post" }),
 });
 
 const updatePostSchema = z.object({
     action: z.enum(["update", "delete"], {
-        error: "Invalid action. Must be 'update' or 'delete'.",
+        error: "Invalid action. Must be 'update' or 'delete'",
     }),
     session: z.uuidv4().refine(
         (v) => Object.keys(editSessions).includes(v),
-        { error: "Looks like your editing session expired. Try again." },
+        { error: "Looks like your editing session expired. Try again" },
     ),
 });
 
 const postModificationAction = z.object({
     title: z.string()
-        .max(80, { error: "Title cannot be longer than 80 characters." })
+        .max(80, { error: "Title cannot be longer than 80 characters" })
         .default("")
         .transform((s) => s.trim()),
     triggers: z.string()
-        .max(100, { error: "Notes text is too long (max 100 characters)." })
+        .max(100, { error: "Notes text is too long (max 100 characters)" })
         .default("")
         .transform((s) => s.trim()),
     content: z.string()
-        .nonempty({ error: "Content cannot be empty. Please enter your story." }),
+        .nonempty({ error: "Content cannot be empty. Please enter your story" }),
     action: z.literal("update"),
     nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
     edition: editionSchema,

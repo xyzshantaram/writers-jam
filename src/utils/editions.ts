@@ -42,5 +42,5 @@ export const editionSchema = z.preprocess(
         }
         return val; // triggers error if not number or number-like string
     },
-    z.int({ error: "Edition must be an integer." }),
+    z.int({ error: "Edition must be an integer" }),
 );
