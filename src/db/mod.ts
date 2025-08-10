@@ -107,7 +107,6 @@ export const getPostTags = (id: number) => {
 };
 
 type UpdatePostArgs = Pick<Post, "title" | "content" | "triggers" | "nsfw"> & { edition: number };
-
 const edJson = (ed: number) => ({ edition: { value: ed } });
 
 export const updatePost = (
