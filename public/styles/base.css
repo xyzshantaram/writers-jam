@@ -27,7 +27,7 @@
     --body-secondary: #eeeeee;
     --accent: #333333;
     --gray: #aaaaaa;
-    --border: #777777;
+    --border: #a1a1a1;
 }
 
 header {
@@ -282,6 +282,13 @@ textarea {
     background-color: transparent;
     color: var(--body-primary);
     min-width: 12ch;
+}
+
+input:not([type="radio"]):not([type="checkbox"]):focus,
+button:focus,
+textarea:focus {
+    outline: none;
+    border: 3px solid blueviolet;
 }
 
 select {

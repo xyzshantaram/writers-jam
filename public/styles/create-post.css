@@ -35,7 +35,7 @@ fieldset>select {
 
 fieldset {
     padding: 0;
-    border: 2px solid var(--body-primary);
+    border: 2px solid var(--border);
     border-radius: 0.25rem;
     margin-bottom: 0.5rem;
 }
