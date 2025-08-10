@@ -22,7 +22,8 @@ const setupMarked = () => {
 export function parseMd(markdown: string) {
     setupMarked();
 
-    return sanitize(marked.parse(markdown), {
+    const input = typeof markdown === "string" ? markdown : String(markdown ?? "");
+    return sanitize(marked.parse(input), {
         allowedTags: [
             "address",
             "article",

@@ -16,7 +16,8 @@ marked.use(markedSmartypants());
 marked.use({ renderer });
 
 export function parseMd(markdown) {
-    return sanitize(marked.parse(markdown), {
+    const input = typeof markdown === "string" ? markdown : String(markdown ?? "");
+    return sanitize(marked.parse(input), {
         allowedTags: [
             "address",
             "article",
