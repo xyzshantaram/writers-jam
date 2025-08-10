@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { Edition, getAllEditions } from "../db.ts";
+import { Edition, getAllEditions } from "../db/mod.ts";
 
 const rawEditions = getAllEditions();
 const noEdition = rawEditions.at(-1);

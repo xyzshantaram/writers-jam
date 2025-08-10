@@ -5,11 +5,11 @@ import {
     createPost,
     deletePost,
     getCommentsForPost,
-    getNewPostId,
+    getMigratedPostId,
     getPostById,
     randomPost,
     updatePost,
-} from "../db.ts";
+} from "../db/mod.ts";
 import { renderError } from "../error.ts";
 import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
 import { getClientIP, getPostTagString } from "../utils/mod.ts";
@@ -59,7 +59,7 @@ const shouldCountView = (now: number, post: string, ip: string) => {
 const normalizeId = (id: string): string | null => {
     const result = z.ulid().safeParse(id);
     if (result.success) {
-        return getNewPostId(id);
+        return getMigratedPostId(id);
     }
     return null;
 };
