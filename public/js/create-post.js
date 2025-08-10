@@ -8,7 +8,6 @@ import { template } from "https://esm.sh/jsr/@campfire/core@4.0.2";
 
 globalThis.addEventListener("DOMContentLoaded", async () => {
     const textarea = document.querySelector("textarea");
-    const preview = document.querySelector("#post-preview");
     const wc = document.querySelector("#content-word-count");
     let timeout = null;
 
@@ -50,11 +49,9 @@ globalThis.addEventListener("DOMContentLoaded", async () => {
     const oninput = () => {
         const value = textarea.value;
         if (!value.trim()) {
-            preview.innerHTML = "";
             wc.textContent = "0";
             return;
         }
-        preview.innerHTML = parseMd(value);
         wc.textContent = String(count(value, "words"));
     };
 
@@ -89,6 +86,8 @@ globalThis.addEventListener('DOMContentLoaded', () => {
     const detailsContainer = document.querySelector('#post-details');
     const confirmationContainer = document.querySelector('#post-confirmation');
     const previewDetails = document.querySelector('#preview-details');
+    const preview = document.querySelector("#post-preview");
+    const textarea = document.querySelector("textarea");
 
     const previewTemplate = template(`
         <h3>Preview "{{title}}"</h3>
@@ -109,10 +108,14 @@ globalThis.addEventListener('DOMContentLoaded', () => {
         const edition = edSelect?.selectedOptions?.[0]?.textContent || "";
         const notes = document.querySelector('#post-tws')?.value || "";
         const nsfw = !!document.querySelector('#post-nsfw')?.checked;
+        const contents = textarea.value.trim();
 
         previewDetails.innerHTML = previewTemplate({
             title, author, edition, notes: notes.trim(), nsfw
         });
+
+        preview.innerHTML = parseMd(contents);
+
     }
 
     previewBtn.addEventListener('click', () => {

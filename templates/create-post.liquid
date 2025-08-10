@@ -55,8 +55,8 @@
         </div>
 
         <fieldset id="post-content-container">
-            <legend id="post-content-label">Post content (Words: <span id="content-word-count">0</span>)</legend>
-            <textarea id="post-content" name="content" aria-labelledby="post-content-label">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
+            <legend id="post-content-label">Post content (Words: <span id="content-word-count" aria-live="polite">0</span>)</legend>
+            <textarea required id="post-content" name="content" aria-labelledby="post-content-label">{% if mode == "edit" %}{{ post.content }}{% endif %}</textarea>
         </fieldset>
         
         <div class="form-group">
@@ -79,7 +79,7 @@
             <div id="preview-details">
             </div>
 
-            <div id='post-preview' aria-label="Post preview" class="content-rendered noborder"></div>
+            <div id='post-preview' aria-label="Post preview" role="region" class="content-rendered noborder"></div>
         </div>
 
         {% if mode != "edit" %}
