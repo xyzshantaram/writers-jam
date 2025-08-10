@@ -1,19 +1,19 @@
-import { parseMd } from './parse.js';
-import { maybeMarkdown, isLikelyVSCodeHtml } from './detect-markdown.js';
+import { parseMd } from "./parse.js";
+import { isLikelyVSCodeHtml, maybeMarkdown } from "./detect-markdown.js";
 import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
 import TurndownService from "https://esm.sh/turndown@7.2.0";
 import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
 import { template } from "https://esm.sh/jsr/@campfire/core@4.0.2";
 
-globalThis.addEventListener('DOMContentLoaded', async () => {
-    const textarea = document.querySelector('textarea');
-    const preview = document.querySelector('#post-preview');
-    const wc = document.querySelector('#content-word-count');
+globalThis.addEventListener("DOMContentLoaded", async () => {
+    const textarea = document.querySelector("textarea");
+    const preview = document.querySelector("#post-preview");
+    const wc = document.querySelector("#content-word-count");
     let timeout = null;
 
     const turndownService = new TurndownService({
-        headingStyle: 'atx'
+        headingStyle: "atx",
     });
 
     turndownService.use([turndownGfm.gfm, turndownGfm.strikethrough, turndownGfm.taskListItems]);
@@ -22,12 +22,12 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
         return turndownService.turndown(html);
     }
 
-    textarea.addEventListener('paste', (e) => {
+    textarea.addEventListener("paste", (e) => {
         const clipboardData = e.clipboardData || globalThis.clipboardData;
         if (!clipboardData) return;
 
-        const htmlData = clipboardData.getData('text/html');
-        const textData = clipboardData.getData('text/plain');
+        const htmlData = clipboardData.getData("text/html");
+        const textData = clipboardData.getData("text/plain");
 
         if (htmlData && !isLikelyVSCodeHtml(textData) && !maybeMarkdown(textData)) {
             e.preventDefault();
@@ -49,31 +49,35 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
 
     const oninput = () => {
         const value = textarea.value;
-        if (!value.trim()) return;
+        if (!value.trim()) {
+            preview.innerHTML = "";
+            wc.textContent = "0";
+            return;
+        }
         preview.innerHTML = parseMd(value);
-        wc.innerHTML = count(value, 'words');
+        wc.textContent = String(count(value, "words"));
     };
 
     const listener = () => {
         if (timeout) globalThis.clearTimeout(timeout);
         timeout = globalThis.setTimeout(oninput, 500);
-    }
+    };
 
-    textarea.addEventListener('input', listener);
-    textarea.addEventListener('keyup', (e) => {
-        if (e.key === 'Backspace') {
+    textarea.addEventListener("input", listener);
+    textarea.addEventListener("keyup", (e) => {
+        if (e.key === "Backspace") {
             listener();
         }
-    })
+    });
 
     oninput();
-    const tutorialShown = localStorage.getItem('tutorial-shown');
+    const tutorialShown = localStorage.getItem("tutorial-shown");
     if (!tutorialShown) {
         await initTutorial();
-        localStorage.setItem('tutorial-shown', true);
+        localStorage.setItem("tutorial-shown", true);
     }
 
-    const tutorialNag = document.querySelector('#tutorial-nag');
+    const tutorialNag = document.querySelector("#tutorial-nag");
     tutorialNag.onclick = async () => {
         await initTutorial();
     }

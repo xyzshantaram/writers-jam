@@ -1,8 +1,19 @@
 {% layout "base.liquid" %}
 
 {% block content %}
+<style>
+    .gray {
+        color: var(--gray);
+    }
+
+    .small {
+        font-size: 0.9rem;
+    }
+</style>
+
 <details>
     <summary class="invert">{{ code }} - {{ name }}</summary>
     <p>{{ details }}</p>
 </details>
+<p class="small gray"><em>Tap above to view error details.</em></p>
 {% endblock %}

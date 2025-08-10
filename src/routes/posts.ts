@@ -31,7 +31,14 @@ export const index = (_: Request, res: Response) => {
 
 export const random = (_: Request, res: Response) => {
     const post = randomPost();
-    if (!post) throw new Error("Found zero posts");
+    if (!post) {
+        return renderError(res, {
+            code: "NotFound",
+            title: "No posts yet",
+            name: "NotFound",
+            details: "No posts are available yet. Be the first to create one!",
+        }, 404);
+    }
     return res.redirect(`/post/${post}`);
 };
 
@@ -58,7 +65,15 @@ const normalizeId = (id: string): string | null => {
 };
 
 export const view = (req: Request, res: Response) => {
-    if (!req.params.id) throw new Error("Invalid id");
+    if (!req.params.id) {
+        return renderError(res, {
+            code: "BadRequest",
+            title: "Invalid link",
+            name: "Bad request",
+            details:
+                "It looks like this post link is incomplete or broken. Please check the URL and try again.",
+        }, 400);
+    }
     const id = req.params.id;
 
     const replacedId = normalizeId(id);
@@ -74,12 +89,12 @@ export const view = (req: Request, res: Response) => {
     const post = getPostById(id);
     if (!post) {
         return renderError(res, {
-            code: 400,
+            code: "NotFound",
             details:
                 "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "NotFound",
+            name: "Not found",
             title: "Post not found",
-        });
+        }, 404);
     }
 
     res.render("view-post", {
@@ -133,22 +148,31 @@ const editSessions: Record<string, {
 }> = {};
 
 const manageSchema = z.object({
-    password: z.string().nonempty(),
+    password: z.string().min(1, { error: "Password is required to manage this post" }),
 });
 
 const updatePostSchema = z.object({
-    action: z.enum(["update", "delete"]),
+    action: z.enum(["update", "delete"], {
+        error: "Invalid action. Must be 'update' or 'delete'",
+    }),
     session: z.uuidv4().refine(
         (v) => Object.keys(editSessions).includes(v),
-        "Looks like your editing session expired. Try again.",
+        { error: "Looks like your editing session expired. Try again" },
     ),
     captcha: z.string().nonempty().optional(),
 });
 
 const postModificationAction = z.object({
-    title: z.string().default(""),
-    triggers: z.string().default(""),
-    content: z.string(),
+    title: z.string()
+        .max(80, { error: "Title cannot be longer than 80 characters" })
+        .default("")
+        .transform((s) => s.trim()),
+    triggers: z.string()
+        .max(100, { error: "Notes text is too long (max 100 characters)" })
+        .default("")
+        .transform((s) => s.trim()),
+    content: z.string()
+        .nonempty({ error: "Content cannot be empty. Please enter your story" }),
     action: z.literal("update"),
     nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
     edition: editionSchema,
@@ -181,8 +205,10 @@ export const manage = (req: Request, res: Response) => {
     ) {
         return renderError(res, {
             code: "BadRequest",
-            details: "There was an error processing your request. Please try again later.",
-        });
+            title: "Incorrect password",
+            name: "Authentication failed",
+            details: "The password you entered is incorrect. Please double-check and try again.",
+        }, 401);
     }
 
     const session = crypto.randomUUID();
@@ -213,7 +239,13 @@ export const update = async (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const parsed = updatePostSchema.parse(req.body);
     if (editSessions[parsed.session].post !== id) {
-        return renderError(res, { code: "BadRequest" });
+        return renderError(res, {
+            code: "BadRequest",
+            title: "Editing session expired",
+            name: "Session error",
+            details:
+                "Your editing session has expired or is invalid. Please refresh the page and try editing again.",
+        });
     }
 
     delete editSessions[parsed.session];
@@ -238,5 +270,7 @@ export const update = async (req: Request, res: Response) => {
             edition: updated.edition,
         });
         return res.redirect(`/post/${id}`);
-    } else throw new Error("wtf");
+    } else {throw new Error(
+            "Something unexpected happened while updating your post. Please try again or contact support if the issue persists.",
+        );}
 };
