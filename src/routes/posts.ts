@@ -142,6 +142,7 @@ const updatePostSchema = z.object({
         (v) => Object.keys(editSessions).includes(v),
         "Looks like your editing session expired. Try again.",
     ),
+    captcha: z.string().nonempty().optional(),
 });
 
 const postModificationAction = z.object({
@@ -218,6 +219,9 @@ export const update = async (req: Request, res: Response) => {
     delete editSessions[parsed.session];
 
     if (parsed.action === "delete") {
+        const { success } = await cap.validateToken(parsed.captcha || "");
+        if (!success) return captchaErr(res);
+
         deletePost(id);
         return res.redirect("/");
     } else if (parsed.action === "update") {

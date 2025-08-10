@@ -94,7 +94,7 @@
         <input type="hidden" name="action" value="update">
         {% endif %}
 
-        <cap-widget id="cap" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
+        <cap-widget id="cap-post-edit" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
 
         <div class="form-group paginate-group">
             <button id="preview-cancel-btn" type="button">Back</button>
@@ -117,6 +117,7 @@
     <form action="/post/{{ post.id }}/update" method="post">
         <input type="hidden" name="session" value="{{ session }}">
         <input type="hidden" name="action" value="delete">
+        <cap-widget id="cap-delete" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
         <div class="form-group submit-group">
             <button type="submit" class="danger">Delete post</button>
         </div>
