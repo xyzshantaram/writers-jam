@@ -110,5 +110,3 @@ body> :not(header):not(footer) {
     font-style: italic;
     color: var(--gray);
 }
-
-@media screen and (max-aspect-ratio: 1/1) {}

@@ -16,15 +16,79 @@ marked.use(markedSmartypants());
 marked.use({ renderer });
 
 export function parseMd(markdown) {
-    return sanitize(marked.parse(markdown), {
+    const input = typeof markdown === "string" ? markdown : String(markdown ?? "");
+    return sanitize(marked.parse(input), {
         allowedTags: [
-            "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
-            "h5", "h6", "hgroup", "main", "nav", "section", "blockquote", "dd", "del", "div",
-            "dl", "dt", "figcaption", "figure", "hr", "li", "main", "ol", "p", "pre",
-            "ul", "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn",
-            "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
-            "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption",
-            "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr"
+            "address",
+            "article",
+            "aside",
+            "footer",
+            "header",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "hgroup",
+            "main",
+            "nav",
+            "section",
+            "blockquote",
+            "dd",
+            "del",
+            "div",
+            "dl",
+            "dt",
+            "figcaption",
+            "figure",
+            "hr",
+            "li",
+            "ol",
+            "p",
+            "pre",
+            "ul",
+            "a",
+            "abbr",
+            "b",
+            "bdi",
+            "bdo",
+            "br",
+            "cite",
+            "code",
+            "data",
+            "dfn",
+            "em",
+            "i",
+            "kbd",
+            "mark",
+            "q",
+            "rb",
+            "rp",
+            "rt",
+            "rtc",
+            "ruby",
+            "s",
+            "samp",
+            "small",
+            "span",
+            "strong",
+            "sub",
+            "sup",
+            "time",
+            "u",
+            "var",
+            "wbr",
+            "caption",
+            "col",
+            "colgroup",
+            "table",
+            "tbody",
+            "td",
+            "tfoot",
+            "th",
+            "thead",
+            "tr",
         ],
         allowedClasses: {
             "div": [
@@ -36,11 +100,19 @@ export function parseMd(markdown) {
                 "heading-6",
             ],
             "span": [
-                "visible-space"
+                "visible-space",
             ],
         },
         allowedAttributes: {
-            a: ['href', 'name', 'target']
-        }
+            a: ["href", "name", "target", "rel"],
+        },
+        transformTags: {
+            a: (tagName, attribs) => {
+                if (attribs.target === "_blank") {
+                    attribs.rel = "noopener noreferrer";
+                }
+                return { tagName, attribs };
+            },
+        },
     });
 }
