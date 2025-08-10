@@ -16,8 +16,8 @@ const createThemeStore = (elt) => {
         const { value } = v;
         document.body.classList.add(`theme-${value}`);
         localStorage.setItem("theme", value);
-        elt.querySelector("selected")?.removeAttribute("selected");
-        elt.querySelector(`[value=${value}]`)?.setAttribute("selected", "selected");
+        elt.querySelector("[selected]")?.removeAttribute("selected");
+        elt.querySelector(`[value='${value}']`)?.setAttribute("selected", "selected");
     });
 
     const theme = localStorage.getItem("theme");
