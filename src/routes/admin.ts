@@ -12,7 +12,7 @@ GET /admin/reports/:id
 POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged.
 
 POST /admin/post/:id/delete
-POST /admin/post/:id/nsfw (yes/no)
+POST /admin/post/:id/nsfw (body has param state: yes/no)
 POST /admin/comment/:ulid/delete
 POST /admin/edition
 POST /admin/edition/delete
