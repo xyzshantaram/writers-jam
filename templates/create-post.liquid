@@ -16,8 +16,14 @@
         <div class="form-group">
             <div class="label-row">
             <label for="post-author">Your name</label>&nbsp;
-            <help-tooltip text="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'.">
-                <i class="iconoir-help-circle-solid"></i>
+            <help-tooltip
+              id="author-help"
+              text="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'."
+              aria-label="Help: About the “Your name” field"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+            >
+                <i class="iconoir-help-circle-solid" aria-hidden="true"></i>
             </help-tooltip>
             </div>
             <input type="text" id="post-author" name="author">
@@ -25,14 +31,14 @@
 
         {% endif %}
 
-        <div id="tutorial-nag" class="nag">
+        <button type="button" id="tutorial-nag" class="nag">
             Click here for help with editing.
-        </div>
+        </button>
 
         <div class="title-line">
             <fieldset class="title-wrapper">
                 <legend id="post-title-label">Title</legend>
-                <input aria-labelledby="post-title-label" type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title }}" {% endif %}>
+                <input aria-labelledby="post-title-label" type="text" id="post-title" name="title" {% if mode == "edit" %}value="{{ post.title | escape }}" {% endif %}>
             </fieldset>
 
             <fieldset class="edition-wrapper">
