@@ -21,7 +21,7 @@ const createThemeStore = (elt) => {
     });
 
     const theme = localStorage.getItem("theme");
-    if (!theme && globalThis.matchMedia("(prefers-color-scheme: dark)")) {
+    if (!theme && globalThis.matchMedia("(prefers-color-scheme: dark)").matches) {
         store.update("night");
     } else if (theme) store.update(theme);
     else store.update("default");

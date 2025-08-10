@@ -1,21 +1,27 @@
-import { marked } from "https://esm.sh/marked@^16.0.0";
-import { markedSmartypants } from "https://esm.sh/marked-smartypants@1.1.10";
-import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
+import { marked, Renderer } from "marked";
+import sanitize from "sanitize-html";
+import { markedSmartypants } from "marked-smartypants";
 
-const renderer = {
-    heading({ tokens, depth }) {
-        const text = this.parser.parseInline(tokens);
-        return `<div class='heading-${depth}'>${text}</div>`;
-    },
-    image() {
-        return "";
-    },
+let markedSetup = false;
+const setupMarked = () => {
+    if (markedSetup) return;
+    markedSetup = true;
+    const renderer: Partial<Renderer> = {
+        heading({ tokens, depth }) {
+            const text = this.parser?.parseInline(tokens);
+            return `<div class='heading-${depth}'>${text}</div>`;
+        },
+        image() {
+            return "";
+        },
+    };
+    marked.use({ renderer });
+    marked.use(markedSmartypants());
 };
 
-marked.use(markedSmartypants());
-marked.use({ renderer });
+export function parseMd(markdown: string) {
+    setupMarked();
 
-export function parseMd(markdown) {
     return sanitize(marked.parse(markdown), {
         allowedTags: [
             "address",
@@ -106,7 +112,7 @@ export function parseMd(markdown) {
             a: ["href", "name", "target", "rel"],
         },
         transformTags: {
-            a: (tagName, attribs) => {
+            a: (tagName: string, attribs: Record<string, string>) => {
                 if (attribs.target === "_blank") {
                     attribs.rel = "noopener noreferrer";
                 }

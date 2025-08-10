@@ -19,8 +19,9 @@ export const makeLimiter = (reqs: number, duration: number) =>
             return `${clientIP}-${path}`;
         },
         handler: (_, res) => {
+            res.set("Retry-After", String(Math.ceil(duration / 1000)));
             return renderError(res, {
-                code: 429,
+                code: "Ratelimited",
                 name: "Too Many Requests",
                 title: "Please Slow Down",
                 details:

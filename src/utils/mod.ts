@@ -43,7 +43,7 @@ export const getClientIP = (req: Request): string | undefined => {
 
 export function hashPostId(n: number) {
     if (n < 0 || n > 0xFFFFFFFF) {
-        throw new Error("Invalid post ID format -- input out of 32-bit unsigned range.");
+        throw new RangeError(`Invalid post ID format: ${n} (out of 32-bit unsigned range).`);
     }
     const result = (BigInt(n) * 387420489n) % 4000000000n;
     return result.toString(16).padStart(8, "0");

@@ -48,9 +48,13 @@ globalThis.addEventListener("DOMContentLoaded", async () => {
 
     const oninput = () => {
         const value = textarea.value;
-        if (!value.trim()) return;
+        if (!value.trim()) {
+            preview.innerHTML = "";
+            wc.textContent = "0";
+            return;
+        }
         preview.innerHTML = parseMd(value);
-        wc.innerHTML = count(value, "words");
+        wc.textContent = String(count(value, "words"));
     };
 
     const listener = () => {

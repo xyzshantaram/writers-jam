@@ -8,7 +8,7 @@ export const showDialog = (elem) => {
 
     dialog.addEventListener("close", () => {
         p.resolve(dialog.returnValue === "default" ? null : dialog.returnValue);
-    });
+    }, { once: true });
 
     return p.promise;
 };

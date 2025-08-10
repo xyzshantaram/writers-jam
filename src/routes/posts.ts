@@ -31,7 +31,14 @@ export const index = (_: Request, res: Response) => {
 
 export const random = (_: Request, res: Response) => {
     const post = randomPost();
-    if (!post) throw new Error("No posts are available yet. Be the first to create one!");
+    if (!post) {
+        return renderError(res, {
+            code: "NotFound",
+            title: "No posts yet",
+            name: "NotFound",
+            details: "No posts are available yet. Be the first to create one!",
+        }, 404);
+    }
     return res.redirect(`/post/${post}`);
 };
 
@@ -59,9 +66,13 @@ const normalizeId = (id: string): string | null => {
 
 export const view = (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error(
-            "It looks like this post link is incomplete or broken. Please check the URL and try again.",
-        );
+        return renderError(res, {
+            code: "BadRequest",
+            title: "Invalid link",
+            name: "Bad request",
+            details:
+                "It looks like this post link is incomplete or broken. Please check the URL and try again.",
+        }, 400);
     }
     const id = req.params.id;
 
@@ -78,12 +89,12 @@ export const view = (req: Request, res: Response) => {
     const post = getPostById(id);
     if (!post) {
         return renderError(res, {
-            code: 400,
+            code: "NotFound",
             details:
                 "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "NotFound",
+            name: "Not found",
             title: "Post not found",
-        });
+        }, 404);
     }
 
     res.render("view-post", {
@@ -195,7 +206,7 @@ export const manage = (req: Request, res: Response) => {
             title: "Incorrect password",
             name: "Authentication failed",
             details: "The password you entered is incorrect. Please double-check and try again.",
-        });
+        }, 401);
     }
 
     const session = crypto.randomUUID();

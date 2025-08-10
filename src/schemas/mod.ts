@@ -58,7 +58,8 @@ export interface Post {
 
 export const createCommentSchema = z.object({
     for: z.string()
-        .min(1, { error: "Missing post reference: comment must have a parent post." }),
+        .min(1, { error: "Missing post reference: comment must have a parent post." })
+        .transform((s) => s.trim()),
     content: z.string()
         .nonempty({ error: "Comment cannot be empty. Say something!" })
         .transform((s) => s.trim()),

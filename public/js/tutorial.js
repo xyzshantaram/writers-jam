@@ -10,7 +10,6 @@ const TutorialPane = (description, content) => {
         <div class='tutorial-description'>${r(parseMd(description))}</div>
         <div class=tutorial-text>${r(content)}</div>
         <div class=content-rendered>${r(parseMd(content))}</div>`
-        .gimme(".preview")
         .done();
 
     return wrapper;
