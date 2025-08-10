@@ -103,6 +103,7 @@ fieldset:has(textarea) {
 #preview-details .badges {
     width: 100%;
     text-align: center;
+    margin-bottom: 1rem;
 }
 
 #preview-btn {
@@ -126,6 +127,7 @@ fieldset:has(textarea) {
     padding: 1rem;
     border-radius: 0.5rem;
     border: 2px solid var(--border);
+    width: calc(100% - 2rem);
 }
 
 @media screen and (max-aspect-ratio: 1/1) {
