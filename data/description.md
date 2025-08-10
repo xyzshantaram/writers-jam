@@ -16,7 +16,8 @@ The rules are simple:
 - Most importantly of all, have fun!
 
 The theme for this week is "**Two Stories**". You are encouraged to get creative with the theme.
-Write a poem that reads differently top to bottom and bottom to top, two literal separate stories,
-about the House M.D. episode, or tell the same events from two different perspectives.
+Write a poem that reads differently top to bottom and bottom to top, two separate stories
+side-by-side, a reflection on the House M.D. episode, or tell the same events from two different
+perspectives.
 
 What are you waiting for?
