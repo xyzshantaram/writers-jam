@@ -14,7 +14,7 @@ import en from "javascript-time-ago/locale/en";
 import * as captcha from "./routes/captcha.ts";
 import { Post } from "./schemas/mod.ts";
 import { editionMap } from "./utils/editions.ts";
-import { parseMd } from "./utils/parse.ts";
+import { parseMd } from "../public/js/parse.js";
 
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
     const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
