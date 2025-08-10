@@ -101,24 +101,24 @@ globalThis.addEventListener('DOMContentLoaded', () => {
     const updatePreview = () => {
         const title = document.querySelector('#post-title')?.value || "Untitled";
         const author = document.querySelector('#post-author')?.value || "Anonymous";
-        const selectedEd = document.querySelector('#post-edition').value;
-        const edition = document.querySelector(`#post-edition>option[value='${selectedEd}']`).innerHTML;
-        const notes = document.querySelector('#post-tws').value;
-        const nsfw = document.querySelector('#post-nsfw').checked;
+        const edSelect = document.querySelector('#post-edition');
+        const edition = edSelect?.selectedOptions?.[0]?.textContent || "";
+        const notes = document.querySelector('#post-tws')?.value || "";
+        const nsfw = !!document.querySelector('#post-nsfw')?.checked;
 
         previewDetails.innerHTML = previewTemplate({
             title, author, edition, notes: notes.trim(), nsfw
         });
     }
 
-    previewBtn.onclick = () => {
+    previewBtn.addEventListener('click', () => {
         detailsContainer.style.display = 'none';
         confirmationContainer.style.display = 'contents';
         updatePreview();
-    }
+    });
 
-    previewCancelBtn.onclick = () => {
+    previewCancelBtn.addEventListener('click', () => {
         detailsContainer.style.display = 'contents';
         confirmationContainer.style.display = 'none';
-    }
+    });
 })

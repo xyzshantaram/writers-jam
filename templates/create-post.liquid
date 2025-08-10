@@ -15,8 +15,9 @@
 
         <div class="form-group">
             <div class="label-row">
-            <label for="post-author">Your name</label>&nbsp;<help-tooltip text="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'.">
-            <i class="iconoir-help-circle-solid"></i>
+            <label for="post-author">Your name</label>&nbsp;
+            <help-tooltip text="This is just a nickname! Setting it here does not reserve it. If not entered, this will be 'Anonymous'.">
+                <i class="iconoir-help-circle-solid"></i>
             </help-tooltip>
             </div>
             <input type="text" id="post-author" name="author">
@@ -54,7 +55,7 @@
         
         <div class="form-group">
             <label for="post-tws">Notes (things like trigger/age/content warnings, if any)</label>
-            <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers }}" {% endif %}>
+            <input type="text" id="post-tws" name="triggers" {% if mode == "edit" %}value="{{ post.triggers | escape }}" {% endif %}>
         </div>
 
         <div class="form-group">

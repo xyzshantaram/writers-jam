@@ -40,17 +40,15 @@ fieldset {
     margin-bottom: 0.5rem;
 }
 
-fieldset:has(input:focus),
-fieldset:has(select:focus),
-fieldset:has(textarea:focus) {
-    border: 3px solid blueviolet;
+
+fieldset:focus-within {
+    border: 3px solid var(--focus-outline, #6a5acd);
 }
 
-fieldset:has(input:focus) legend,
-fieldset:has(select:focus) legend,
-fieldset:has(textarea:focus) legend {
+fieldset:focus-within legend {
     font-weight: bold;
 }
+
 
 fieldset legend {
     margin-left: 0.5rem;
