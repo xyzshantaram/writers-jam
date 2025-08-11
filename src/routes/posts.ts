@@ -159,6 +159,7 @@ const updatePostSchema = z.object({
         (v) => Object.keys(editSessions).includes(v),
         { error: "Looks like your editing session expired. Try again" },
     ),
+    captcha: z.string().nonempty().optional(),
 });
 
 const postModificationAction = z.object({
@@ -175,6 +176,7 @@ const postModificationAction = z.object({
     action: z.literal("update"),
     nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
     edition: editionSchema,
+    captcha: z.string({ error: "Captcha is required." }),
 });
 
 export const manage = (req: Request, res: Response) => {
@@ -227,7 +229,7 @@ export const manage = (req: Request, res: Response) => {
     });
 };
 
-export const update = (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response) => {
     Object.values(editSessions).forEach((sess) => {
         if (Date.now() - sess.started > timeMs({ m: 30 })) {
             delete editSessions[sess.session];
@@ -249,10 +251,17 @@ export const update = (req: Request, res: Response) => {
     delete editSessions[parsed.session];
 
     if (parsed.action === "delete") {
+        const { success } = await cap.validateToken(parsed.captcha || "");
+        if (!success) return captchaErr(res);
+
         deletePost(id);
         return res.redirect("/");
     } else if (parsed.action === "update") {
         const updated = postModificationAction.parse(req.body);
+
+        const { success } = await cap.validateToken(updated.captcha);
+        if (!success) return captchaErr(res);
+
         updatePost(id, {
             title: updated.title,
             triggers: updated.triggers,

@@ -27,7 +27,7 @@
     --body-secondary: #eeeeee;
     --accent: #333333;
     --gray: #aaaaaa;
-    --border: #777777;
+    --border: #a1a1a1;
 }
 
 header {
@@ -51,7 +51,7 @@ footer {
     margin-top: 1rem;
 }
 
-header > * {
+header>* {
     background: var(--body-secondary);
     border-radius: 0.5rem;
     padding: 0.2rem;
@@ -68,7 +68,7 @@ header a {
     width: 2rem;
 }
 
-header h1 > a {
+header h1>a {
     width: unset;
 }
 
@@ -132,7 +132,7 @@ body {
     flex-direction: column;
 }
 
-body > *:not(header):not(footer) {
+body>*:not(header):not(footer) {
     max-width: 60ch;
 }
 
@@ -284,6 +284,13 @@ textarea {
     min-width: 12ch;
 }
 
+input:not([type="radio"]):not([type="checkbox"]):focus,
+button:focus,
+textarea:focus {
+    outline: none;
+    border: 3px solid blueviolet;
+}
+
 select {
     border: 2px solid var(--border);
     border-radius: 0.25rem;
@@ -380,7 +387,7 @@ section {
     margin-top: 0.6rem;
 }
 
-details > form {
+details>form {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -432,7 +439,7 @@ form .submit-group {
         padding-right: 0.25rem;
     }
 
-    header > * {
+    header>* {
         min-height: 3rem;
     }
 
@@ -463,4 +470,45 @@ form .submit-group {
         --gray: #aaaaaa;
         --border: #777777;
     }
+}
+
+/* Visually hide the checkbox but keep it in the accessibility tree */
+.tooltip-toggle {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Icon button styling */
+.tooltip-icon {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.25em;
+}
+
+/* Tooltip hidden by default */
+.tooltip-text {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--body-primary);
+    color: var(--body-bg);
+    border: 1px solid var(--body-secondary);
+    padding: 4px 8px;
+    max-width: 200px;
+    white-space: normal;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+/* Show tooltip when checkbox is checked */
+.tooltip-toggle:checked~.tooltip-text {
+    opacity: 1;
+    pointer-events: auto;
 }
