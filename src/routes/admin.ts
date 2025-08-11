@@ -104,16 +104,18 @@ export const signin = (req: Request, res: Response) => {
     }
 };
 
-// Middleware to authenticate JWT token
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
-    const token = extractTokenFromHeader(authHeader);
-    if (!token) return errors.json(res, ...MissingToken);
-
+export const createSignupCode = (_: Request, res: Response) => {
     try {
-        verifyToken(token);
-        next();
-    } catch (_) {
-        return errors.json(res, ...InvalidToken);
+        const code = createAdminCode();
+        res.json({
+            success: true,
+            data: { code },
+        });
+    } catch (error) {
+        console.error("Create signup code error:", error);
+        return errors.json(res, ...SignupError);
+    }
+};
+
     }
 };
