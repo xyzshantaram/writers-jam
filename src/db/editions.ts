@@ -43,3 +43,11 @@ export const deleteEdition = (id: number): void => {
   `);
     stmt.run(id);
 };
+
+export const adminCreateEdition = (name: string): Edition => {
+    return createEdition(name);
+};
+
+export const adminDeleteEdition = (id: number): void => {
+    deleteEdition(id);
+};
