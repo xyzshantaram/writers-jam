@@ -6,9 +6,10 @@ export const RateLimited: [RenderErrorOpts, number] = [
         code: "Ratelimited",
         name: "Too Many Requests",
         title: "Please Slow Down",
-        details: "You're making requests too quickly. Please wait a moment before trying again. This helps keep Writers Jam running smoothly for everyone.",
+        details:
+            "You're making requests too quickly. Please wait a moment before trying again. This helps keep Writers Jam running smoothly for everyone.",
     },
-    429
+    429,
 ];
 
 // Validation errors (can be reused across different contexts)
@@ -19,5 +20,5 @@ export const ValidationError = (details: string): [RenderErrorOpts, number] => [
         name: "Validation error",
         details,
     },
-    400
+    400,
 ];

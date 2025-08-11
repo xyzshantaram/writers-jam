@@ -1,8 +1,8 @@
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import express from "express";
-import { renderError } from "../error.ts";
-import { RateLimited } from "../errors/general-errors.ts";
+import { errors } from "../error.ts";
+import { RateLimited } from "../errors/general.ts";
 import { getClientIP } from "./mod.ts";
 
 export const makeCors = () =>
@@ -21,7 +21,7 @@ export const makeLimiter = (reqs: number, duration: number) =>
         },
         handler: (_, res) => {
             res.set("Retry-After", String(Math.ceil(duration / 1000)));
-            return renderError(res, ...RateLimited);
+            return errors.render(res, ...RateLimited);
         },
         windowMs: duration,
         limit: reqs,

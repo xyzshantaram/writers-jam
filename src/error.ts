@@ -4,6 +4,7 @@ import type { NextFunction, Request, Response } from "express";
 
 import express from "express";
 import { config } from "./config.ts";
+import { ValidationError } from "./errors/general.ts";
 
 const RENDER_ERROR_OPTS = {
     code: "Error",
@@ -21,12 +22,24 @@ const errorOpts = (opts: RenderErrorOpts): typeof RENDER_ERROR_OPTS => {
     return Object.assign(JSON.parse(JSON.stringify(RENDER_ERROR_OPTS)), opts);
 };
 
-export const renderError = (
-    res: express.Response,
-    opts: RenderErrorOpts,
-    code = 400,
-) => {
-    return res.status(code).render("error", errorOpts(opts));
+export const errors = {
+    json: (res: Response, opts: any, code = 400) =>
+        res.status(code).json({
+            success: false,
+            error: {
+                code: opts.code,
+                title: opts.title,
+                name: opts.name,
+                details: opts.details,
+            },
+        }),
+    render: (
+        res: express.Response,
+        opts: RenderErrorOpts,
+        code = 400,
+    ) => {
+        return res.status(code).render("error", errorOpts(opts));
+    },
 };
 
 export function errorHandler(
@@ -41,20 +54,19 @@ export function errorHandler(
 
     if (isZodErrorLike(err)) {
         const formatted = fromError(err);
-        renderError(res, {
-            code: "ValidationFailed",
-            title: "Invalid Input",
-            name: "Validation error",
-            details:
+        errors.render(
+            res,
+            ...ValidationError(
                 `There was an issue with the information you provided. Please check your input and try again. Details: ${formatted.toString()}`,
-        }, 400);
+            ),
+        );
         return;
     }
 
     const statusCode = err?.status || 500;
     const message = err?.message || "An unexpected error occurred. Please try again later.";
 
-    renderError(res, {
+    errors.render(res, {
         code: "InternalError",
         title: "Something went wrong",
         name: err?.name || "Error",

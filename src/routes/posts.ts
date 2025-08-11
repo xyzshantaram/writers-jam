@@ -10,7 +10,7 @@ import {
     randomPost,
     updatePost,
 } from "../db/mod.ts";
-import { renderError } from "../error.ts";
+import { errors } from "../error.ts";
 import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
 import { getClientIP, getPostTagString } from "../utils/mod.ts";
 import { Request, Response } from "express";
@@ -26,7 +26,7 @@ import {
     NoPostsAvailable,
     PostNotFound,
     SessionExpired,
-} from "../errors/posts-errors.ts";
+} from "../errors/posts.ts";
 
 export const index = (_: Request, res: Response) => {
     res.render("create-post", {
@@ -40,7 +40,7 @@ export const index = (_: Request, res: Response) => {
 export const random = (_: Request, res: Response) => {
     const post = randomPost();
     if (!post) {
-        return renderError(res, ...NoPostsAvailable);
+        return errors.render(res, ...NoPostsAvailable);
     }
     return res.redirect(`/post/${post}`);
 };
@@ -69,7 +69,7 @@ const normalizeId = (id: string): string | null => {
 
 export const view = (req: Request, res: Response) => {
     if (!req.params.id) {
-        return renderError(res, ...InvalidLink);
+        return errors.render(res, ...InvalidLink);
     }
     const id = req.params.id;
 
@@ -85,7 +85,7 @@ export const view = (req: Request, res: Response) => {
 
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, ...PostNotFound);
+        return errors.render(res, ...PostNotFound);
     }
 
     res.render("view-post", {
@@ -115,8 +115,7 @@ export const create = async (req: Request, res: Response) => {
     return res.redirect(`/post/${created}`);
 };
 
-const captchaErr = (res: Response) =>
-    renderError(res, ...CaptchaError);
+const captchaErr = (res: Response) => errors.render(res, ...CaptchaError);
 
 export const addComment = async (req: Request, res: Response) => {
     const parsed = createCommentSchema.parse(req.body);
@@ -175,14 +174,14 @@ export const manage = (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, ...PostNotFound);
+        return errors.render(res, ...PostNotFound);
     }
 
     if (
         post.password && post.password.length &&
         !verify(parsed.password, post.password)
     ) {
-        return renderError(res, ...IncorrectPassword);
+        return errors.render(res, ...IncorrectPassword);
     }
 
     const session = crypto.randomUUID();
@@ -213,7 +212,7 @@ export const update = (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const parsed = updatePostSchema.parse(req.body);
     if (editSessions[parsed.session].post !== id) {
-        return renderError(res, ...SessionExpired);
+        return errors.render(res, ...SessionExpired);
     }
 
     delete editSessions[parsed.session];

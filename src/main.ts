@@ -73,6 +73,10 @@ const createApp = () => {
     app.post("/post/:id/manage", posts.manage);
     app.post("/post/:id/update", posts.update);
 
+    // Admin API routes
+    app.post("/api/v1/admin/signup", admin.signup);
+    app.post("/api/v1/admin/signin", admin.signin);
+
     const withUrl = { whatsappUrl: config.whatsappUrl };
 
     app.get("/admin", admin.index);
