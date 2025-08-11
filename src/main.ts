@@ -1,6 +1,6 @@
 import express from "express";
 import * as path from "@std/path";
-import { makeCors, makeLimiter } from "./utils/middleware.ts";
+import { isAdmin, makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
 import { errorHandler } from "./error.ts";
@@ -13,7 +13,7 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import * as captcha from "./routes/captcha.ts";
 import { Post } from "./schemas/mod.ts";
-import { editionMap } from "./utils/editions.ts";
+import { editionMap, editions } from "./utils/editions.ts";
 import { parseMd } from "../public/js/parse.js";
 
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
@@ -73,9 +73,18 @@ const createApp = () => {
     app.post("/post/:id/manage", posts.manage);
     app.post("/post/:id/update", posts.update);
 
+    app.get("/api/v1/editions", (_, res) => {
+        res.json(editions.filter((itm) => !itm.deleted));
+    });
+
     // Admin API routes
     app.post("/api/v1/admin/signup", makeLimiter(1, timeMs({ s: 15 })), admin.signup);
     app.post("/api/v1/admin/signin", makeLimiter(1, timeMs({ s: 5 })), admin.signin);
+    app.post("/api/v1/admin/codes", isAdmin, admin.createSignupCode);
+    app.delete("/api/v1/admin/posts/:id", isAdmin, admin.deletePost);
+    app.patch("/api/v1/admin/posts/:id/nsfw", isAdmin, admin.setPostNsfw);
+    app.delete("/api/v1/admin/comments/:id", isAdmin, admin.deleteComment);
+    app.post("/api/v1/admin/editions", isAdmin, admin.createEdition);
 
     const withUrl = { whatsappUrl: config.whatsappUrl };
 
