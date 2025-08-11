@@ -1,15 +1,22 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { config } from "../config.ts";
-import { type AdminUser, createAdmin, deleteCode, getAdmin, isValidCode } from "../db/admin.ts";
+import {
+    type AdminUser,
+    createAdmin,
+    createAdminCode,
+    deleteCode,
+    getAdmin,
+    isValidCode,
+} from "../db/admin.ts";
+import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/posts.ts";
+import { adminCreateEdition } from "../db/editions.ts";
 import { hash, verify } from "@bronti/argon2";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
-import { extractTokenFromHeader, signToken, verifyToken } from "../utils/jwt.ts";
+import { signToken } from "../utils/jwt.ts";
 import { fromError } from "zod-validation-error/v4";
 import {
     InvalidCode,
     InvalidCredentials,
-    InvalidToken,
-    MissingToken,
     SigninError,
     SignupError,
     UserExists,
@@ -150,6 +157,7 @@ export const setPostNsfw = (req: Request, res: Response) => {
         return errors.json(res, ...SignupError);
     }
 };
+
 // Comment management routes
 export const deleteComment = (req: Request, res: Response) => {
     try {
@@ -164,5 +172,26 @@ export const deleteComment = (req: Request, res: Response) => {
         return errors.json(res, ...SignupError);
     }
 };
+
+export const createEdition = (req: Request, res: Response) => {
+    try {
+        const { name } = req.body;
+
+        if (!name || typeof name !== "string") {
+            return errors.json(
+                res,
+                ...ValidationError("Edition name is required and must be a string"),
+            );
+        }
+
+        const edition = adminCreateEdition(name);
+        res.json({
+            success: true,
+            message: "Please restart the server.",
+            data: edition,
+        });
+    } catch (error) {
+        console.error("Create edition error:", error);
+        return errors.json(res, ...SignupError);
     }
 };
