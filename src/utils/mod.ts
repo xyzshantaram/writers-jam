@@ -8,6 +8,15 @@ export const die = (code: number, ...args: any[]): never => {
 
 export const fatal = (...args: any[]) => die(1, "fatal:", ...args);
 
+/**
+ * Get a random number in a range.
+ * @param min Minimum value, inclusive
+ * @param max Maximum value, exclusive
+ */
+export const randIntInRange = (min: number, max: number) => {
+    Math.floor(Math.random() * (max - min) + min);
+};
+
 export const choose = <T>(arr: T[], count = 1): T[] => {
     if (count === undefined) {
         return [arr[Math.floor(Math.random() * arr.length)]];
@@ -97,3 +106,5 @@ export const cache = <T>(fn: (...args: any[]) => T, waitMs: number): (...args: a
         return entry.result;
     };
 };
+
+export * from "./jwt.ts";
