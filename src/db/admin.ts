@@ -13,16 +13,6 @@ create table if not exists admins(
     created_at integer
 )`);
 
-const initCode = () => {
-    const { count } = db.prepare(`select count(username) as count from admins`).get()!;
-    if (count && count === 0) {
-        const code = createAdminCode();
-        console.log(`No admins found. Created admin code ${code}`);
-    }
-};
-
-initCode();
-
 const createCodeQuery = db.prepare(`
     insert into admin_codes(
         code,
@@ -100,3 +90,13 @@ export const getAdmin = (username: string): AdminUser | undefined => {
         password: result.password as string,
     };
 };
+
+const initCode = () => {
+    const { count } = db.prepare(`select count(username) as count from admins`).get()!;
+    if (count !== null && typeof count !== "undefined" && count === 0) {
+        const code = createAdminCode();
+        console.log(`No admins found. Created admin code ${code}`);
+    }
+};
+
+initCode();
