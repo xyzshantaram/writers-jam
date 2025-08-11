@@ -7,6 +7,7 @@ import { z } from "zod/v4";
 export { createPost, getCommentsForPost, getPostById, getPosts } from "./posts.ts";
 export { getHomepageFeeds } from "./feeds.ts";
 export { type Edition, getAllEditions } from "./editions.ts";
+export * from "./admin.ts";
 
 init(db);
 
