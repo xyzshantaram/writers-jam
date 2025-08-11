@@ -19,6 +19,14 @@ import { cap } from "./captcha.ts";
 import { config } from "../config.ts";
 import { hash, verify } from "@bronti/argon2";
 import { editionMap, editions, editionSchema } from "../utils/editions.ts";
+import {
+    CaptchaError,
+    IncorrectPassword,
+    InvalidLink,
+    NoPostsAvailable,
+    PostNotFound,
+    SessionExpired,
+} from "../errors/posts-errors.ts";
 
 export const index = (_: Request, res: Response) => {
     res.render("create-post", {
@@ -32,12 +40,7 @@ export const index = (_: Request, res: Response) => {
 export const random = (_: Request, res: Response) => {
     const post = randomPost();
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            title: "No posts yet",
-            name: "NotFound",
-            details: "No posts are available yet. Be the first to create one!",
-        }, 404);
+        return renderError(res, ...NoPostsAvailable);
     }
     return res.redirect(`/post/${post}`);
 };
@@ -66,13 +69,7 @@ const normalizeId = (id: string): string | null => {
 
 export const view = (req: Request, res: Response) => {
     if (!req.params.id) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Invalid link",
-            name: "Bad request",
-            details:
-                "It looks like this post link is incomplete or broken. Please check the URL and try again.",
-        }, 400);
+        return renderError(res, ...InvalidLink);
     }
     const id = req.params.id;
 
@@ -88,13 +85,7 @@ export const view = (req: Request, res: Response) => {
 
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            details:
-                "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "Not found",
-            title: "Post not found",
-        }, 404);
+        return renderError(res, ...PostNotFound);
     }
 
     res.render("view-post", {
@@ -125,11 +116,7 @@ export const create = async (req: Request, res: Response) => {
 };
 
 const captchaErr = (res: Response) =>
-    renderError(res, {
-        details: "The captcha expired. Please try again.",
-        title: "Invalid captcha.",
-        name: "Captcha",
-    });
+    renderError(res, ...CaptchaError);
 
 export const addComment = async (req: Request, res: Response) => {
     const parsed = createCommentSchema.parse(req.body);
@@ -188,25 +175,14 @@ export const manage = (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            details:
-                "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "Not found",
-            title: "Post not found",
-        });
+        return renderError(res, ...PostNotFound);
     }
 
     if (
         post.password && post.password.length &&
         !verify(parsed.password, post.password)
     ) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Incorrect password",
-            name: "Authentication failed",
-            details: "The password you entered is incorrect. Please double-check and try again.",
-        }, 401);
+        return renderError(res, ...IncorrectPassword);
     }
 
     const session = crypto.randomUUID();
@@ -237,13 +213,7 @@ export const update = (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const parsed = updatePostSchema.parse(req.body);
     if (editSessions[parsed.session].post !== id) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Editing session expired",
-            name: "Session error",
-            details:
-                "Your editing session has expired or is invalid. Please refresh the page and try editing again.",
-        });
+        return renderError(res, ...SessionExpired);
     }
 
     delete editSessions[parsed.session];

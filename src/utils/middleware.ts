@@ -2,6 +2,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import express from "express";
 import { renderError } from "../error.ts";
+import { RateLimited } from "../errors/general-errors.ts";
 import { getClientIP } from "./mod.ts";
 
 export const makeCors = () =>
@@ -20,13 +21,7 @@ export const makeLimiter = (reqs: number, duration: number) =>
         },
         handler: (_, res) => {
             res.set("Retry-After", String(Math.ceil(duration / 1000)));
-            return renderError(res, {
-                code: "Ratelimited",
-                name: "Too Many Requests",
-                title: "Please Slow Down",
-                details:
-                    "You're making requests too quickly. Please wait a moment before trying again. This helps keep Writers Jam running smoothly for everyone.",
-            }, 429);
+            return renderError(res, ...RateLimited);
         },
         windowMs: duration,
         limit: reqs,
