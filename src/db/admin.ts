@@ -99,4 +99,33 @@ const initCode = () => {
     }
 };
 
+const adminDeletePostStmt = db.prepare(`
+    UPDATE post 
+    SET deleted = 1 
+    WHERE id = ?
+`);
+
+export const adminDeletePost = (id: string) => {
+    adminDeletePostStmt.run(unhashPostId(id));
+};
+
+const adminSetPostNsfwStmt = db.prepare(`
+    UPDATE post 
+    SET nsfw = ? 
+    WHERE id = ?
+`);
+
+export const adminSetPostNsfw = (id: string, nsfw: boolean) => {
+    adminSetPostNsfwStmt.run(nsfw ? 1 : 0, unhashPostId(id));
+};
+
+const adminDeleteCommentStmt = db.prepare(`
+    DELETE FROM comment 
+    WHERE id = ?
+`);
+
+export const adminDeleteComment = (id: string) => {
+    adminDeleteCommentStmt.run(unhashPostId(id));
+};
+
 initCode();

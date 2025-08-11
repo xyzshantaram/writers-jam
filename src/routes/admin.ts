@@ -8,7 +8,7 @@ import {
     getAdmin,
     isValidCode,
 } from "../db/admin.ts";
-import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/posts.ts";
+import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/admin.ts";
 import { adminCreateEdition } from "../db/editions.ts";
 import { hash, verify } from "@bronti/argon2";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
