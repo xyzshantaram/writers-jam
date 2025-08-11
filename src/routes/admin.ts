@@ -117,5 +117,38 @@ export const createSignupCode = (_: Request, res: Response) => {
     }
 };
 
+export const deletePost = (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        adminDeletePost(id);
+        res.json({
+            success: true,
+            message: "Post deleted successfully",
+        });
+    } catch (error) {
+        console.error("Delete post error:", error);
+        return errors.json(res, ...SignupError);
+    }
+};
+
+export const setPostNsfw = (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { nsfw } = req.body;
+
+        if (typeof nsfw !== "boolean") {
+            return errors.json(res, ...ValidationError("NSFW must be a boolean value"));
+        }
+
+        adminSetPostNsfw(id, nsfw);
+        res.json({
+            success: true,
+            message: `Post ${nsfw ? "marked as" : "unmarked as"} NSFW`,
+        });
+    } catch (error) {
+        console.error("Set post NSFW error:", error);
+        return errors.json(res, ...SignupError);
+    }
+};
     }
 };
