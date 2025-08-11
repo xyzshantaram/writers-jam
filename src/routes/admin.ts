@@ -150,5 +150,19 @@ export const setPostNsfw = (req: Request, res: Response) => {
         return errors.json(res, ...SignupError);
     }
 };
+// Comment management routes
+export const deleteComment = (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        adminDeleteComment(id);
+        res.json({
+            success: true,
+            message: "Comment deleted successfully",
+        });
+    } catch (error) {
+        console.error("Delete comment error:", error);
+        return errors.json(res, ...SignupError);
+    }
+};
     }
 };
