@@ -18,7 +18,7 @@ export const verifyToken = (token: string): JWTPayload => {
     return jwt.verify(token, secret) as JWTPayload;
 };
 
-export const extractTokenFromHeader = (authHeader: string | undefined): string | null => {
+export const extractTokenFromHeader = (authHeader?: string): string | null => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return null;
     }
