@@ -1,10 +1,10 @@
-import { parseMd } from "./parse.js";
 import { isLikelyVSCodeHtml, maybeMarkdown } from "./detect-markdown.js";
 import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
 import TurndownService from "https://esm.sh/turndown@7.2.0";
 import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
-import { template } from "https://esm.sh/jsr/@campfire/core@4.0.2";
+import { renderPreview } from "./preview.js";
+import cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
 
 globalThis.addEventListener("DOMContentLoaded", async () => {
     const textarea = document.querySelector("textarea");
@@ -81,25 +81,13 @@ globalThis.addEventListener("DOMContentLoaded", async () => {
 });
 
 globalThis.addEventListener('DOMContentLoaded', () => {
-    const previewBtn = document.querySelector("#preview-btn");
-    const previewCancelBtn = document.querySelector('#preview-cancel-btn');
-    const detailsContainer = document.querySelector('#post-details');
-    const confirmationContainer = document.querySelector('#post-confirmation');
-    const previewDetails = document.querySelector('#preview-details');
-    const preview = document.querySelector("#post-preview");
-    const textarea = document.querySelector("textarea");
-
-    const previewTemplate = template(`
-        <h3>Preview "{{title}}"</h3>
-        <div class=badges>
-            <span class="tag invert">{{ edition }}</span>
-            {{#nsfw}}<span class="tag danger invert">NSFW</span>{{/nsfw}}
-        </div>
-        <div>by <strong>{{author}}</strong></div>
-        {{#notes}}
-        <div class="nag"><strong>NOTES</strong>: {{notes}}</div>
-        {{/notes}}
-    `);
+    const [previewBtn] = cf.select({ s: "#preview-btn" });
+    const [previewCancelBtn] = cf.select({ s: '#preview-cancel-btn' });
+    const [detailsContainer] = cf.select({ s: '#post-details' });
+    const [confirmationContainer] = cf.select({ s: '#post-confirmation' });
+    const [previewDetails] = cf.select({ s: '#preview-details' });
+    const [preview] = cf.select({ s: "#post-preview" });
+    const [textarea] = cf.select({ s: "textarea" });
 
     const updatePreview = () => {
         const title = document.querySelector('#post-title')?.value || "Untitled";
@@ -110,12 +98,10 @@ globalThis.addEventListener('DOMContentLoaded', () => {
         const nsfw = !!document.querySelector('#post-nsfw')?.checked;
         const contents = textarea.value.trim();
 
-        previewDetails.innerHTML = previewTemplate({
-            title, author, edition, notes: notes.trim(), nsfw
-        });
-
-        preview.innerHTML = parseMd(contents);
-
+        renderPreview(
+            { details: previewDetails, preview },
+            { title, author, edition, notes: notes.trim(), nsfw, contents }
+        );
     }
 
     previewBtn.addEventListener('click', () => {
