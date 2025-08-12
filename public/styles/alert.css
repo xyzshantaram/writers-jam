@@ -44,24 +44,22 @@
 
 #alert-ok {
     background-color: #007cdf;
-    border: none;
-    padding: 0.5rem;
-    min-width: 10ch;
-    border-radius: 0.2rem;
+    font-weight: bold;
 }
 
 #alert-cancel {
     background-color: #978e0f;
-    border: none;
-    padding: 0.5rem;
-    min-width: 10ch;
-    border-radius: 0.2rem;
 }
 
 #alert-cancel,
 #alert-ok {
     cursor: pointer;
     margin: 0.2rem;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    min-width: 10ch;
+    border-radius: 0.2rem;
 }
 
 @media not all and (hover: none) {
