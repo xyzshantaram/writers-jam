@@ -15,6 +15,9 @@ const detailsTemplate = template(`
 
 export const renderPreview = (elts, opts) => {
     if (!elts.details || !elts.preview) throw new Error("Both details and render target must be supplied!");
-    elts.details.innerHTML = detailsTemplate(opts);
-    elts.preview.innerHTML = parseMd(opts.contents);
+    elts.details.innerHTML = detailsTemplate({
+        ...opts,
+        edition: typeof opts.edition === 'string' ? opts.edition : opts.edition.name
+    });
+    elts.preview.innerHTML = parseMd(opts.content);
 }
