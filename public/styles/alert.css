@@ -3,6 +3,7 @@
     border-radius: 0.2rem;
     max-height: 100%;
     overflow: auto;
+    background-color: var(--body-bg);
 }
 
 #alert-header,
