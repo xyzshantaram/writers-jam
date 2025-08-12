@@ -8,6 +8,7 @@
     --badge-text: white;
     --highlight-color: rgba(238, 250, 196, 0.5);
     --danger: #ae2929;
+    --warning: #ff8e15;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
 }
@@ -369,7 +370,12 @@ section {
 
 .danger {
     background-color: var(--danger);
-    color: var(--body-bg);
+    color: var(--body-primary);
+}
+
+.warning {
+    background-color: var(--warning);
+    color: var(--body-primary);
 }
 
 .post-tags {

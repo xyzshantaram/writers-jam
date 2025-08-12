@@ -9,6 +9,7 @@ import {
     getPostById,
     randomPost,
     updatePost,
+    updatePostEditCode,
 } from "../db/mod.ts";
 import { errors } from "../error.ts";
 import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
@@ -138,13 +139,20 @@ const manageSchema = z.object({
 });
 
 const updatePostSchema = z.object({
-    action: z.enum(["update", "delete"], {
-        error: "Invalid action. Must be 'update' or 'delete'",
+    action: z.enum(["update", "delete", "update_edit_code"], {
+        error: "Invalid action. Must be 'update', 'delete', or 'update_edit_code'",
     }),
     session: z.uuidv4().refine(
         (v) => Object.keys(editSessions).includes(v),
         { error: "Looks like your editing session expired. Try again" },
     ),
+});
+
+const postEditCodeAction = z.object({
+    new_edit_code: z.string()
+        .min(1, { error: "New edit code is required" })
+        .max(100, { error: "Edit code cannot be longer than 100 characters" }),
+    action: z.literal("update_edit_code"),
 });
 
 const postModificationAction = z.object({
@@ -230,7 +238,13 @@ export const update = (req: Request, res: Response) => {
             edition: updated.edition,
         });
         return res.redirect(`/post/${id}`);
-    } else {throw new Error(
+    } else if (parsed.action === "update_edit_code") {
+        const editCodeUpdate = postEditCodeAction.parse(req.body);
+        updatePostEditCode(id, editCodeUpdate.new_edit_code);
+        return res.redirect(`/post/${id}`);
+    } else {
+        throw new Error(
             "Something unexpected happened while updating your post. Please try again or contact support if the issue persists.",
-        );}
+        );
+    }
 };

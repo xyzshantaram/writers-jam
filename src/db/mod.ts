@@ -4,6 +4,7 @@ import { init } from "./init.ts";
 import { createCommentSchema, Post } from "../schemas/mod.ts";
 import { ulid } from "@std/ulid";
 import { z } from "zod/v4";
+import { hash } from "@bronti/argon2";
 export { createPost, getCommentsForPost, getPostById, getPosts } from "./posts.ts";
 export { getHomepageFeeds } from "./feeds.ts";
 export { type Edition, getAllEditions } from "./editions.ts";
@@ -97,6 +98,12 @@ const updatePostStmt = db.prepare(
    WHERE id = :id`,
 );
 
+const updatePostEditCodeStmt = db.prepare(
+    `UPDATE post
+   SET password = :password, updated = :updated
+   WHERE id = :id`,
+);
+
 const getPostTagsStmt = db.prepare(`
   SELECT tags FROM post WHERE id = :id
 `);
@@ -127,6 +134,20 @@ export const updatePost = (
         updated,
         tags,
         nsfw: nsfw ? 1 : 0,
+    });
+};
+
+export const updatePostEditCode = (
+    id: string,
+    newPassword: string,
+) => {
+    const updated = Date.now();
+    const password = newPassword.length ? hash(newPassword) : "";
+
+    return updatePostEditCodeStmt.run({
+        id: unhashPostId(id),
+        password,
+        updated,
     });
 };
 
