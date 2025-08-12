@@ -88,7 +88,7 @@ const createApp = () => {
             }
             res.json({
                 success: true,
-                post: {
+                data: {
                     ...post,
                     password: undefined,
                     edition: editionMap.get(post.tags.edition.value),
