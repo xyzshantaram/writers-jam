@@ -12,11 +12,13 @@ import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/adm
 import { adminCreateEdition } from "../db/editions.ts";
 import { hash, verify } from "@bronti/argon2";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
-import { signToken } from "../utils/jwt.ts";
+import { extractTokenFromHeader, signToken, verifyToken } from "../utils/jwt.ts";
 import { fromError } from "zod-validation-error/v4";
 import {
     InvalidCode,
     InvalidCredentials,
+    InvalidToken,
+    MissingToken,
     SigninError,
     SignupError,
     UserExists,
@@ -193,5 +195,26 @@ export const createEdition = (req: Request, res: Response) => {
     } catch (error) {
         console.error("Create edition error:", error);
         return errors.json(res, ...SignupError);
+    }
+};
+
+export const whoami = (req: Request, res: Response) => {
+    try {
+        const authHeader = req.headers.authorization;
+        const token = extractTokenFromHeader(authHeader);
+        if (!token) return errors.json(res, ...MissingToken);
+
+        const payload = verifyToken(token);
+
+        const admin: AdminUser | undefined = getAdmin(payload.username);
+        if (!admin) return errors.json(res, ...InvalidCredentials);
+
+        res.json({
+            success: true,
+            user: { username: admin.username },
+        });
+    } catch (error) {
+        console.error("Whoami error:", error);
+        return errors.json(res, ...InvalidToken);
     }
 };
