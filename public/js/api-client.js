@@ -49,7 +49,7 @@ export class ApiClient {
 
         const result = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || !result.success) {
             const error = new Error(result.error.details);
             error.details = {
                 status: response.status,
@@ -169,7 +169,7 @@ export class ApiClient {
         console.error('API Error:', error);
 
         let { status, error: data } = error;
-        if (error instanceof Error) {
+        if (error instanceof Error && error.details) {
             ({ status, data } = error.details);
         }
 
