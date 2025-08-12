@@ -42,6 +42,30 @@
     </form>
 </details>
 
+<details open>
+    <summary>Manage post</summary>
+
+    <div class="form-group">
+        <input type="text" id="admin-post-id">
+    </div>
+
+    <div class="form-group submit-group">
+        <button type="button">Manage</button>
+    </div>
+    
+    <div class="post-preview-wrapper" style="display: none">
+        <div id="preview-details"></div>
+        <div id='post-preview' aria-label="Post preview" role="region" class="content-rendered noborder"></div>
+    </div>
+
+    <div class="manage-actions">
+        <button type="button">Delete post</button>
+        <button type="button">Reset edit code</button>
+        <button type="button">Toggle NSFW state</button>
+    </div>
+    
+    <div id="last-action-result"></div>
+</details>
 
 <script type="module" src="/js/admin.js"></script>
 {% endblock %}
