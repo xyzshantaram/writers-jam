@@ -87,6 +87,16 @@ export class ApiClient {
         return await this.request('/api/v1/editions');
     }
 
+    async getPost(postId) {
+        return await this.request(`/api/v1/post/${postId}`);
+    }
+
+    async resetPostEditCode(postId) {
+        return await this.request(`/api/admin/v1/post/${postId}/reset-edit-code`, {
+            method: 'POST'
+        });
+    }
+
     async adminSignup(signupData) {
         const result = await this.request('/api/v1/admin/signup', {
             method: 'POST',
