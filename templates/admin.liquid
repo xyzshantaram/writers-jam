@@ -2,6 +2,8 @@
 
 {% block head_extras %}
 <link rel="stylesheet" href="/styles/alert.css">
+<link rel="stylesheet" href="/styles/admin.css">
+<link rel="stylesheet" href="/styles/rendered.css">
 {% endblock %}
 
 {% block content %}
@@ -45,13 +47,15 @@
 <details open>
     <summary>Manage post</summary>
 
-    <div class="form-group">
-        <input type="text" id="admin-post-id">
-    </div>
-
-    <div class="form-group submit-group">
-        <button type="button">Manage</button>
-    </div>
+    <form onsubmit="(e) => e.preventDefault()">
+        <div class="form-group">
+            <label for="admin-post-id">Post ID</label>
+            <input type="text" id="admin-post-id">
+        </div>
+        <div class="form-group submit-group">
+            <button type="button" id="manage-btn">Manage</button>
+        </div>
+    </form>
     
     <div class="post-preview-wrapper" style="display: none">
         <div id="preview-details"></div>
@@ -64,7 +68,7 @@
         <button type="button">Toggle NSFW state</button>
     </div>
     
-    <div id="last-action-result"></div>
+    <div id="last-action-result">Ready.</div>
 </details>
 
 <script type="module" src="/js/admin.js"></script>
