@@ -3,17 +3,19 @@ import * as path from "@std/path";
 import { isAdmin, makeCors, makeLimiter } from "./utils/middleware.ts";
 import { Liquid } from "liquidjs";
 import { config } from "./config.ts";
-import { errorHandler } from "./error.ts";
+import { errorHandler, errors } from "./error.ts";
 import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
 import * as admin from "./routes/admin.ts";
 import * as search from "./routes/search.ts";
+import { getPostById } from "./db/mod.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import * as captcha from "./routes/captcha.ts";
 import { Post } from "./schemas/mod.ts";
 import { editionMap, editions } from "./utils/editions.ts";
 import { parseMd } from "../public/js/parse.js";
+import { PostNotFound } from "./errors/posts.ts";
 
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
     const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
@@ -74,6 +76,23 @@ const createApp = () => {
 
     app.get("/api/v1/editions", (_, res) => {
         res.json(editions.filter((itm) => !itm.deleted));
+    });
+
+    // Post API routes
+    app.get("/api/v1/post/:id", (req, res) => {
+        const { id } = req.params;
+        const post = getPostById(id);
+        if (!post) {
+            return errors.json(res, { ...PostNotFound }, 404);
+        }
+        res.json({
+            success: true,
+            data: {
+                ...post,
+                password: undefined,
+                edition: editionMap.get(post.tags.edition.value),
+            },
+        });
     });
 
     // Admin API routes
