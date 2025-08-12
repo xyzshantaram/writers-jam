@@ -8,7 +8,6 @@ import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
 import * as admin from "./routes/admin.ts";
 import * as search from "./routes/search.ts";
-import { timeMs } from "./utils/time.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import * as captcha from "./routes/captcha.ts";
@@ -49,10 +48,10 @@ const createApp = () => {
     app.get("/post", posts.index);
     app.get("/post/random", posts.random);
     app.get("/post/:id", posts.view);
-    app.post("/post", makeLimiter(1, timeMs({ s: 15 })), posts.create);
+    app.post("/post", makeLimiter({ n: 1, period: { s: 15 } }), posts.create);
     app.post(
         "/post/:id/comment",
-        makeLimiter(1, timeMs({ s: 15 })),
+        makeLimiter({ n: 1, period: { s: 15 } }),
         posts.addComment,
     );
 
@@ -60,13 +59,13 @@ const createApp = () => {
 
     app.post(
         "/captcha/challenge",
-        makeLimiter(1, timeMs({ s: 10 })),
+        makeLimiter({ n: 1, period: { s: 10 } }),
         captcha.challenge,
     );
 
     app.post(
         "/captcha/redeem",
-        makeLimiter(1, timeMs({ s: 10 })),
+        makeLimiter({ n: 1, period: { s: 10 } }),
         captcha.redeem,
     );
 
@@ -78,8 +77,13 @@ const createApp = () => {
     });
 
     // Admin API routes
-    app.post("/api/v1/admin/signup", makeLimiter(1, timeMs({ s: 15 })), admin.signup);
-    app.post("/api/v1/admin/signin", makeLimiter(1, timeMs({ s: 5 })), admin.signin);
+    app.post(
+        "/api/v1/admin/signup",
+        makeLimiter({ n: 1, period: { s: 15 } }),
+        admin.signup,
+    );
+    app.post("/api/v1/admin/signin", makeLimiter({ n: 1, period: { s: 5 } }), admin.signin);
+    app.get("/api/v1/admin/whoami", isAdmin, admin.whoami);
     app.post("/api/v1/admin/codes", isAdmin, admin.createSignupCode);
     app.delete("/api/v1/admin/posts/:id", isAdmin, admin.deletePost);
     app.patch("/api/v1/admin/posts/:id/nsfw", isAdmin, admin.setPostNsfw);
