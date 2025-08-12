@@ -145,7 +145,7 @@ blockquote {
 html {
     background-color: var(--accent);
     width: calc(100% - var(--root-padding) * 2);
-    min-height: calc(100% - var(--root-padding) * 2);
+    height: 100%;
     margin: 0;
     padding: var(--root-padding);
 }
