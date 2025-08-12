@@ -91,21 +91,6 @@ fieldset:has(textarea) {
     border: 1px solid green;
 }
 
-#preview-details {
-    width: 100%;
-}
-
-#preview-details h3 {
-    margin: 0.25rem;
-    text-align: center;
-}
-
-#preview-details .badges {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
 #preview-btn {
     margin-bottom: 1rem;
 }
