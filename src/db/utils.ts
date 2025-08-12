@@ -16,7 +16,7 @@ export interface PaginatedPosts {
 }
 
 export const toPostShape = (row: Record<string, any>) => ({
-    id: hashPostId(row.id),
+    id: typeof row.id === "string" ? row.id : hashPostId(row.id),
     title: row.title,
     nsfw: !!row.nsfw,
     password: String(row.password || ""),
