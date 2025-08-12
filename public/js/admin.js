@@ -78,15 +78,10 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
 
         try {
             const isSignup = data.signupCode && data.signupCode.trim() !== "";
-            const result = await apiClient.authenticate(data, isSignup);
-
-            if (result.success) {
-                await message('Authentication successful!', 'Success');
-                // Reload the page to show the authenticated state
-                setTimeout(() => location.reload(), 1000);
-            } else {
-                await message(result.message || 'Authentication failed', 'Error');
-            }
+            await apiClient.authenticate(data, isSignup);
+            await message('Authentication successful!', 'Success');
+            // Reload the page to show the authenticated state
+            setTimeout(() => location.reload(), 1000);
         } catch (error) {
             const { msg } = apiClient.handleApiError(error, 'Authentication failed');
             await fatal(msg, 'Error');
