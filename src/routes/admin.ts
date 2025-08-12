@@ -10,7 +10,9 @@ import {
 } from "../db/admin.ts";
 import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/admin.ts";
 import { adminCreateEdition } from "../db/editions.ts";
+import { updatePostEditCode } from "../db/mod.ts";
 import { hash, verify } from "@bronti/argon2";
+import { randIntInRange, hashPostId } from "../utils/mod.ts";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
 import { extractTokenFromHeader, signToken, verifyToken } from "../utils/jwt.ts";
 import { fromError } from "zod-validation-error/v4";
@@ -216,5 +218,31 @@ export const whoami = (req: Request, res: Response) => {
     } catch (error) {
         console.error("Whoami error:", error);
         return errors.json(res, ...InvalidToken);
+    }
+};
+
+export const resetPostEditCode = (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        // Generate a random number between 100000 and 999999
+        const randomNumber = randIntInRange(100000, 1000000);
+        
+        // Calculate the hash of the random number using hashPostId
+        const newEditCode = hashPostId(randomNumber);
+        
+        // Update the post's edit code using updatePostEditCode
+        updatePostEditCode(id, newEditCode);
+
+        res.json({
+            success: true,
+            message: "Post edit code reset successfully",
+            data: {
+                newEditCode: newEditCode
+            }
+        });
+    } catch (error) {
+        console.error("Reset post edit code error:", error);
+        return errors.json(res, ...SignupError);
     }
 };

@@ -89,6 +89,7 @@ const createApp = () => {
     app.patch("/api/v1/admin/posts/:id/nsfw", isAdmin, admin.setPostNsfw);
     app.delete("/api/v1/admin/comments/:id", isAdmin, admin.deleteComment);
     app.post("/api/v1/admin/editions", isAdmin, admin.createEdition);
+    app.post("/api/admin/v1/post/:id/reset-edit-code", isAdmin, admin.resetPostEditCode);
 
     const withUrl = { whatsappUrl: config.whatsappUrl };
 

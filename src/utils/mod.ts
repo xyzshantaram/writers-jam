@@ -14,7 +14,7 @@ export const fatal = (...args: any[]) => die(1, "fatal:", ...args);
  * @param max Maximum value, exclusive
  */
 export const randIntInRange = (min: number, max: number) => {
-    Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max - min) + min);
 };
 
 export const choose = <T>(arr: T[], count = 1): T[] => {
