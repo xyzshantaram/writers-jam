@@ -125,7 +125,7 @@
         <summary><h4>Change edit code</h4></summary>
         
         <div class="nag">
-            <strong>WARNING!</strong>If you forget your edit code, you'll have to ask admins to reset it. Be careful!</div>
+            <strong>WARNING!</strong> If you forget your edit code, you'll have to ask admins to reset it. Be careful!</div>
 
         <form action="/post/{{ post.id }}/update" method="post">
             <input type="hidden" name="session" value="{{ session }}">
@@ -134,6 +134,7 @@
                 <label for="new-edit-code">New edit code</label>
                 <input type="text" id="new-edit-code" name="new_edit_code" required>
             </div>
+            <cap-widget id="cap-edit-code" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
             <div class="form-group submit-group">
                 <button type="submit" class="warning">Change edit code</button>
             </div>

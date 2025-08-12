@@ -154,6 +154,7 @@ const postEditCodeAction = z.object({
         .min(1, { error: "New edit code is required" })
         .max(100, { error: "Edit code cannot be longer than 100 characters" }),
     action: z.literal("update_edit_code"),
+    captcha: z.string({ error: "Captcha is required." }),
 });
 
 const postModificationAction = z.object({
@@ -249,6 +250,10 @@ export const update = async (req: Request, res: Response) => {
         return res.redirect(`/post/${id}`);
     } else if (parsed.action === "update_edit_code") {
         const editCodeUpdate = postEditCodeAction.parse(req.body);
+
+        const { success } = await cap.validateToken(editCodeUpdate.captcha);
+        if (!success) return captchaErr(res);
+
         updatePostEditCode(id, editCodeUpdate.new_edit_code);
         return res.redirect(`/post/${id}`);
     } else {
