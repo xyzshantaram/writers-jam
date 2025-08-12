@@ -15,7 +15,7 @@ import * as captcha from "./routes/captcha.ts";
 import { Post } from "./schemas/mod.ts";
 import { editionMap, editions } from "./utils/editions.ts";
 import { parseMd } from "../public/js/parse.js";
-import { PostNotFound } from "./errors/posts.ts";
+import { InvalidLink, PostNotFound } from "./errors/posts.ts";
 
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
     const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
@@ -81,18 +81,22 @@ const createApp = () => {
     // Post API routes
     app.get("/api/v1/post/:id", (req, res) => {
         const { id } = req.params;
-        const post = getPostById(id);
-        if (!post) {
-            return errors.json(res, { ...PostNotFound }, 404);
+        try {
+            const post = getPostById(id);
+            if (!post) {
+                return errors.json(res, { ...PostNotFound }, 404);
+            }
+            res.json({
+                success: true,
+                post: {
+                    ...post,
+                    password: undefined,
+                    edition: editionMap.get(post.tags.edition.value),
+                },
+            });
+        } catch {
+            return errors.json(res, ...InvalidLink);
         }
-        res.json({
-            success: true,
-            data: {
-                ...post,
-                password: undefined,
-                edition: editionMap.get(post.tags.edition.value),
-            },
-        });
     });
 
     // Admin API routes
