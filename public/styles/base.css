@@ -51,7 +51,7 @@ footer {
     margin-top: 1rem;
 }
 
-header > * {
+header>* {
     background: var(--body-secondary);
     border-radius: 0.5rem;
     padding: 0.2rem;
@@ -68,7 +68,7 @@ header a {
     width: 2rem;
 }
 
-header h1 > a {
+header h1>a {
     width: unset;
 }
 
@@ -119,7 +119,7 @@ pre {
 
 body {
     background-color: var(--body-bg);
-    max-width: 70ch;
+    max-width: 80ch;
     width: 100%;
     min-height: max(100vh, 100%);
     padding: 0;
@@ -132,8 +132,8 @@ body {
     flex-direction: column;
 }
 
-body > *:not(header):not(footer) {
-    max-width: 60ch;
+body>*:not(header):not(footer):not(#alert-mask) {
+    max-width: 70ch;
 }
 
 blockquote {
@@ -380,7 +380,7 @@ section {
     margin-top: 0.6rem;
 }
 
-details > form {
+details>form {
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -432,7 +432,7 @@ form .submit-group {
         padding-right: 0.25rem;
     }
 
-    header > * {
+    header>* {
         min-height: 3rem;
     }
 
