@@ -1,5 +1,47 @@
 {% layout "base.liquid", title: "administration", heading: "Admin" %}
 
-{% block content %}
+{% block head_extras %}
+<link rel="stylesheet" href="/styles/alert.css">
+{% endblock %}
 
+{% block content %}
+<style>
+    .signup-code-group {
+        margin: 1rem;
+    }
+
+    #login-form .form-group {
+        width: unset;
+    }
+</style>
+
+<details>
+    <summary>Authorization</summary>
+    <form id="login-form">
+        <div class="form-group">
+            <label for="admin-auth-username">Username</label>
+            <input type="text" name="username" id="admin-auth-username">
+        </div>
+
+        <div class="form-group">
+            <label for="admin-auth-password">Password</label>
+            <input type="password" name="password" id="admin-auth-password">
+        </div>
+
+        <details>
+            <summary>Signup</summary>
+            <div class="form-group signup-code-group">
+                <label for="admin-auth-signupcode">Signup code</label>
+                <input type="text" name="signupCode" id="admin-auth-signupcode">
+            </div>
+        </details>
+        
+        <div class="form-group submit-group">
+            <input type="submit" value="Authorize">
+        </div>
+    </form>
+</details>
+
+
+<script type="module" src="/js/admin.js"></script>
 {% endblock %}
