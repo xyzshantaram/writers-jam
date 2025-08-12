@@ -1,5 +1,82 @@
-.create-post {
-    margin: 1rem;
+fieldset>input,
+fieldset>select,
+fieldset>textarea {
+    margin: 0;
+    border: none !important;
+    width: calc(100% - 0.8rem);
+}
+
+fieldset>textarea {
+    resize: none;
+    line-height: 1.2;
+    font-size: 1rem;
+    padding: 0.4rem;
+}
+
+fieldset>input {
+    overflow-x: auto;
+}
+
+#post-confirmation {
+    display: none;
+}
+
+#post-details {
+    display: contents;
+}
+
+#post-content-container {
+    margin-bottom: 1rem;
+}
+
+fieldset>select {
+    font-size: 1rem;
+}
+
+fieldset {
+    padding: 0;
+    border: 2px solid var(--border);
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+
+fieldset:focus-within {
+    border: 3px solid var(--focus-outline, #6a5acd);
+}
+
+fieldset:focus-within legend {
+    font-weight: bold;
+}
+
+
+fieldset legend {
+    margin-left: 0.5rem;
+    margin-bottom: -0.5rem;
+}
+
+fieldset input:focus,
+fieldset select:focus,
+fieldset textarea:focus {
+    outline: none;
+}
+
+fieldset:has(textarea) {
+    width: 100%;
+}
+
+.title-line {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.title-line .title-wrapper {
+    flex: 7;
+}
+
+.title-line .edition-wrapper {
+    flex: 3;
 }
 
 .editing-help {
@@ -14,6 +91,51 @@
     border: 1px solid green;
 }
 
+#preview-details {
+    width: 100%;
+}
+
+#preview-details h3 {
+    margin: 0.25rem;
+    text-align: center;
+}
+
+#preview-details .badges {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#preview-btn {
+    margin-bottom: 1rem;
+}
+
+#post-confirmation .paginate-group {
+    margin-bottom: 1rem;
+}
+
+#post-content-label {
+    background: var(--body-bg);
+    padding: 0.4rem;
+}
+
 #post-content {
     min-height: 60vh;
+}
+
+.post-preview-wrapper {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--border);
+    width: calc(100% - 2rem);
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .title-line .title-wrapper {
+        flex: 5;
+    }
+
+    .title-line .edition-wrapper {
+        flex: 5;
+    }
 }
