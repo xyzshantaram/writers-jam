@@ -108,5 +108,5 @@ body> :not(header):not(footer) {
     text-align: center;
     font-size: 0.8rem;
     font-style: italic;
-    color: var(--gray);
+    color: #303030;
 }
