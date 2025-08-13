@@ -334,10 +334,6 @@ function setupEditionMgmt() {
     const [list] = EditionList(editions);
     cf.select({ s: '.editions-wrapper' })[0].append(list);
 
-    editions.on('update', (e) => {
-        console.log(e)
-    })
-
     const [input] = cf.select({ s: "#admin-edition-name" });
     const [btn] = cf.select({ s: '#add-edition-btn' });
 

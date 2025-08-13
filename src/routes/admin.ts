@@ -196,7 +196,7 @@ export const createEdition = (req: Request, res: Response) => {
     });
 
     setTimeout(() => {
-        console.log("Going down for edition update!");
+        console.warn("Going down for edition update!");
         Deno.exit(0);
     }, 15000);
 };

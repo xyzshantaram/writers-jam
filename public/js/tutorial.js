@@ -4,7 +4,6 @@ import { parseMd } from "./parse.js";
 import { showDialog } from "./dialog.js";
 
 const TutorialPane = (description, content) => {
-    console.log(description);
     const [wrapper] = cf.nu("div.tutorial-pane")
         .html`
         <div class='tutorial-description'>${r(parseMd(description))}</div>

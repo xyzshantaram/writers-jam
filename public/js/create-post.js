@@ -96,11 +96,11 @@ globalThis.addEventListener('DOMContentLoaded', () => {
         const edition = edSelect?.selectedOptions?.[0]?.textContent || "";
         const notes = document.querySelector('#post-tws')?.value || "";
         const nsfw = !!document.querySelector('#post-nsfw')?.checked;
-        const contents = textarea.value.trim();
+        const content = textarea.value.trim();
 
         renderPreview(
             { details: previewDetails, preview },
-            { title, author, edition, notes: notes.trim(), nsfw, contents }
+            { title, author, edition, notes: notes.trim(), nsfw, content }
         );
     }
 

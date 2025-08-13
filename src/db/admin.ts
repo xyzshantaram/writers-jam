@@ -95,7 +95,7 @@ const initCode = () => {
     const { count } = db.prepare(`select count(username) as count from admins`).get()!;
     if (count !== null && typeof count !== "undefined" && count === 0) {
         const code = createAdminCode();
-        console.log(`No admins found. Created admin code ${code}`);
+        console.info(`No admins found. Created admin code ${code}`);
     }
 };
 
