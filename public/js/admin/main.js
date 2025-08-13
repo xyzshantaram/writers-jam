@@ -255,8 +255,72 @@ function setupCommentMgmt() {
     }
 }
 
+const EditionList = (editions) => cf.nu('div.editions-list')
+    .deps({ editions })
+    .render(({ editions }, { b }) =>
+        b.html`<ol class="edition-items">
+            ${cf.r(editions
+            .toSorted((a, b) => a.id - b.id)
+            .slice(1)
+            .map(edition => `
+                <li class="edition-item" data-id="${edition.id}">
+                    <span class="edition-name">${edition.name}</span>
+                </li>
+            `).join(''))}
+        </ol>`
+    )
+    .done();
+
+function setupEditionMgmt() {
+    const api = ApiClient.getInstance();
+    const editions = cf.store({ type: 'list', value: [] });
+    const [list] = EditionList(editions);
+    cf.select({ s: '.editions-wrapper' })[0].append(list);
+
+    editions.on('update', (e) => {
+        console.log(e)
+    })
+
+    const [input] = cf.select({ s: "#admin-edition-name" });
+    const [btn] = cf.select({ s: '#add-edition-btn' });
+
+    const loadEditions = async () => {
+        try {
+            const result = await api.getEditions();
+            editions.update(result.data);
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to load editions');
+            await message(msg, 'Error loading editions');
+        }
+    };
+
+    btn.onclick = async () => {
+        const name = input.value.trim();
+        if (!name) return await message('Please enter an edition name', 'Error');
+
+        try {
+            await api.createEdition(name);
+            input.value = '';
+            await loadEditions();
+            await message("Edition created successfully. The server will restart in 15 seconds.");
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to create edition');
+            await fatal(msg, 'Error');
+        }
+    };
+
+    input.addEventListener('keyup', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        btn.click();
+    });
+
+    loadEditions();
+}
+
 globalThis.addEventListener('DOMContentLoaded', async () => {
     await setupLogin();
     setupPostMgmt();
     setupCommentMgmt();
+    setupEditionMgmt();
 });
