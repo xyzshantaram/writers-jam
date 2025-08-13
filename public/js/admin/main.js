@@ -223,6 +223,7 @@ const CommentConfirmation = (comment, close) => {
     cnf.onclick = async () => {
         await api.deleteComment(comment.id);
         close();
+        await message('Comment deleted successfully.', 'Success');
     }
 
     cancel.onclick = () => close();
@@ -242,9 +243,15 @@ function setupCommentMgmt() {
         if (!ulid && !(ulid = value).length === 26) {
             return await message("Invalid comment ID.", "Error");
         }
-        const comment = await api.getComment(ulid);
-        const [dialog] = cf.select({ s: 'dialog' });
-        showDialog(CommentConfirmation(comment.data, () => dialog.close()));
+        try {
+            const comment = await api.getComment(ulid);
+            const [dialog] = cf.select({ s: 'dialog' });
+            showDialog(CommentConfirmation(comment.data, () => dialog.close()));
+        }
+        catch (e) {
+            const { msg } = api.handleApiError(e, "Error deleting comment.");
+            await message(msg, 'Error');
+        }
     }
 }
 
