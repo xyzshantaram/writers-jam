@@ -50,6 +50,7 @@ export class ApiClient {
         const result = await response.json();
 
         if (!response.ok || !result.success) {
+            console.debug(result);
             const error = new Error(result.error.details);
             error.details = {
                 status: response.status,
@@ -169,18 +170,23 @@ export class ApiClient {
         }
     }
 
-    handleApiError(error, defaultMessage = 'An error occurred') {
-        console.error('API Error:', error);
+    handleApiError(err, defaultMessage = 'An error occurred') {
+        console.error('API Error:', err);
 
-        let { status, error: data } = error;
-        if (error instanceof Error && error.details) {
-            ({ status, data } = error.details);
+        let status = 500;
+        let error = {
+            code: "Error",
+            details: "An unknown error occurred.",
+        };
+
+        if (err instanceof Error && err.details) {
+            ({ status, error } = err.details);
         }
 
-        if (data.details) {
+        if (error.details) {
             if (status === 401) return this.clearToken();
             return {
-                msg: `${data.code || 'Error'}: ${data.details}`
+                msg: `${error.code || 'Error'}: ${error.details}`
             }
         }
 
