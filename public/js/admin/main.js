@@ -301,8 +301,8 @@ function setupEditionMgmt() {
         try {
             await api.createEdition(name);
             input.value = '';
-            await loadEditions();
             await message("Edition created successfully. The server will restart in 15 seconds.");
+            setTimeout(() => location.reload(), 15000);
         } catch (error) {
             const { msg } = api.handleApiError(error, 'Failed to create edition');
             await fatal(msg, 'Error');
