@@ -1,0 +1,23 @@
+.manage-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem;
+    justify-content: center;
+}
+
+.post-preview-wrapper {
+    max-height: 20ch;
+    overflow-y: auto;
+}
+
+#last-action-result {
+    margin: 1rem;
+    border: 2px solid var(--border);
+    padding: 0.2rem;
+    border-radius: 0.25rem;
+}
+
+#last-action-result::before {
+    content: "Status ";
+    font-weight: bold;
+}
