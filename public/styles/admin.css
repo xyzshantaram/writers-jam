@@ -45,3 +45,18 @@
 .submit-group {
     gap: 0.4rem;
 }
+
+.signup-code-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.signup-code-content>* {
+    max-width: 80%;
+}
+
+.details-heading {
+    font-size: 1.1rem;
+}

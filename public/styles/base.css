@@ -380,6 +380,12 @@ section {
     color: white;
 }
 
+details ul,
+details ol {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
 .warning {
     background-color: var(--warning);
     color: var(--body-primary);

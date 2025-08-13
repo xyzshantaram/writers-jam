@@ -271,6 +271,63 @@ const EditionList = (editions) => cf.nu('div.editions-list')
     )
     .done();
 
+const SignupCodeList = (signupCodes) => cf.nu('div.signup-codes-list')
+    .deps({ signupCodes })
+    .render(({ signupCodes }, { b }) => {
+        if (signupCodes.length === 0) {
+            return b.html`
+            <p>No codes generated in this session.</p>
+            `;
+        }
+
+        return b.html`
+            <div class="details-heading">
+                <strong>Generated codes</strong>
+            </div>
+            <ul class="signup-codes-ul">
+                ${cf.r(signupCodes.map(code => `
+                    <li class="signup-code-item">
+                        <code>${code.code}</code>
+                        <small class="signup-code-meta">Created: ${new Date(code.createdAt).toLocaleString()}</small>
+                    </li>
+                `).join(''))}
+            </ul>
+        `;
+    })
+    .done();
+
+function setupSignupCodeMgmt() {
+    const api = ApiClient.getInstance();
+    const signupCodes = cf.store({ type: 'list', value: [] });
+    const [list] = SignupCodeList(signupCodes);
+
+    const wrapper = document.querySelector('.signup-codes-wrapper');
+    cf.insert(list, { into: wrapper });
+
+    const [btn] = cf.select({ s: '#create-signup-code-btn' });
+
+    btn.addEventListener('click', async () => {
+        if (!await confirm('Are you sure you want to create a new signup code?')) {
+            return;
+        }
+
+        try {
+            const result = await api.createSignupCode();
+            const newCode = {
+                code: result.data.code || 'unknown',
+                createdAt: new Date().toISOString()
+            };
+
+            signupCodes.update([newCode, ...signupCodes.current()]);
+
+            await message('Signup code created successfully!', 'Success');
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to create signup code');
+            await fatal(msg, 'Error');
+        }
+    });
+}
+
 function setupEditionMgmt() {
     const api = ApiClient.getInstance();
     const editions = cf.store({ type: 'list', value: [] });
@@ -322,5 +379,6 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
     await setupLogin();
     setupPostMgmt();
     setupCommentMgmt();
+    setupSignupCodeMgmt();
     setupEditionMgmt();
 });
