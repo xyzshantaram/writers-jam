@@ -125,7 +125,7 @@ const adminDeleteCommentStmt = db.prepare(`
 `);
 
 export const adminDeleteComment = (id: string) => {
-    adminDeleteCommentStmt.run(unhashPostId(id));
+    adminDeleteCommentStmt.run(id);
 };
 
 initCode();
