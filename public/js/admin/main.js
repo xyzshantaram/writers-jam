@@ -2,25 +2,9 @@ import { ApiClient } from '../api-client.js';
 import { message, confirm, fatal } from 'https://esm.sh/cf-alert@0.4.1';
 import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
 import { renderPreview } from '../preview.js';
-
-const getFormJson = (form) => {
-    if (form instanceof HTMLElement && form.tagName === "FORM") {
-        form = new FormData(form);
-    }
-    else if (!(form instanceof FormData)) {
-        throw new Error("Non-form data passed to toJson!");
-    }
-
-    const result = {};
-    for (const key of form.keys()) {
-        const val = form.getAll(key);
-        if (!val.length) continue;
-        if (val.length === 1) result[key] = val[0];
-        else result[key] = val;
-    }
-
-    return result;
-}
+import { getFormJson, extractPostId, ManageBtns } from "./utils.js";
+import { showDialog } from "../dialog.js";
+import { parseMd } from "../parse.js";
 
 const UserInfo = (username) => {
     const [logoutBtn] = cf.nu("a#logout-btn")
@@ -89,26 +73,6 @@ const setupLogin = async () => {
     });
 }
 
-const extractPostId = (input) => {
-    input = input.trim();
-
-    // If it's a URL, try to extract the post ID
-    if (input.startsWith('http://') || input.startsWith('https://')) {
-        const url = new URL(input);
-        const pathParts = url.pathname.split('/');
-        const postIndex = pathParts.findIndex(part => part === 'post');
-        if (postIndex !== -1 && postIndex + 1 < pathParts.length) {
-            return pathParts[postIndex + 1];
-        }
-    }
-
-    if (input.length === 8 && !isNaN(parseInt(input, 16))) {
-        return input;
-    }
-
-    throw new Error("Invalid post ID.");
-};
-
 const actionId = cf.ids('status');
 
 const setupPostMgmt = () => {
@@ -119,47 +83,6 @@ const setupPostMgmt = () => {
     setupEditCodeReset(store);
     setupToggleNsfw(store);
 };
-
-class ManageBtns {
-    static btns = {
-        delete: null,
-        reset: null,
-        toggleNsfw: null,
-    }
-
-    static init = false;
-
-    static get delete() {
-        if (!ManageBtns.init) ManageBtns.initialize();
-        return ManageBtns.btns.delete;
-    }
-
-    static get reset() {
-        if (!ManageBtns.init) ManageBtns.initialize();
-        return ManageBtns.btns.reset;
-    }
-
-    static get toggleNsfw() {
-        if (!ManageBtns.init) ManageBtns.initialize();
-        return ManageBtns.btns.toggleNsfw;
-    }
-
-
-    static initialize() {
-        const [deleteBtn, reset, toggleNsfw] = cf.seq(1, 4)
-            .map(itm =>
-                cf.select({ s: `.manage-actions button:nth-child(${itm})`, single: true })
-            );
-
-        ManageBtns.btns = {
-            delete: deleteBtn,
-            reset,
-            toggleNsfw
-        };
-
-        ManageBtns.init = true;
-    }
-}
 
 function setStatus(msg) {
     const [el] = cf.select({ s: '#last-action-result' });
