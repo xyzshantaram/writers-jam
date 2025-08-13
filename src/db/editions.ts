@@ -21,18 +21,15 @@ export const getAllEditions = (): Edition[] => {
 
 export const createEdition = (name: string): Edition => {
     const insertStmt = db.prepare(`
-    INSERT INTO editions (name)
-    VALUES (?)
-  `);
-    const info = insertStmt.run(name);
-
-    const selectStmt = db.prepare(`
-    SELECT id, name, deleted
-    FROM editions
-    WHERE id = ?
+    INSERT INTO 
+        editions (name)
+        VALUES (?) 
+    returning
+        name, id, deleted
   `);
 
-    return selectStmt.get(info.lastInsertRowid as number) as unknown as Edition;
+    const edition = insertStmt.get(name)!;
+    return edition as unknown as Edition;
 };
 
 export const deleteEdition = (id: number): void => {
