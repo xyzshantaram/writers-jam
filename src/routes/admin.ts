@@ -191,9 +191,14 @@ export const createEdition = (req: Request, res: Response) => {
     const edition = adminCreateEdition(name);
     res.json({
         success: true,
-        message: "Please restart the server.",
+        message: "Edition created successfully! The server will restart in 15 seconds.",
         data: edition,
     });
+
+    setTimeout(() => {
+        console.log("Going down for edition update!");
+        Deno.exit(0);
+    }, 15000);
 };
 
 export const whoami = (req: Request, res: Response) => {
