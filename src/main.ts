@@ -75,7 +75,10 @@ const createApp = () => {
     app.post("/post/:id/update", posts.update);
 
     app.get("/api/v1/editions", (_, res) => {
-        res.json(editions.filter((itm) => !itm.deleted));
+        res.json({
+            success: true,
+            data: editions.filter((itm) => !itm.deleted),
+        });
     });
 
     // Post API routes

@@ -49,7 +49,7 @@ export class ApiClient {
 
         const result = await response.json();
 
-        if (!response.ok || !result.success) {
+        if (!(response.ok && response.status !== 304) || !result.success) {
             console.debug(result);
             const error = new Error(result.error.details);
             error.details = {
