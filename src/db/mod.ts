@@ -5,7 +5,7 @@ import { createCommentSchema, Post } from "../schemas/mod.ts";
 import { ulid } from "@std/ulid";
 import { z } from "zod/v4";
 import { hash } from "@bronti/argon2";
-export { createPost, getCommentsForPost, getPostById, getPosts } from "./posts.ts";
+export { createPost, getCommentsForPost, getCommentById, getPostById, getPosts } from "./posts.ts";
 export { getHomepageFeeds } from "./feeds.ts";
 export { type Edition, getAllEditions } from "./editions.ts";
 export * from "./admin.ts";

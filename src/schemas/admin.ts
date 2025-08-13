@@ -11,5 +11,9 @@ export const signinSchema = z.object({
     password: z.string().min(1),
 });
 
+export const commentIdSchema = z.string().min(26).max(26, {
+    message: "Invalid comment ID. Comment IDs must be 26 characters long (ULID format).",
+});
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type SigninInput = z.infer<typeof signinSchema>;

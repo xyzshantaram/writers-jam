@@ -114,6 +114,12 @@ from comment where
 order by posted desc
 `);
 
+const getCommentByIdQuery = db.prepare(`select
+  id, content, author, posted, for
+from comment where
+  id = ?
+`);
+
 export const getCommentsForPost = (id: string): Comment[] => {
     return getPostCommentsQuery.all(unhashPostId(id)).map((
         itm,
@@ -124,6 +130,19 @@ export const getCommentsForPost = (id: string): Comment[] => {
         posted: Number(itm.posted),
         for: id,
     }));
+};
+
+export const getCommentById = (id: string): Comment | null => {
+    const res = getCommentByIdQuery.get(id);
+    if (!res) return null;
+
+    return {
+        id: String(res.id),
+        content: String(res.content),
+        author: String(res.author || "Anonymous"),
+        posted: Number(res.posted),
+        for: hashPostId(res.for as number),
+    };
 };
 
 const addPostViewStmt = db.prepare(

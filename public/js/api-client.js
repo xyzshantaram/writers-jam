@@ -91,6 +91,10 @@ export class ApiClient {
         return await this.request(`/api/v1/post/${postId}`);
     }
 
+    async getComment(commentId) {
+        return await this.request(`/api/v1/admin/comments/${commentId}`);
+    }
+
     async resetPostEditCode(postId) {
         return await this.request(`/api/admin/v1/post/${postId}/reset-edit-code`, {
             method: 'POST'

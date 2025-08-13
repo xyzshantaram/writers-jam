@@ -8,11 +8,12 @@ import {
     getAdmin,
     isValidCode,
 } from "../db/admin.ts";
+import { getCommentById } from "../db/mod.ts";
 import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/admin.ts";
 import { adminCreateEdition } from "../db/editions.ts";
 import { updatePostEditCode } from "../db/mod.ts";
 import { hash, verify } from "@bronti/argon2";
-import { randIntInRange, hashPostId } from "../utils/mod.ts";
+import { hashPostId, randIntInRange } from "../utils/mod.ts";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
 import { extractTokenFromHeader, signToken, verifyToken } from "../utils/jwt.ts";
 import { fromError } from "zod-validation-error/v4";
@@ -129,75 +130,70 @@ export const createSignupCode = (_: Request, res: Response) => {
 };
 
 export const deletePost = (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        adminDeletePost(id);
-        res.json({
-            success: true,
-            message: "Post deleted successfully",
-        });
-    } catch (error) {
-        console.error("Delete post error:", error);
-        return errors.json(res, ...SignupError);
-    }
+    const { id } = req.params;
+    if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
+    adminDeletePost(id);
+    res.json({
+        success: true,
+        message: "Post deleted successfully",
+    });
 };
 
 export const setPostNsfw = (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { nsfw } = req.body;
+    const { id } = req.params;
+    const { nsfw } = req.body;
 
-        if (typeof nsfw !== "boolean") {
-            return errors.json(res, ...ValidationError("NSFW must be a boolean value"));
-        }
-
-        adminSetPostNsfw(id, nsfw);
-        res.json({
-            success: true,
-            message: `Post ${nsfw ? "marked as" : "unmarked as"} NSFW`,
-        });
-    } catch (error) {
-        console.error("Set post NSFW error:", error);
-        return errors.json(res, ...SignupError);
+    if (typeof nsfw !== "boolean") {
+        return errors.json(res, ...ValidationError("NSFW must be a boolean value"));
     }
+
+    if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
+
+    adminSetPostNsfw(id, nsfw);
+    res.json({
+        success: true,
+        message: `Post ${nsfw ? "marked as" : "unmarked as"} NSFW`,
+    });
 };
 
-// Comment management routes
+export const getComment = (req: Request, res: Response) => {
+    const { id } = req.params;
+    const comment = getCommentById(id);
+
+    if (!comment) return errors.json(res, ...ValidationError("Comment not found"));
+
+    res.json({
+        success: true,
+        data: comment,
+    });
+};
+
 export const deleteComment = (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        adminDeleteComment(id);
-        res.json({
-            success: true,
-            message: "Comment deleted successfully",
-        });
-    } catch (error) {
-        console.error("Delete comment error:", error);
-        return errors.json(res, ...SignupError);
-    }
+    const { id } = req.params;
+    if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
+    adminDeleteComment(id);
+    res.json({
+        success: true,
+        message: "Comment deleted successfully",
+    });
 };
 
 export const createEdition = (req: Request, res: Response) => {
-    try {
-        const { name } = req.body;
+    const { name } = req.body;
 
-        if (!name || typeof name !== "string") {
-            return errors.json(
-                res,
-                ...ValidationError("Edition name is required and must be a string"),
-            );
-        }
-
-        const edition = adminCreateEdition(name);
-        res.json({
-            success: true,
-            message: "Please restart the server.",
-            data: edition,
-        });
-    } catch (error) {
-        console.error("Create edition error:", error);
-        return errors.json(res, ...SignupError);
+    if (!name || typeof name !== "string") {
+        return errors.json(
+            res,
+            ...ValidationError("Edition name is required and must be a string"),
+        );
     }
+
+    const edition = adminCreateEdition(name);
+    res.json({
+        success: true,
+        message: "Please restart the server.",
+        data: edition,
+    });
 };
 
 export const whoami = (req: Request, res: Response) => {
@@ -222,27 +218,20 @@ export const whoami = (req: Request, res: Response) => {
 };
 
 export const resetPostEditCode = (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+    const { id } = req.params;
+    if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
 
-        // Generate a random number between 100000 and 999999
-        const randomNumber = randIntInRange(100000, 1000000);
-        
-        // Calculate the hash of the random number using hashPostId
-        const newEditCode = hashPostId(randomNumber);
-        
-        // Update the post's edit code using updatePostEditCode
-        updatePostEditCode(id, newEditCode);
+    const n = randIntInRange(100000, 1000000);
+    const code = hashPostId(n);
 
-        res.json({
-            success: true,
-            message: "Post edit code reset successfully",
-            data: {
-                newEditCode: newEditCode
-            }
-        });
-    } catch (error) {
-        console.error("Reset post edit code error:", error);
-        return errors.json(res, ...SignupError);
-    }
+    // Update the post's edit code using updatePostEditCode
+    updatePostEditCode(id, code);
+
+    res.json({
+        success: true,
+        message: "Post edit code reset successfully",
+        data: {
+            new_code: code,
+        },
+    });
 };
