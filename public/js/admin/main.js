@@ -200,9 +200,56 @@ function setupToggleNsfw(managing) {
     });
 }
 
-globalThis.addEventListener('DOMContentLoaded', async () => {
+const CommentConfirmation = (comment, close) => {
     const api = ApiClient.getInstance();
 
-    await setupLogin(api);
-    await setupPostMgmt(api);
+    const [elt, cnf, cancel] = cf.nu('div.comment-confirmation')
+        .html`
+        Are you sure you want to delete this comment?
+        
+        <div class=comment-preview>
+            <div class=comment-author>${comment.author}</div>
+            <div class=comment-body>${cf.r(parseMd(comment.content))}</div>
+        </div>
+        
+        <div class='form-group submit-group'>
+            <button class='cnf-cancel'>Cancel</button>
+            <button class='cnf-ok danger'>Delete</button>
+        </div>
+        `
+        .gimme('.cnf-ok', '.cnf-cancel')
+        .done();
+
+    cnf.onclick = async () => {
+        await api.deleteComment(comment.id);
+        close();
+    }
+
+    cancel.onclick = () => close();
+
+    return elt;
+}
+
+function setupCommentMgmt() {
+    const api = ApiClient.getInstance();
+    const [input] = cf.select({ s: "#admin-comment-id" });
+    const [btn] = cf.select({ s: '#delete-comment-btn' });
+
+    btn.onclick = async () => {
+        const value = input.value.trim();
+        if (!value) return;
+        let [, ulid] = value.match(/#post-comment-(.{26})/) || [];
+        if (!ulid && !(ulid = value).length === 26) {
+            return await message("Invalid comment ID.", "Error");
+        }
+        const comment = await api.getComment(ulid);
+        const [dialog] = cf.select({ s: 'dialog' });
+        showDialog(CommentConfirmation(comment.data, () => dialog.close()));
+    }
+}
+
+globalThis.addEventListener('DOMContentLoaded', async () => {
+    await setupLogin();
+    setupPostMgmt();
+    setupCommentMgmt();
 });

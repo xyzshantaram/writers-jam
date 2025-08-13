@@ -377,7 +377,7 @@ section {
 
 .danger {
     background-color: var(--danger);
-    color: var(--body-primary);
+    color: white;
 }
 
 .warning {

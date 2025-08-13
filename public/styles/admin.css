@@ -21,3 +21,27 @@
     content: "Status ";
     font-weight: bold;
 }
+
+.comment-preview p {
+    margin: 0.4rem;
+}
+
+.comment-author {
+    margin: 0;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    font-weight: bold;
+}
+
+.comment-preview {
+    border-radius: 0.25rem;
+    border: 2px solid var(--border);
+    line-height: 1.2;
+    font-size: 0.95rem;
+    padding: 0.4rem;
+    margin: 0.4rem;
+}
+
+.submit-group {
+    gap: 0.4rem;
+}
