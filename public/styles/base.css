@@ -31,6 +31,12 @@
     --border: #a1a1a1;
 }
 
+:root:has(body.theme-night) cap-widget {
+    --cap-spinner-color: var(--body-primary);
+    --cap-spinner-background-color: var(--gray);
+    --cap-checkbox-background: #303030;
+}
+
 header {
     color: var(--body-bg);
     gap: 0.25rem;
