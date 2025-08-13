@@ -82,3 +82,5 @@ export interface Comment {
 export const postIdSchema = z.string().length(8, {
     message: "Invalid post ID. Post IDs must be 8 characters long.",
 });
+
+export * from "./admin.ts";

@@ -55,3 +55,25 @@
     text-align: left;
     width: 100%;
 }
+
+#preview-details {
+    width: 100%;
+}
+
+#preview-details h3 {
+    margin: 0.25rem;
+    text-align: center;
+}
+
+#preview-details .badges {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.post-preview-wrapper {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--border);
+    width: calc(100% - 2rem);
+}

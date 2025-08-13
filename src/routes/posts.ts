@@ -5,12 +5,13 @@ import {
     createPost,
     deletePost,
     getCommentsForPost,
-    getNewPostId,
+    getMigratedPostId,
     getPostById,
     randomPost,
     updatePost,
-} from "../db.ts";
-import { renderError } from "../error.ts";
+    updatePostEditCode,
+} from "../db/mod.ts";
+import { errors } from "../error.ts";
 import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
 import { getClientIP, getPostTagString } from "../utils/mod.ts";
 import { Request, Response } from "express";
@@ -19,6 +20,14 @@ import { cap } from "./captcha.ts";
 import { config } from "../config.ts";
 import { hash, verify } from "@bronti/argon2";
 import { editionMap, editions, editionSchema } from "../utils/editions.ts";
+import {
+    CaptchaError,
+    IncorrectPassword,
+    InvalidLink,
+    NoPostsAvailable,
+    PostNotFound,
+    SessionExpired,
+} from "../errors/posts.ts";
 
 export const index = (_: Request, res: Response) => {
     res.render("create-post", {
@@ -32,12 +41,7 @@ export const index = (_: Request, res: Response) => {
 export const random = (_: Request, res: Response) => {
     const post = randomPost();
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            title: "No posts yet",
-            name: "NotFound",
-            details: "No posts are available yet. Be the first to create one!",
-        }, 404);
+        return errors.render(res, ...NoPostsAvailable);
     }
     return res.redirect(`/post/${post}`);
 };
@@ -59,20 +63,14 @@ const shouldCountView = (now: number, post: string, ip: string) => {
 const normalizeId = (id: string): string | null => {
     const result = z.ulid().safeParse(id);
     if (result.success) {
-        return getNewPostId(id);
+        return getMigratedPostId(id);
     }
     return null;
 };
 
 export const view = (req: Request, res: Response) => {
     if (!req.params.id) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Invalid link",
-            name: "Bad request",
-            details:
-                "It looks like this post link is incomplete or broken. Please check the URL and try again.",
-        }, 400);
+        return errors.render(res, ...InvalidLink);
     }
     const id = req.params.id;
 
@@ -88,13 +86,7 @@ export const view = (req: Request, res: Response) => {
 
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            details:
-                "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "Not found",
-            title: "Post not found",
-        }, 404);
+        return errors.render(res, ...PostNotFound);
     }
 
     res.render("view-post", {
@@ -124,12 +116,7 @@ export const create = async (req: Request, res: Response) => {
     return res.redirect(`/post/${created}`);
 };
 
-const captchaErr = (res: Response) =>
-    renderError(res, {
-        details: "The captcha expired. Please try again.",
-        title: "Invalid captcha.",
-        name: "Captcha",
-    });
+const captchaErr = (res: Response) => errors.render(res, ...CaptchaError);
 
 export const addComment = async (req: Request, res: Response) => {
     const parsed = createCommentSchema.parse(req.body);
@@ -152,14 +139,22 @@ const manageSchema = z.object({
 });
 
 const updatePostSchema = z.object({
-    action: z.enum(["update", "delete"], {
-        error: "Invalid action. Must be 'update' or 'delete'",
+    action: z.enum(["update", "delete", "update_edit_code"], {
+        error: "Invalid action. Must be 'update', 'delete', or 'update_edit_code'",
     }),
     session: z.uuidv4().refine(
         (v) => Object.keys(editSessions).includes(v),
         { error: "Looks like your editing session expired. Try again" },
     ),
     captcha: z.string().nonempty().optional(),
+});
+
+const postEditCodeAction = z.object({
+    new_edit_code: z.string()
+        .min(1, { error: "New edit code is required" })
+        .max(100, { error: "Edit code cannot be longer than 100 characters" }),
+    action: z.literal("update_edit_code"),
+    captcha: z.string({ error: "Captcha is required." }),
 });
 
 const postModificationAction = z.object({
@@ -190,25 +185,14 @@ export const manage = (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const post = getPostById(id);
     if (!post) {
-        return renderError(res, {
-            code: "NotFound",
-            details:
-                "The post with the given ID was not found. It may have been deleted or you may have followed a broken link.",
-            name: "Not found",
-            title: "Post not found",
-        });
+        return errors.render(res, ...PostNotFound);
     }
 
     if (
         post.password && post.password.length &&
         !verify(parsed.password, post.password)
     ) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Incorrect password",
-            name: "Authentication failed",
-            details: "The password you entered is incorrect. Please double-check and try again.",
-        }, 401);
+        return errors.render(res, ...IncorrectPassword);
     }
 
     const session = crypto.randomUUID();
@@ -239,13 +223,7 @@ export const update = async (req: Request, res: Response) => {
     const id = postIdSchema.parse(req.params.id);
     const parsed = updatePostSchema.parse(req.body);
     if (editSessions[parsed.session].post !== id) {
-        return renderError(res, {
-            code: "BadRequest",
-            title: "Editing session expired",
-            name: "Session error",
-            details:
-                "Your editing session has expired or is invalid. Please refresh the page and try editing again.",
-        });
+        return errors.render(res, ...SessionExpired);
     }
 
     delete editSessions[parsed.session];
@@ -270,7 +248,17 @@ export const update = async (req: Request, res: Response) => {
             edition: updated.edition,
         });
         return res.redirect(`/post/${id}`);
-    } else {throw new Error(
+    } else if (parsed.action === "update_edit_code") {
+        const editCodeUpdate = postEditCodeAction.parse(req.body);
+
+        const { success } = await cap.validateToken(editCodeUpdate.captcha);
+        if (!success) return captchaErr(res);
+
+        updatePostEditCode(id, editCodeUpdate.new_edit_code);
+        return res.redirect(`/post/${id}`);
+    } else {
+        throw new Error(
             "Something unexpected happened while updating your post. Please try again or contact support if the issue persists.",
-        );}
+        );
+    }
 };

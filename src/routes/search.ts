@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { clamp, makeQueryLinkHelper } from "../utils/mod.ts";
-import { getPosts } from "../db.ts";
+import { getPosts } from "../db/mod.ts";
 import { config } from "../config.ts";
 import { editions, parseEdition } from "../utils/editions.ts";
 

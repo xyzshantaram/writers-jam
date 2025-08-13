@@ -111,23 +111,50 @@
 
 {% if mode == "edit" %}
     <style>
-        h3, h4 {
+        h3 {
             margin: 0.25rem;
+        }
+        details summary h4 {
+            display: inline;
+            margin: 0;
         }
     </style>
     <h3>Danger Zone</h3>
-    <h4>Delete post</h4>
+    
+    <details>
+        <summary><h4>Change edit code</h4></summary>
+        
+        <div class="nag">
+            <strong>WARNING!</strong> If you forget your edit code, you'll have to ask admins to reset it. Be careful!</div>
 
-    <div class="nag"><strong>WARNING!</strong> THIS CANNOT BE UNDONE. Only continue if you are sure of what you're doing.</div>
+        <form action="/post/{{ post.id }}/update" method="post">
+            <input type="hidden" name="session" value="{{ session }}">
+            <input type="hidden" name="action" value="update_edit_code">
+            <div class="form-group">
+                <label for="new-edit-code">New edit code</label>
+                <input type="text" id="new-edit-code" name="new_edit_code" required>
+            </div>
+            <cap-widget id="cap-edit-code" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
+            <div class="form-group submit-group">
+                <button type="submit" class="warning">Change edit code</button>
+            </div>
+        </form>
+    </details>
 
-    <form action="/post/{{ post.id }}/update" method="post">
-        <input type="hidden" name="session" value="{{ session }}">
-        <input type="hidden" name="action" value="delete">
-        <cap-widget id="cap-delete" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
-        <div class="form-group submit-group">
-            <button type="submit" class="danger">Delete post</button>
-        </div>
-    </form>
+    <details>
+        <summary><h4>Delete post</h4></summary>
+        
+        <div class="nag"><strong>WARNING!</strong> THIS CANNOT BE UNDONE. Only continue if you are sure of what you're doing.</div>
+
+        <form action="/post/{{ post.id }}/update" method="post">
+            <input type="hidden" name="session" value="{{ session }}">
+            <input type="hidden" name="action" value="delete">
+            <cap-widget id="cap-delete" data-cap-api-endpoint="/captcha/" data-cap-hidden-field-name="captcha"></cap-widget>
+            <div class="form-group submit-group">
+                <button type="submit" class="danger">Delete post</button>
+            </div>
+        </form>
+    </details>
 {% endif %}
 
 <script type="module" src="/js/create-post.js"></script>

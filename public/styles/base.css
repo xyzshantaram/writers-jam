@@ -8,6 +8,7 @@
     --badge-text: white;
     --highlight-color: rgba(238, 250, 196, 0.5);
     --danger: #ae2929;
+    --warning: #ff8e15;
     --root-padding: 0rem;
     font-family: "Inter", sans-serif;
 }
@@ -119,7 +120,7 @@ pre {
 
 body {
     background-color: var(--body-bg);
-    max-width: 70ch;
+    max-width: 80ch;
     width: 100%;
     min-height: max(100vh, 100%);
     padding: 0;
@@ -132,8 +133,8 @@ body {
     flex-direction: column;
 }
 
-body>*:not(header):not(footer) {
-    max-width: 60ch;
+body>*:not(header):not(footer):not(#alert-mask) {
+    max-width: 70ch;
 }
 
 blockquote {
@@ -145,7 +146,7 @@ blockquote {
 html {
     background-color: var(--accent);
     width: calc(100% - var(--root-padding) * 2);
-    min-height: calc(100% - var(--root-padding) * 2);
+    height: 100%;
     margin: 0;
     padding: var(--root-padding);
 }
@@ -376,7 +377,18 @@ section {
 
 .danger {
     background-color: var(--danger);
-    color: var(--body-bg);
+    color: white;
+}
+
+details ul,
+details ol {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.warning {
+    background-color: var(--warning);
+    color: var(--body-primary);
 }
 
 .post-tags {

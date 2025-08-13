@@ -1,0 +1,62 @@
+.manage-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem;
+    justify-content: center;
+}
+
+.post-preview-wrapper {
+    max-height: 20ch;
+    overflow-y: auto;
+}
+
+#last-action-result {
+    margin: 1rem;
+    border: 2px solid var(--border);
+    padding: 0.2rem;
+    border-radius: 0.25rem;
+}
+
+#last-action-result::before {
+    content: "Status ";
+    font-weight: bold;
+}
+
+.comment-preview p {
+    margin: 0.4rem;
+}
+
+.comment-author {
+    margin: 0;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    font-weight: bold;
+}
+
+.comment-preview {
+    border-radius: 0.25rem;
+    border: 2px solid var(--border);
+    line-height: 1.2;
+    font-size: 0.95rem;
+    padding: 0.4rem;
+    margin: 0.4rem;
+}
+
+.submit-group {
+    gap: 0.4rem;
+}
+
+.signup-code-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.signup-code-content>* {
+    max-width: 80%;
+}
+
+.details-heading {
+    font-size: 1.1rem;
+}

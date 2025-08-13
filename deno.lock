@@ -8,6 +8,7 @@
     "jsr:@std/ulid@1": "1.0.0",
     "npm:@cap.js/server@2": "2.0.0",
     "npm:@types/express@^5.0.3": "5.0.3",
+    "npm:@types/jsonwebtoken@^9.0.10": "9.0.10",
     "npm:@types/node@*": "22.15.15",
     "npm:@types/wordpress__wordcount@^2.4.5": "2.4.5",
     "npm:@wordpress/wordcount@^4.26.0": "4.26.0",
@@ -18,6 +19,7 @@
     "npm:express-session@^1.18.1": "1.18.1",
     "npm:express@^5.1.0": "5.1.0",
     "npm:javascript-time-ago@^2.5.11": "2.5.11",
+    "npm:jsonwebtoken@^9.0.2": "9.0.2",
     "npm:liquidjs@^10.21.1": "10.21.1",
     "npm:marked-smartypants@^1.1.10": "1.1.10_marked@16.0.0",
     "npm:marked@16": "16.0.0",
@@ -96,8 +98,18 @@
     "@types/http-errors@2.0.5": {
       "integrity": "sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg=="
     },
+    "@types/jsonwebtoken@9.0.10": {
+      "integrity": "sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==",
+      "dependencies": [
+        "@types/ms",
+        "@types/node"
+      ]
+    },
     "@types/mime@1.3.5": {
       "integrity": "sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w=="
+    },
+    "@types/ms@2.1.0": {
+      "integrity": "sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA=="
     },
     "@types/node@22.15.15": {
       "integrity": "sha512-R5muMcZob3/Jjchn5LcO8jdKwSCbzqmPB6ruBxMcf9kbxtniZHP327s6C37iOfuw8mbKK3cAQa7sEl7afLrQ8A==",
@@ -186,6 +198,9 @@
         "raw-body",
         "type-is"
       ]
+    },
+    "buffer-equal-constant-time@1.0.1": {
+      "integrity": "sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA=="
     },
     "buffer@5.7.1": {
       "integrity": "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==",
@@ -306,6 +321,12 @@
         "call-bind-apply-helpers",
         "es-errors",
         "gopd"
+      ]
+    },
+    "ecdsa-sig-formatter@1.0.11": {
+      "integrity": "sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==",
+      "dependencies": [
+        "safe-buffer"
       ]
     },
     "ee-first@1.1.1": {
@@ -510,12 +531,63 @@
         "relative-time-format"
       ]
     },
+    "jsonwebtoken@9.0.2": {
+      "integrity": "sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==",
+      "dependencies": [
+        "jws",
+        "lodash.includes",
+        "lodash.isboolean",
+        "lodash.isinteger",
+        "lodash.isnumber",
+        "lodash.isplainobject",
+        "lodash.isstring",
+        "lodash.once",
+        "ms@2.1.3",
+        "semver"
+      ]
+    },
+    "jwa@1.4.1": {
+      "integrity": "sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==",
+      "dependencies": [
+        "buffer-equal-constant-time",
+        "ecdsa-sig-formatter",
+        "safe-buffer"
+      ]
+    },
+    "jws@3.2.2": {
+      "integrity": "sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==",
+      "dependencies": [
+        "jwa",
+        "safe-buffer"
+      ]
+    },
     "liquidjs@10.21.1": {
       "integrity": "sha512-NZXmCwv3RG5nire3fmIn9HsOyJX3vo+ptp0yaXUHAMzSNBhx74Hm+dAGJvscUA6lNqbLuYfXgNavRQ9UbUJhQQ==",
       "dependencies": [
         "commander"
       ],
       "bin": true
+    },
+    "lodash.includes@4.3.0": {
+      "integrity": "sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w=="
+    },
+    "lodash.isboolean@3.0.3": {
+      "integrity": "sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg=="
+    },
+    "lodash.isinteger@4.0.4": {
+      "integrity": "sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA=="
+    },
+    "lodash.isnumber@3.0.3": {
+      "integrity": "sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw=="
+    },
+    "lodash.isplainobject@4.0.6": {
+      "integrity": "sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA=="
+    },
+    "lodash.isstring@4.0.1": {
+      "integrity": "sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw=="
+    },
+    "lodash.once@4.1.1": {
+      "integrity": "sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg=="
     },
     "marked-smartypants@1.1.10_marked@16.0.0": {
       "integrity": "sha512-XGK59M2nhy3Jpa0kdWSXQuKn908VkKbqK1IqF8Rk5QV619OWBs2/rkcg/PVhpKkADlRKJSYe6XqDMZMkZywT4g==",
@@ -896,6 +968,7 @@
     "https://esm.sh/@types/parse-srcset@~1.0.0/index.d.ts": "https://esm.sh/@types/parse-srcset@1.0.0/index.d.ts",
     "https://esm.sh/@types/sanitize-html@~2.16.0/index.d.ts": "https://esm.sh/@types/sanitize-html@2.16.0/index.d.ts",
     "https://esm.sh/@wordpress/wordcount@^4.26.0": "https://esm.sh/@wordpress/wordcount@4.27.0",
+    "https://esm.sh/cf-alert": "https://esm.sh/cf-alert@0.4.1",
     "https://esm.sh/deepmerge@^4.2.2?target=denonext": "https://esm.sh/deepmerge@4.3.1?target=denonext",
     "https://esm.sh/dom-serializer@^2.0.0?target=denonext": "https://esm.sh/dom-serializer@2.0.0?target=denonext",
     "https://esm.sh/domelementtype@^2.3.0?target=denonext": "https://esm.sh/domelementtype@2.3.0?target=denonext",
@@ -916,11 +989,26 @@
     "https://esm.sh/turndown-plugin-gfm": "https://esm.sh/turndown-plugin-gfm@1.0.2"
   },
   "remote": {
+    "https://deno.land/x/zod@v3.22.4/ZodError.ts": "4de18ff525e75a0315f2c12066b77b5c2ae18c7c15ef7df7e165d63536fdf2ea",
+    "https://deno.land/x/zod@v3.22.4/errors.ts": "5285922d2be9700cc0c70c95e4858952b07ae193aa0224be3cbd5cd5567eabef",
+    "https://deno.land/x/zod@v3.22.4/external.ts": "a6cfbd61e9e097d5f42f8a7ed6f92f93f51ff927d29c9fbaec04f03cbce130fe",
+    "https://deno.land/x/zod@v3.22.4/helpers/enumUtil.ts": "54efc393cc9860e687d8b81ff52e980def00fa67377ad0bf8b3104f8a5bf698c",
+    "https://deno.land/x/zod@v3.22.4/helpers/errorUtil.ts": "7a77328240be7b847af6de9189963bd9f79cab32bbc61502a9db4fe6683e2ea7",
+    "https://deno.land/x/zod@v3.22.4/helpers/parseUtil.ts": "f791e6e65a0340d85ad37d26cd7a3ba67126cd9957eac2b7163162155283abb1",
+    "https://deno.land/x/zod@v3.22.4/helpers/partialUtil.ts": "998c2fe79795257d4d1cf10361e74492f3b7d852f61057c7c08ac0a46488b7e7",
+    "https://deno.land/x/zod@v3.22.4/helpers/typeAliases.ts": "0fda31a063c6736fc3cf9090dd94865c811dfff4f3cb8707b932bf937c6f2c3e",
+    "https://deno.land/x/zod@v3.22.4/helpers/util.ts": "8baf19b19b2fca8424380367b90364b32503b6b71780269a6e3e67700bb02774",
+    "https://deno.land/x/zod@v3.22.4/index.ts": "d27aabd973613985574bc31f39e45cb5d856aa122ef094a9f38a463b8ef1a268",
+    "https://deno.land/x/zod@v3.22.4/locales/en.ts": "a7a25cd23563ccb5e0eed214d9b31846305ddbcdb9c5c8f508b108943366ab4c",
+    "https://deno.land/x/zod@v3.22.4/mod.ts": "64e55237cb4410e17d968cd08975566059f27638ebb0b86048031b987ba251c4",
+    "https://deno.land/x/zod@v3.22.4/types.ts": "724185522fafe43ee56a52333958764c8c8cd6ad4effa27b42651df873fc151e",
     "https://esm.sh/@jsr/campfire__core@4.0.2/denonext/campfire__core.mjs": "0fb86cff86201c0ad17b65ee71e0749b947da17662215c31cc51281bd0811f3e",
     "https://esm.sh/@mixmark-io/domino@2.2.0/denonext/domino.mjs": "76ecda631c0e92fee3fb5eab84129586e98a5ef519dccbc5e8108c22a39c8ca6",
     "https://esm.sh/@mixmark-io/domino@2.2.0?target=denonext": "938f0343bd6cd34f0e5267549a8621b222fcb34fb853a92135c8a14dc5aa5618",
     "https://esm.sh/@wordpress/wordcount@4.27.0": "02a78c852b86581648a006d60701f88953ce5c6fa2bb5b66a5cb14f5cf201ec7",
     "https://esm.sh/@wordpress/wordcount@4.27.0/denonext/wordcount.mjs": "ce24a1bc25d356b8f6b115573efe815d3120379a9e25899f00d5177966b4ce41",
+    "https://esm.sh/cf-alert@0.4.1": "dc9b8033d0af23b7de9ce6c5a94bca7d9f05822af56cb39e4500d3fe593e3314",
+    "https://esm.sh/cf-alert@0.4.1/denonext/cf-alert.mjs": "958e3ee68fdd5ac54d6ee738e94c232dbaa7edc5e1d441262ee7747d49eb2039",
     "https://esm.sh/deepmerge@4.3.1/denonext/deepmerge.mjs": "1f448aaa83a52514faecb2edc02eb766c9eb10b935b9ac4c1c2a877a0bb56b80",
     "https://esm.sh/deepmerge@4.3.1?target=denonext": "a8faef33b536441a2c63f8c967d160848eb1f898a8e83a35a9f0623ecd9063d3",
     "https://esm.sh/dom-serializer@2.0.0/denonext/dom-serializer.mjs": "545028b1d2c25bae5cbfe6930a28a2e4f7f05e1a0d09bbd0f3f5f9a33df8e3bd",
@@ -999,6 +1087,7 @@
       "jsr:@std/ulid@1",
       "npm:@cap.js/server@2",
       "npm:@types/express@^5.0.3",
+      "npm:@types/jsonwebtoken@^9.0.10",
       "npm:@types/wordpress__wordcount@^2.4.5",
       "npm:@wordpress/wordcount@^4.26.0",
       "npm:better-sqlite3-session-store@0.1",
@@ -1008,6 +1097,7 @@
       "npm:express-session@^1.18.1",
       "npm:express@^5.1.0",
       "npm:javascript-time-ago@^2.5.11",
+      "npm:jsonwebtoken@^9.0.2",
       "npm:liquidjs@^10.21.1",
       "npm:marked-smartypants@^1.1.10",
       "npm:marked@16",

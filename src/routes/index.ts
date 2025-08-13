@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getHomepageFeeds, getPostCount, getViewCount } from "../db.ts";
+import { getHomepageFeeds, getPostCount, getViewCount } from "../db/mod.ts";
 import description from "../../data/description.md" with { type: "text" };
 import { config } from "../config.ts";
 

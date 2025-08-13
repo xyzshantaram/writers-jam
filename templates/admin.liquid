@@ -1,5 +1,117 @@
 {% layout "base.liquid", title: "administration", heading: "Admin" %}
 
-{% block content %}
+{% block head_extras %}
+<link rel="stylesheet" href="/styles/alert.css">
+<link rel="stylesheet" href="/styles/admin.css">
+<link rel="stylesheet" href="/styles/rendered.css">
+{% endblock %}
 
+{% block content %}
+<style>
+    .signup-code-group {
+        margin: 1rem;
+    }
+
+    #login-form .form-group {
+        width: unset;
+    }
+</style>
+
+<details>
+    <summary>Authentication</summary>
+    <form id="login-form">
+        <div class="form-group">
+            <label for="admin-auth-username">Username</label>
+            <input type="text" name="username" id="admin-auth-username">
+        </div>
+
+        <div class="form-group">
+            <label for="admin-auth-password">Password</label>
+            <input type="password" name="password" id="admin-auth-password">
+        </div>
+
+        <details>
+            <summary>Signup</summary>
+            <div class="form-group signup-code-group">
+                <label for="admin-auth-signupcode">Signup code</label>
+                <input type="text" name="signupCode" id="admin-auth-signupcode">
+            </div>
+        </details>
+        
+        <div class="form-group submit-group">
+            <input type="submit" value="Authenticate">
+        </div>
+    </form>
+</details>
+
+<details open>
+    <summary>Manage a post</summary>
+
+    <form onsubmit="(e) => e.preventDefault()">
+        <div class="form-group">
+            <label for="admin-post-id">Post ID or URL</label>
+            <input type="text" id="admin-post-id">
+        </div>
+        <div class="form-group submit-group">
+            <button type="button" id="manage-btn">Manage</button>
+        </div>
+    </form>
+    
+    <div class="post-preview-wrapper" style="display: none">
+        <div id="preview-details"></div>
+        <div id='post-preview' aria-label="Post preview" role="region" class="content-rendered noborder"></div>
+    </div>
+
+    <div class="manage-actions">
+        <button type="button">Delete post</button>
+        <button type="button">Reset edit code</button>
+        <button type="button">Toggle NSFW state</button>
+    </div>
+    
+    <div id="last-action-result">Ready.</div>
+</details>
+
+<details>
+    <summary>Delete a comment</summary>
+
+    <form onsubmit="(e) => e.preventDefault()">
+        <div class="form-group">
+            <label for="admin-comment-id">Comment ID or URL</label>
+            <input type="text" id="admin-comment-id">
+        </div>
+        <div class="form-group submit-group">
+            <button type="button" id="delete-comment-btn">Delete</button>
+        </div>
+    </form>
+    
+    <div class="comment-preview-wrapper" style="display: none">
+        <div id="comment-preview-details"></div>
+        <div id='comment-preview' aria-label="Comment preview" role="region" class="content-rendered noborder"></div>
+    </div>
+</details>
+
+<details>
+    <summary>Manage signup codes</summary>
+    <div class="signup-code-content">
+        <div class="signup-codes-wrapper"></div>
+        <button type="button" id="create-signup-code-btn">Create new code</button>
+    </div>
+</details>
+
+<details>
+    <summary>Manage editions</summary>
+    <div class="editions-wrapper"></div>
+
+    <form onsubmit="(e) => e.preventDefault()">
+        <div class="form-group">
+            <label for="admin-edition-name">Edition name</label>
+            <input type="text" id="admin-edition-name" placeholder="Enter edition name">
+        </div>
+        <div class="form-group submit-group">
+            <button type="button" id="add-edition-btn">Add Edition</button>
+        </div>
+    </form>
+</details>
+
+<script type="module" src="/js/admin/main.js"></script>
 {% endblock %}
