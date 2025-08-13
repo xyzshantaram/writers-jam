@@ -18,7 +18,7 @@
 </style>
 
 <details>
-    <summary>Authorization</summary>
+    <summary>Authentication</summary>
     <form id="login-form">
         <div class="form-group">
             <label for="admin-auth-username">Username</label>
@@ -39,7 +39,7 @@
         </details>
         
         <div class="form-group submit-group">
-            <input type="submit" value="Authorize">
+            <input type="submit" value="Authenticate">
         </div>
     </form>
 </details>
@@ -49,7 +49,7 @@
 
     <form onsubmit="(e) => e.preventDefault()">
         <div class="form-group">
-            <label for="admin-post-id">Post ID</label>
+            <label for="admin-post-id">Post ID or URL</label>
             <input type="text" id="admin-post-id">
         </div>
         <div class="form-group submit-group">
@@ -69,6 +69,25 @@
     </div>
     
     <div id="last-action-result">Ready.</div>
+</details>
+
+<details>
+    <summary>Delete a comment</summary>
+
+    <form onsubmit="(e) => e.preventDefault()">
+        <div class="form-group">
+            <label for="admin-comment-id">Comment ID or URL</label>
+            <input type="text" id="admin-comment-id">
+        </div>
+        <div class="form-group submit-group">
+            <button type="button" id="delete-comment-btn">Delete</button>
+        </div>
+    </form>
+    
+    <div class="comment-preview-wrapper" style="display: none">
+        <div id="comment-preview-details"></div>
+        <div id='comment-preview' aria-label="Comment preview" role="region" class="content-rendered noborder"></div>
+    </div>
 </details>
 
 <script type="module" src="/js/admin/main.js"></script>
