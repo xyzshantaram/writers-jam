@@ -96,7 +96,7 @@ function setStatus(msg) {
         if (el.getAttribute('data-result-id') === id) {
             cf.x(el).content("Ready").done();
         }
-    }, 2000);
+    }, 5000);
 }
 
 const loadPost = async (managing, postId) => {
