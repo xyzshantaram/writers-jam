@@ -351,6 +351,13 @@ function setupEditionMgmt() {
         const name = input.value.trim();
         if (!name) return await message('Please enter an edition name', 'Error');
 
+        if (!await confirm(
+            cf.html`Are you sure you want to create an edition called "<em>${name}</em>"? 
+                <strong>WARNING!</strong> This will restart the server!`, {
+            yes: "Confirm",
+            no: "Cancel"
+        }, "Confirmation", false)) return;
+
         try {
             await api.createEdition(name);
             input.value = '';
