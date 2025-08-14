@@ -159,6 +159,14 @@ export class ApiClient {
         });
     }
 
+    async getModerationLog(page = 1, pageSize = 20) {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            page_size: pageSize.toString()
+        });
+        return await this.request(`/api/v1/admin/moderation-log?${params}`);
+    }
+
     // Get current user information
     async whoami() {
         try {
