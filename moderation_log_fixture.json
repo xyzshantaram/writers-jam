@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "created_at": 1678886400000,
+        "created_at": 1678886400,
         "admin_username": "admin1",
         "action_type": "mark_nsfw",
         "target_type": "post",
@@ -10,7 +10,7 @@
     },
     {
         "id": 2,
-        "created_at": 1678886500000,
+        "created_at": 1678886500,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "comment",
@@ -19,7 +19,7 @@
     },
     {
         "id": 3,
-        "created_at": 1678886600000,
+        "created_at": 1678886600,
         "admin_username": "admin1",
         "action_type": "reset_edit_code",
         "target_type": "post",
@@ -28,7 +28,7 @@
     },
     {
         "id": 4,
-        "created_at": 1678886700000,
+        "created_at": 1678886700,
         "admin_username": "admin3",
         "action_type": "unmark_nsfw",
         "target_type": "post",
@@ -37,7 +37,7 @@
     },
     {
         "id": 5,
-        "created_at": 1678886800000,
+        "created_at": 1678886800,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "post",
@@ -46,7 +46,7 @@
     },
     {
         "id": 6,
-        "created_at": 1678886900000,
+        "created_at": 1678886900,
         "admin_username": "admin1",
         "action_type": "mark_nsfw",
         "target_type": "comment",
@@ -55,7 +55,7 @@
     },
     {
         "id": 7,
-        "created_at": 1678887000000,
+        "created_at": 1678887000,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "post",
@@ -64,7 +64,7 @@
     },
     {
         "id": 8,
-        "created_at": 1678887100000,
+        "created_at": 1678887100,
         "admin_username": "admin2",
         "action_type": "reset_edit_code",
         "target_type": "comment",
@@ -73,7 +73,7 @@
     },
     {
         "id": 9,
-        "created_at": 1678887200000,
+        "created_at": 1678887200,
         "admin_username": "admin1",
         "action_type": "unmark_nsfw",
         "target_type": "comment",
@@ -82,7 +82,7 @@
     },
     {
         "id": 10,
-        "created_at": 1678887300000,
+        "created_at": 1678887300,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "comment",
@@ -91,7 +91,7 @@
     },
     {
         "id": 11,
-        "created_at": 1678887400000,
+        "created_at": 1678887400,
         "admin_username": "admin2",
         "action_type": "mark_nsfw",
         "target_type": "post",
@@ -100,7 +100,7 @@
     },
     {
         "id": 12,
-        "created_at": 1678887500000,
+        "created_at": 1678887500,
         "admin_username": "admin1",
         "action_type": "delete",
         "target_type": "post",
@@ -109,7 +109,7 @@
     },
     {
         "id": 13,
-        "created_at": 1678887600000,
+        "created_at": 1678887600,
         "admin_username": "admin3",
         "action_type": "reset_edit_code",
         "target_type": "post",
@@ -118,7 +118,7 @@
     },
     {
         "id": 14,
-        "created_at": 1678887700000,
+        "created_at": 1678887700,
         "admin_username": "admin2",
         "action_type": "unmark_nsfw",
         "target_type": "post",
@@ -127,7 +127,7 @@
     },
     {
         "id": 15,
-        "created_at": 1678887800000,
+        "created_at": 1678887800,
         "admin_username": "admin1",
         "action_type": "delete",
         "target_type": "comment",
@@ -136,7 +136,7 @@
     },
     {
         "id": 16,
-        "created_at": 1678887900000,
+        "created_at": 1678887900,
         "admin_username": "admin3",
         "action_type": "mark_nsfw",
         "target_type": "comment",
@@ -145,7 +145,7 @@
     },
     {
         "id": 17,
-        "created_at": 1678888000000,
+        "created_at": 1678888000,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "post",
@@ -154,7 +154,7 @@
     },
     {
         "id": 18,
-        "created_at": 1678888100000,
+        "created_at": 1678888100,
         "admin_username": "admin1",
         "action_type": "reset_edit_code",
         "target_type": "post",
@@ -163,7 +163,7 @@
     },
     {
         "id": 19,
-        "created_at": 1678888200000,
+        "created_at": 1678888200,
         "admin_username": "admin3",
         "action_type": "unmark_nsfw",
         "target_type": "comment",
@@ -172,7 +172,7 @@
     },
     {
         "id": 20,
-        "created_at": 1678888300000,
+        "created_at": 1678888300,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "comment",
@@ -181,7 +181,7 @@
     },
     {
         "id": 21,
-        "created_at": 1678888400000,
+        "created_at": 1678888400,
         "admin_username": "admin1",
         "action_type": "mark_nsfw",
         "target_type": "post",
@@ -190,7 +190,7 @@
     },
     {
         "id": 22,
-        "created_at": 1678888500000,
+        "created_at": 1678888500,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "post",
@@ -199,7 +199,7 @@
     },
     {
         "id": 23,
-        "created_at": 1678888600000,
+        "created_at": 1678888600,
         "admin_username": "admin2",
         "action_type": "reset_edit_code",
         "target_type": "comment",
@@ -208,7 +208,7 @@
     },
     {
         "id": 24,
-        "created_at": 1678888700000,
+        "created_at": 1678888700,
         "admin_username": "admin1",
         "action_type": "unmark_nsfw",
         "target_type": "post",
@@ -217,7 +217,7 @@
     },
     {
         "id": 25,
-        "created_at": 1678888800000,
+        "created_at": 1678888800,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "comment",
@@ -226,7 +226,7 @@
     },
     {
         "id": 26,
-        "created_at": 1678888900000,
+        "created_at": 1678888900,
         "admin_username": "admin2",
         "action_type": "mark_nsfw",
         "target_type": "comment",
@@ -235,7 +235,7 @@
     },
     {
         "id": 27,
-        "created_at": 1678889000000,
+        "created_at": 1678889000,
         "admin_username": "admin1",
         "action_type": "delete",
         "target_type": "post",
@@ -244,7 +244,7 @@
     },
     {
         "id": 28,
-        "created_at": 1678889100000,
+        "created_at": 1678889100,
         "admin_username": "admin3",
         "action_type": "reset_edit_code",
         "target_type": "post",
@@ -253,7 +253,7 @@
     },
     {
         "id": 29,
-        "created_at": 1678889200000,
+        "created_at": 1678889200,
         "admin_username": "admin2",
         "action_type": "unmark_nsfw",
         "target_type": "comment",
@@ -262,7 +262,7 @@
     },
     {
         "id": 30,
-        "created_at": 1678889300000,
+        "created_at": 1678889300,
         "admin_username": "admin1",
         "action_type": "delete",
         "target_type": "comment",
@@ -271,7 +271,7 @@
     },
     {
         "id": 31,
-        "created_at": 1678889400000,
+        "created_at": 1678889400,
         "admin_username": "admin3",
         "action_type": "mark_nsfw",
         "target_type": "post",
@@ -280,7 +280,7 @@
     },
     {
         "id": 32,
-        "created_at": 1678889500000,
+        "created_at": 1678889500,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "post",
@@ -289,7 +289,7 @@
     },
     {
         "id": 33,
-        "created_at": 1678889600000,
+        "created_at": 1678889600,
         "admin_username": "admin1",
         "action_type": "reset_edit_code",
         "target_type": "post",
@@ -298,7 +298,7 @@
     },
     {
         "id": 34,
-        "created_at": 1678889700000,
+        "created_at": 1678889700,
         "admin_username": "admin3",
         "action_type": "unmark_nsfw",
         "target_type": "post",
@@ -307,7 +307,7 @@
     },
     {
         "id": 35,
-        "created_at": 1678889800000,
+        "created_at": 1678889800,
         "admin_username": "admin2",
         "action_type": "delete",
         "target_type": "comment",
@@ -316,7 +316,7 @@
     },
     {
         "id": 36,
-        "created_at": 1678889900000,
+        "created_at": 1678889900,
         "admin_username": "admin1",
         "action_type": "mark_nsfw",
         "target_type": "post",
@@ -325,7 +325,7 @@
     },
     {
         "id": 37,
-        "created_at": 1678910000000,
+        "created_at": 1678910000,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "post",
@@ -334,7 +334,7 @@
     },
     {
         "id": 38,
-        "created_at": 1678910100000,
+        "created_at": 1678910100,
         "admin_username": "admin2",
         "action_type": "reset_edit_code",
         "target_type": "comment",
@@ -343,7 +343,7 @@
     },
     {
         "id": 39,
-        "created_at": 1678910200000,
+        "created_at": 1678910200,
         "admin_username": "admin1",
         "action_type": "unmark_nsfw",
         "target_type": "post",
@@ -352,7 +352,7 @@
     },
     {
         "id": 40,
-        "created_at": 1678910300000,
+        "created_at": 1678910300,
         "admin_username": "admin3",
         "action_type": "delete",
         "target_type": "comment",
