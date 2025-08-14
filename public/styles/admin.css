@@ -60,3 +60,9 @@
 .details-heading {
     font-size: 1.1rem;
 }
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .manage-actions {
+        flex-direction: column;
+    }
+}
