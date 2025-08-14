@@ -414,63 +414,58 @@ function formatAction(admin, action, target, title, id) {
     `;
 }
 
+const LogItem = ({ action, ttype, admin, title, time, id, details }) => cf.html`
+    <li class="moderation-log-entry">
+        <div>
+            ${cf.r(formatAction(admin, action, ttype, title, id))}
+            <span class='small gray'>${timeAgo.format(new Date(time * 1000))}</span>
+        </div>
+
+        ${details?.trim() ? cf.html`
+            <div class="moderation-log-details"><strong>Details:</strong> ${details}</div>`
+        : ''}
+    </li>`;
+
 const LogDisplay = (logs) => {
     return cf.nu('ul.moderation-log-list')
         .deps({ logs })
         .render(({ logs }, { b }) => {
 
-            return b.html`${cf.r(logs
-                .map(parseLog)
-                .map(({ action, ttype, admin, title, time, id, details }) => `
-                <li class="moderation-log-entry">
-                    <div>
-                        ${formatAction(admin, action, ttype, title, id)}
-                        <span class='small gray'>${timeAgo.format(new Date(time * 1000))}</span>
-                    </div>
-
-                    ${details?.trim() ? `
-                        <div class="moderation-log-details">
-                            <strong>Details:</strong> ${cf.r(details)}
-                        </div>
-                    ` : ''}
-                </li>
-            `).join(''))}`
+            return b.html(logs.map(parseLog)
+                .map((log) => LogItem(log)).join(''));
         })
         .done();
 }
 
 const Pagination = (pagination, onPageChange) => {
-    const [group, prevLink, nextLink] = cf.nu('div.paginate-group')
+    const PageLink = (name) => `<div>
+        <a href='javascript:void(0)' class='page-link ${name.slice(0, 4).toLowerCase()}'>
+            ${name}
+        </a>
+    </div>`
+    const [group, prev, next] = cf.nu('div.paginate-group')
         .deps({ pagination })
         .html`
-            <div>
-                <a href="javascript:void(0)" class='page-link prev'>Previous</a>
-            </div>
-
+            ${cf.r(PageLink('Previous'))}
             <div class='pagination-state'></div>
-
-            <div>
-                <a href="javascript:void(0)" class='page-link next'>Next</a>
-            </div>`
+            ${cf.r(PageLink('Next'))}`
         .render(({ pagination }, { elt }) => {
-            const state = cf.select({ s: 'pagination-state', from: elt });
+            const state = cf.select({ s: '.pagination-state', from: elt });
             state.textContent = `Page ${pagination.page} of ${pagination.total} `;
 
-            const prevLink = cf.tracked('mod-log-prev');
-            const nextLink = cf.tracked('mod-log-next');
-            prevLink?.classList.toggle('disabled', pagination.page === 1);
-            nextLink?.classList.toggle('disabled', pagination.page >= pagination.total);
+            const [prev, next] = [cf.tracked('mod-log-prev'), cf.tracked('mod-log-next')];
+            prev.classList.toggle('disabled', pagination.page === 1);
+            next.classList.toggle('disabled', pagination.page >= pagination.total);
         })
         .gimme('a.page-link.prev', 'a.page-link.next')
         .done();
 
-    prevLink.onclick = () => {
+    prev.onclick = () => {
         const p = pagination.current();
-        console.log(p);
         onPageChange(p.page - 1);
     };
 
-    nextLink.onclick = () => {
+    next.onclick = () => {
         const p = pagination.current();
         onPageChange(p.page + 1);
     };
