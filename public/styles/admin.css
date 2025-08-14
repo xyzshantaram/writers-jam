@@ -61,6 +61,41 @@
     font-size: 1.1rem;
 }
 
+.moderation-log-list {
+    max-height: 50vh;
+    overflow-y: auto;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#moderation-log .paginate-group {
+    padding: 1rem;
+    padding-top: 0;
+    width: calc(100% - 2rem);
+}
+
+.action-target {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.action-target-type {
+    text-transform: capitalize;
+}
+
+.admin-action {
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.page-link.disabled {
+    pointer-events: none;
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
 @media screen and (max-aspect-ratio: 1/1) {
     .manage-actions {
         flex-direction: column;
