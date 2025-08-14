@@ -149,7 +149,7 @@ function setupPostDelete(managing) {
             await message('No post selected', 'Error');
             return;
         }
-        if (!await confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+        if (!await confirm(`Are you sure you want to delete the post "${current.data.title}" by "${current.data.author}"?`)) {
             return;
         }
         try {
@@ -166,13 +166,19 @@ function setupEditCodeReset(managing) {
     const api = ApiClient.getInstance();
     ManageBtns.reset.addEventListener('click', async () => {
         const current = managing.current();
+
         if (!current.id) {
             await message('No post selected', 'Error');
             return;
         }
+
+        if (!await confirm(`Are you sure you want to reset the edit code for the post "${current.data.title}" by "${current.data.author}"?`)) {
+            return;
+        }
+
         try {
             const result = await api.resetPostEditCode(current.id);
-            setStatus(`New edit code: ${result.data.newEditCode}`);
+            setStatus(`New edit code: ${result.data.new_code}`);
         } catch (error) {
             const { msg } = api.handleApiError(error, 'Failed to reset edit code');
             await fatal(msg, 'Error');
