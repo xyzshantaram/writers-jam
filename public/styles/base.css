@@ -337,6 +337,13 @@ form {
     margin-top: 1rem;
 }
 
+.paginate-group {
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+
 .nag {
     background: var(--accent);
     padding: 0.5rem;
