@@ -3,7 +3,7 @@ import { template } from "https://esm.sh/jsr/@campfire/core@4.0.2";
 
 const detailsTemplate = template(`
         <h3>Preview "{{title}}"</h3>
-        <div class=badges>
+        <div class=tags>
             <span class="tag invert">{{ edition }}</span>
             {{#nsfw}}<span class="tag danger invert">NSFW</span>{{/nsfw}}
         </div>

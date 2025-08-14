@@ -5,7 +5,7 @@
     --accent: #ebe9e5;
     --border: #aaaaaa;
     --gray: #555555;
-    --badge-text: white;
+    --tag-text: white;
     --highlight-color: rgba(247, 255, 100, 0.851);
     --danger: #ae2929;
     --warning: #ff8e15;
@@ -382,6 +382,7 @@ section {
     font-size: 0.9rem;
     padding: 0.2rem;
     font-weight: bold;
+    border: 2px solid var(--body-bg);
 }
 
 .tag a {
@@ -393,6 +394,19 @@ section {
     color: white;
 }
 
+.accented {
+    background-color: blueviolet;
+    color: white;
+}
+
+.gray {
+    color: var(--gray);
+}
+
+.small {
+    font-size: 0.9rem;
+}
+
 details ul,
 details ol {
     margin-top: 0.4rem;
@@ -401,8 +415,9 @@ details ol {
 
 .warning {
     background-color: var(--warning);
-    color: var(--body-primary);
+    color: white;
 }
+
 
 .post-tags {
     display: flex;
