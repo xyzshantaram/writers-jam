@@ -2,7 +2,6 @@ import { hashPostId, unhashPostId } from "../utils/mod.ts";
 import { db } from "./db.ts";
 import { getPostById } from "./mod.ts";
 import { getCommentById } from "./mod.ts";
-// import MODERATION_LOG_TEST from "../../moderation_log_fixture.json" with { type: "json" };
 
 db.exec(`
 create table if not exists admin_codes(
@@ -229,6 +228,11 @@ const getModerationLogsQuery = db.prepare(`
     LIMIT ? OFFSET ?
 `);
 
+const getModerationLogsCountQuery = db.prepare(`
+    SELECT count(id) as count
+    FROM moderation_log
+`);
+
 export const getModerationLogs = (
     page: number = 1,
     pageSize: number = 20,
@@ -236,9 +240,7 @@ export const getModerationLogs = (
     const offset = (page - 1) * pageSize;
 
     const logs = getModerationLogsQuery.all(pageSize, offset) as unknown as ModerationLogEntry[];
-    // const logs = MODERATION_LOG_TEST.slice(offset, offset + pageSize);
-    // console.log(logs[0], offset, offset + pageSize);
-    const count = logs.length;
+    const count = getModerationLogsCountQuery.get()!.count as number;
     const total = Math.ceil(count / pageSize);
 
     return {
