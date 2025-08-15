@@ -43,6 +43,19 @@ export const getPosts = (
     const pageSize = 10;
     const offset = (page - 1) * pageSize;
 
+    const idMatch = (search || "").trim().match(/^([0-9a-fA-F]{8})$/);
+    console.log(idMatch);
+    if (idMatch) {
+        const posts = [];
+        const post = getPostById(idMatch[1]);
+        if (post) posts.push({ ...post, content: undefined, password: undefined });
+
+        return {
+            totalPages: 1,
+            posts: posts,
+        };
+    }
+
     const conditions: string[] = ["p.deleted != 1"];
     if (nsfw !== "yes") {
         conditions.push("p.nsfw = 0");
