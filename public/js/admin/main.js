@@ -441,6 +441,14 @@ const LogDisplay = (logs) => {
         .done();
 }
 
+const updateLinkState = (link, state) => {
+    if (!link) return;
+    link.classList.toggle('disabled', state);
+    link.setAttribute('aria-disabled', state.toString());
+    if (!state) link.setAttribute('tabindex', '-1');
+    else link.removeAttribute('tabindex');
+}
+
 const Pagination = (pagination, onPageChange) => {
     const PageLink = (name) => `<div>
         <a href='javascript:void(0)' class='page-link ${name.slice(0, 4).toLowerCase()}'>
@@ -455,11 +463,11 @@ const Pagination = (pagination, onPageChange) => {
             ${cf.r(PageLink('Next'))}`
         .render(({ pagination }, { elt }) => {
             const [state] = cf.select({ s: '.pagination-state', from: elt });
-            state.textContent = `Page ${pagination.page} of ${pagination.total} `;
+            if (state) state.textContent = `Page ${pagination.page} of ${pagination.total} `;
 
             const [prev, next] = [cf.tracked('mod-log-prev'), cf.tracked('mod-log-next')];
-            if (prev) prev.classList.toggle('disabled', pagination.page === 1);
-            if (next) next.classList.toggle('disabled', pagination.page >= pagination.total);
+            updateLinkState(prev, pagination.page === 1);
+            updateLinkState(next, pagination.page >= pagination.total);
         })
         .gimme('a.page-link.prev', 'a.page-link.next')
         .done();
