@@ -1,10 +1,15 @@
 import { ApiClient } from '../api-client.js';
 import { message, confirm, fatal } from 'https://esm.sh/cf-alert@0.4.1';
-import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
+import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import TimeAgo from "https://esm.sh/javascript-time-ago@2.5.11";
+import en from "https://esm.sh/javascript-time-ago@2.5.11/locale/en";
 import { renderPreview } from '../preview.js';
 import { getFormJson, extractPostId, ManageBtns } from "./utils.js";
 import { showDialog } from "../dialog.js";
 import { parseMd } from "../parse.js";
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo("en-US");
 
 const UserInfo = (username) => {
     const [logoutBtn] = cf.nu("a#logout-btn")
@@ -246,7 +251,11 @@ function setupCommentMgmt() {
         const value = input.value.trim();
         if (!value) return;
         let [, ulid] = value.match(/#post-comment-(.{26})/) || [];
-        if (!ulid && !(ulid = value).length === 26) {
+        // If not a deep link, treat the whole input as the ULID candidate
+        if (!ulid) ulid = value;
+        // Strict ULID format (26 chars, Crockford base32 excluding I, L, O, U)
+        const ULID_RE = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+        if (!ULID_RE.test(ulid)) {
             return await message("Invalid comment ID.", "Error");
         }
         try {
@@ -384,10 +393,168 @@ function setupEditionMgmt() {
     loadEditions();
 }
 
+const parseLog = (log) => {
+    const { action_type: action, target_type: ttype, admin_username: admin, created_at: time, target_title: title, target_id: id, details } = log;
+    return { action, ttype, admin, title, time, id, details };
+}
+
+
+function formatAction(admin, action, target, title, id) {
+    const classes = ['tag', 'invert'];
+    if (action.includes('delete')) {
+        classes.push('danger');
+    }
+    else if (action.includes('reset')) {
+        classes.push('warning');
+    }
+    else if (action.includes('mark_nsfw')) {
+        classes.push('accented');
+    }
+    return cf.html`
+        <span class='tag invert'>${admin}</span>
+        <span class='admin-action ${classes.join(' ')}'>${action.replace(/_/g, ' ')}</span>
+        <strong class=action-target-type>${target[0].toUpperCase() + target.slice(1)}</strong>
+        <span class='action-target gray'>${title ? `"${title}"` : '#' + id}</span>
+    `;
+}
+
+const LogItem = ({ action, ttype, admin, title, time, id, details }) => cf.html`
+    <li class="moderation-log-entry">
+        <div>
+            ${cf.r(formatAction(admin, action, ttype, title, id))}
+            <span class='small gray'>${timeAgo.format(new Date(time * 1000))}</span>
+        </div>
+
+        ${details?.trim() ? cf.html`
+            <div class="moderation-log-details"><strong>Details:</strong> ${details}</div>`
+        : ''}
+    </li>`;
+
+const LogDisplay = (logs) => {
+    return cf.nu('ul.moderation-log-list')
+        .deps({ logs })
+        .render(({ logs }, { b }) => {
+
+            return b.html(logs.map(parseLog)
+                .map((log) => LogItem(log)).join(''));
+        })
+        .done();
+}
+
+const updateLinkState = (link, state) => {
+    if (!link) return;
+    link.classList.toggle('disabled', state);
+    link.setAttribute('aria-disabled', state.toString());
+    if (!state) link.setAttribute('tabindex', '-1');
+    else link.removeAttribute('tabindex');
+}
+
+const Pagination = (pagination, onPageChange) => {
+    const PageLink = (name) => `<div>
+        <a href='javascript:void(0)' class='page-link ${name.slice(0, 4).toLowerCase()}'>
+            ${name}
+        </a>
+    </div>`
+    const [group, prev, next] = cf.nu('div.paginate-group')
+        .deps({ pagination })
+        .html`
+            ${cf.r(PageLink('Previous'))}
+            <div class='pagination-state'></div>
+            ${cf.r(PageLink('Next'))}`
+        .render(({ pagination }, { elt }) => {
+            const [state] = cf.select({ s: '.pagination-state', from: elt });
+            if (state) state.textContent = `Page ${pagination.page} of ${pagination.total} `;
+
+            const [prev, next] = [cf.tracked('mod-log-prev'), cf.tracked('mod-log-next')];
+            updateLinkState(prev, pagination.page === 1);
+            updateLinkState(next, pagination.page >= pagination.total);
+        })
+        .gimme('a.page-link.prev', 'a.page-link.next')
+        .done();
+
+    prev.onclick = () => {
+        const p = pagination.current();
+        if (p.page <= 1) return;
+        onPageChange(p.page - 1);
+    };
+
+    next.onclick = () => {
+        const p = pagination.current();
+        if (p.page >= p.total) return;
+        onPageChange(p.page + 1);
+    };
+
+    cf.track('mod-log-prev', prev);
+    cf.track('mod-log-next', next);
+
+    return group;
+}
+
+// Moderation Log Functions
+const ModerationLogList = (logs, pagination, onPageChange) =>
+    cf.nu('div.moderation-log-wrapper')
+        .deps({ logs, pagination })
+        .html`<cf-slot name='list'></cf-slot>
+            <cf-slot name='controls'></cf-slot>`
+        .children({
+            list: LogDisplay(logs),
+            controls: Pagination(pagination, onPageChange)
+        })
+        .done();
+
+function setupModerationLog() {
+    const api = ApiClient.getInstance();
+    const logsStore = cf.store({ type: 'list', value: [] });
+    const pagination = cf.store({ value: { page: 1, total: 1 } });
+    const LOG_PAGE_SIZE = 20;
+
+    const loadModerationLogs = async (page = 1) => {
+        try {
+            const result = await api.getModerationLog(page, LOG_PAGE_SIZE);
+            logsStore.update(result.data.logs);
+            pagination.update({
+                page: result.data.page,
+                total: result.data.total
+            });
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to load moderation log');
+            await message(msg, 'Error');
+        }
+    };
+
+    const handlePageChange = (newPage) => {
+        loadModerationLogs(newPage);
+    };
+
+    const [logList] = ModerationLogList(
+        logsStore,
+        pagination,
+        handlePageChange
+    );
+
+    const [contentWrapper] = cf.select({ s: '#moderation-log' });
+
+    if (contentWrapper) {
+        cf.insert(logList, { into: contentWrapper });
+    }
+
+    const [refreshBtn] = cf.select({ s: '#mod-log-refresh' });
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+            const page = pagination.current().page;
+            await loadModerationLogs(page);
+            await message('Fetched latest moderation actions.', 'Success');
+        });
+    }
+
+    loadModerationLogs(1);
+}
+
 globalThis.addEventListener('DOMContentLoaded', async () => {
     await setupLogin();
     setupPostMgmt();
     setupCommentMgmt();
     setupSignupCodeMgmt();
     setupEditionMgmt();
+    setupModerationLog();
 });

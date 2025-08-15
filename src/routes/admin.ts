@@ -1,27 +1,28 @@
 import { Request, Response } from "express";
 import { config } from "../config.ts";
 import {
+    adminDeleteComment,
+    adminDeletePost,
+    adminSetPostNsfw,
     type AdminUser,
     createAdmin,
     createAdminCode,
     deleteCode,
     getAdmin,
+    getModerationLogs,
     isValidCode,
+    type ModerationLogResponse,
 } from "../db/admin.ts";
-import { getCommentById } from "../db/mod.ts";
-import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/admin.ts";
+import { getCommentById, logModerationAction, updatePostEditCode } from "../db/mod.ts";
 import { adminCreateEdition } from "../db/editions.ts";
-import { updatePostEditCode } from "../db/mod.ts";
 import { hash, verify } from "@bronti/argon2";
 import { hashPostId, randIntInRange } from "../utils/mod.ts";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
-import { extractTokenFromHeader, signToken, verifyToken } from "../utils/jwt.ts";
+import { signToken } from "../utils/jwt.ts";
 import { fromError } from "zod-validation-error/v4";
 import {
     InvalidCode,
     InvalidCredentials,
-    InvalidToken,
-    MissingToken,
     SigninError,
     SignupError,
     UserExists,
@@ -129,10 +130,22 @@ export const createSignupCode = (_: Request, res: Response) => {
     }
 };
 
+interface AuthenticatedRequest extends Request {
+    username?: string;
+}
+
+const getAdminUser = (req: AuthenticatedRequest) => {
+    const username: string | undefined = req.username;
+    if (!username) {
+        throw new Error("Admin username not present! This is a bug");
+    }
+    return username;
+};
+
 export const deletePost = (req: Request, res: Response) => {
     const { id } = req.params;
     if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
-    adminDeletePost(id);
+    adminDeletePost(id, getAdminUser(req));
     res.json({
         success: true,
         message: "Post deleted successfully",
@@ -149,7 +162,7 @@ export const setPostNsfw = (req: Request, res: Response) => {
 
     if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
 
-    adminSetPostNsfw(id, nsfw);
+    adminSetPostNsfw(id, nsfw, getAdminUser(req));
     res.json({
         success: true,
         message: `Post ${nsfw ? "marked as" : "unmarked as"} NSFW`,
@@ -171,7 +184,8 @@ export const getComment = (req: Request, res: Response) => {
 export const deleteComment = (req: Request, res: Response) => {
     const { id } = req.params;
     if (!id) return errors.json(res, ...ValidationError("Invalid post ID"));
-    adminDeleteComment(id);
+
+    adminDeleteComment(id, getAdminUser(req));
     res.json({
         success: true,
         message: "Comment deleted successfully",
@@ -195,6 +209,14 @@ export const createEdition = (req: Request, res: Response) => {
         data: edition,
     });
 
+    logModerationAction(
+        getAdminUser(req),
+        "create",
+        "edition",
+        edition.id.toString(),
+        edition.name,
+    );
+
     setTimeout(() => {
         console.warn("Going down for edition update!");
         Deno.exit(0);
@@ -202,24 +224,10 @@ export const createEdition = (req: Request, res: Response) => {
 };
 
 export const whoami = (req: Request, res: Response) => {
-    try {
-        const authHeader = req.headers.authorization;
-        const token = extractTokenFromHeader(authHeader);
-        if (!token) return errors.json(res, ...MissingToken);
-
-        const payload = verifyToken(token);
-
-        const admin: AdminUser | undefined = getAdmin(payload.username);
-        if (!admin) return errors.json(res, ...InvalidCredentials);
-
-        res.json({
-            success: true,
-            user: { username: admin.username },
-        });
-    } catch (error) {
-        console.error("Whoami error:", error);
-        return errors.json(res, ...InvalidToken);
-    }
+    res.json({
+        success: true,
+        user: { username: getAdminUser(req) },
+    });
 };
 
 export const resetPostEditCode = (req: Request, res: Response) => {
@@ -229,8 +237,8 @@ export const resetPostEditCode = (req: Request, res: Response) => {
     const n = randIntInRange(100000, 1000000);
     const code = hashPostId(n);
 
-    // Update the post's edit code using updatePostEditCode
     updatePostEditCode(id, code);
+    logModerationAction(getAdminUser(req), "edit_code_reset", "post", id, undefined, undefined);
 
     res.json({
         success: true,
@@ -239,4 +247,28 @@ export const resetPostEditCode = (req: Request, res: Response) => {
             new_code: code,
         },
     });
+};
+
+export const getModerationLog = (req: Request, res: Response) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const pageSize = Math.min(parseInt(req.query.page_size as string) || 20, 100);
+
+        if (page < 1 || pageSize < 1) {
+            return errors.json(
+                res,
+                ...ValidationError("Page and pageSize must be positive integers"),
+            );
+        }
+
+        const result: ModerationLogResponse = getModerationLogs(page, pageSize);
+
+        res.json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        console.error("Get moderation log error:", error);
+        return errors.json(res, ...ValidationError("Failed to retrieve moderation log"));
+    }
 };

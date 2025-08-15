@@ -5,7 +5,7 @@
     --accent: #ebe9e5;
     --border: #aaaaaa;
     --gray: #555555;
-    --badge-text: white;
+    --tag-text: white;
     --highlight-color: rgba(247, 255, 100, 0.851);
     --danger: #ae2929;
     --warning: #ff8e15;
@@ -117,7 +117,7 @@ footer {
 }
 
 .heading-6 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 pre {
@@ -337,6 +337,13 @@ form {
     margin-top: 1rem;
 }
 
+.paginate-group {
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+
 .nag {
     background: var(--accent);
     padding: 0.5rem;
@@ -375,6 +382,8 @@ section {
     font-size: 0.9rem;
     padding: 0.2rem;
     font-weight: bold;
+    border: 2px solid var(--body-bg);
+    color: var(--tag-text, currentColor);
 }
 
 .tag a {
@@ -386,6 +395,15 @@ section {
     color: white;
 }
 
+.accented {
+    background-color: blueviolet;
+    color: white;
+}
+
+.gray {
+    color: var(--gray);
+}
+
 details ul,
 details ol {
     margin-top: 0.4rem;
@@ -394,8 +412,9 @@ details ol {
 
 .warning {
     background-color: var(--warning);
-    color: var(--body-primary);
+    color: white;
 }
+
 
 .post-tags {
     display: flex;
