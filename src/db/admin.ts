@@ -25,7 +25,11 @@ create table if not exists moderation_log(
     details text,
     created_at integer not null,
     foreign key (admin_username) references admins(username)
-)`);
+);
+
+CREATE INDEX IF NOT EXISTS idx_moderation_log_created_at 
+    ON moderation_log(created_at DESC);
+`);
 
 const createCodeQuery = db.prepare(`
     insert into admin_codes(

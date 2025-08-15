@@ -61,13 +61,13 @@ const createApp = () => {
 
     app.post(
         "/captcha/challenge",
-        makeLimiter({ n: 5, period: { s: 2 } }),
+        makeLimiter({ json: true, n: 5, period: { s: 2 } }),
         captcha.challenge,
     );
 
     app.post(
         "/captcha/redeem",
-        makeLimiter({ n: 5, period: { s: 2 } }),
+        makeLimiter({ json: true, n: 5, period: { s: 2 } }),
         captcha.redeem,
     );
 
@@ -117,7 +117,12 @@ const createApp = () => {
     app.get("/api/v1/admin/comments/:id", isAdmin, admin.getComment);
     app.post("/api/v1/admin/editions", isAdmin, admin.createEdition);
     app.post("/api/admin/v1/post/:id/reset-edit-code", isAdmin, admin.resetPostEditCode);
-    app.get("/api/v1/admin/moderation-log", isAdmin, admin.getModerationLog);
+    app.get(
+        "/api/v1/admin/moderation-log",
+        makeLimiter({ json: true, n: 10, period: { s: 5 } }),
+        isAdmin,
+        admin.getModerationLog,
+    );
 
     const withUrl = { whatsappUrl: config.whatsappUrl };
 

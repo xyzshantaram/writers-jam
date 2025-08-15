@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { config } from "../config.ts";
 import {
+    adminDeleteComment,
+    adminDeletePost,
+    adminSetPostNsfw,
     type AdminUser,
     createAdmin,
     createAdminCode,
@@ -10,10 +13,8 @@ import {
     isValidCode,
     type ModerationLogResponse,
 } from "../db/admin.ts";
-import { getCommentById, logModerationAction } from "../db/mod.ts";
-import { adminDeleteComment, adminDeletePost, adminSetPostNsfw } from "../db/admin.ts";
+import { getCommentById, logModerationAction, updatePostEditCode } from "../db/mod.ts";
 import { adminCreateEdition } from "../db/editions.ts";
-import { updatePostEditCode } from "../db/mod.ts";
 import { hash, verify } from "@bronti/argon2";
 import { hashPostId, randIntInRange } from "../utils/mod.ts";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
@@ -129,8 +130,12 @@ export const createSignupCode = (_: Request, res: Response) => {
     }
 };
 
-const getAdminUser = (req: Request) => {
-    const username: string | undefined = (req as any).username;
+interface AuthenticatedRequest extends Request {
+    username?: string;
+}
+
+const getAdminUser = (req: AuthenticatedRequest) => {
+    const username: string | undefined = req.username;
     if (!username) {
         throw new Error("Admin username not present! This is a bug");
     }

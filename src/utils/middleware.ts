@@ -46,6 +46,7 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const payload = verifyToken(token);
+        if (!payload?.username) throw new Error("invalid token");
         (req as any).username = payload.username;
         next();
     } catch (_) {

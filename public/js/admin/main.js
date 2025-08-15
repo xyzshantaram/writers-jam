@@ -251,7 +251,11 @@ function setupCommentMgmt() {
         const value = input.value.trim();
         if (!value) return;
         let [, ulid] = value.match(/#post-comment-(.{26})/) || [];
-        if (!ulid && !(ulid = value).length === 26) {
+        // If not a deep link, treat the whole input as the ULID candidate
+        if (!ulid) ulid = value;
+        // Strict ULID format (26 chars, Crockford base32 excluding I, L, O, U)
+        const ULID_RE = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+        if (!ULID_RE.test(ulid)) {
             return await message("Invalid comment ID.", "Error");
         }
         try {
@@ -450,28 +454,30 @@ const Pagination = (pagination, onPageChange) => {
             <div class='pagination-state'></div>
             ${cf.r(PageLink('Next'))}`
         .render(({ pagination }, { elt }) => {
-            const state = cf.select({ s: '.pagination-state', from: elt });
+            const [state] = cf.select({ s: '.pagination-state', from: elt });
             state.textContent = `Page ${pagination.page} of ${pagination.total} `;
 
             const [prev, next] = [cf.tracked('mod-log-prev'), cf.tracked('mod-log-next')];
-            prev.classList.toggle('disabled', pagination.page === 1);
-            next.classList.toggle('disabled', pagination.page >= pagination.total);
+            if (prev) prev.classList.toggle('disabled', pagination.page === 1);
+            if (next) next.classList.toggle('disabled', pagination.page >= pagination.total);
         })
         .gimme('a.page-link.prev', 'a.page-link.next')
         .done();
 
     prev.onclick = () => {
         const p = pagination.current();
+        if (p.page <= 1) return;
         onPageChange(p.page - 1);
     };
 
     next.onclick = () => {
         const p = pagination.current();
+        if (p.page >= p.total) return;
         onPageChange(p.page + 1);
     };
 
-    cf.track('mod-log-prev', prevLink);
-    cf.track('mod-log-next', nextLink);
+    cf.track('mod-log-prev', prev);
+    cf.track('mod-log-next', next);
 
     return group;
 }
@@ -509,7 +515,7 @@ function setupModerationLog() {
     };
 
     const handlePageChange = (newPage) => {
-        loadModerationLogs(newPage, 20);
+        loadModerationLogs(newPage);
     };
 
     const [logList] = ModerationLogList(
@@ -524,17 +530,16 @@ function setupModerationLog() {
         cf.insert(logList, { into: contentWrapper });
     }
 
-    // Refresh button
-    const [refreshBtn] = cf.select({ s: '#refresh-mod-log' });
+    const [refreshBtn] = cf.select({ s: '#mod-log-refresh' });
     if (refreshBtn) {
         refreshBtn.addEventListener('click', async () => {
             const page = pagination.current().page;
-            await loadModerationLogs(page, LOG_PAGE_SIZE);
-            await message('Moderation log refreshed', 'Success');
+            await loadModerationLogs(page);
+            await message('Fetched latest moderation actions.', 'Success');
         });
     }
 
-    loadModerationLogs(1, LOG_PAGE_SIZE);
+    loadModerationLogs(1);
 }
 
 globalThis.addEventListener('DOMContentLoaded', async () => {
