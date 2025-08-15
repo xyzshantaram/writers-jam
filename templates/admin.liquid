@@ -4,6 +4,14 @@
 <link rel="stylesheet" href="/styles/alert.css">
 <link rel="stylesheet" href="/styles/admin.css">
 <link rel="stylesheet" href="/styles/rendered.css">
+<style>
+    .management-section {
+        display: none;
+    }
+    .management-section.authenticated {
+        display: block;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -44,7 +52,7 @@
     </form>
 </details>
 
-<details open>
+<details class="management-section" open>
     <summary>Manage a post</summary>
 
     <form onsubmit="(e) => e.preventDefault()">
@@ -71,7 +79,7 @@
     <div id="last-action-result">Ready.</div>
 </details>
 
-<details>
+<details class="management-section">
     <summary>Delete a comment</summary>
 
     <form onsubmit="(e) => e.preventDefault()">
@@ -90,7 +98,7 @@
     </div>
 </details>
 
-<details>
+<details class="management-section">
     <summary>Manage signup codes</summary>
     <div class="signup-code-content">
         <div class="signup-codes-wrapper"></div>
@@ -98,7 +106,7 @@
     </div>
 </details>
 
-<details>
+<details class="management-section">
     <summary>Manage editions</summary>
     <div class="editions-wrapper"></div>
 
@@ -113,7 +121,7 @@
     </form>
 </details>
 
-<details id="moderation-log">
+<details class="management-section" id="moderation-log">
     <summary>Moderation Log (<a id="mod-log-refresh" href="javascript:void(0)" aria-role="button">Refresh</a>)</summary>
 </details>
 

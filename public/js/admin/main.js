@@ -44,6 +44,7 @@ const setupLogin = async () => {
     const api = ApiClient.getInstance();
     const loginForm = document.querySelector('#login-form');
     const isAuthenticated = await api.validateAuth();
+    
     if (isAuthenticated) {
         const { success, user } = await api.whoami();
         if (success && user) {
@@ -52,7 +53,19 @@ const setupLogin = async () => {
 
             summary.innerHTML = '';
             cf.insert(userInfo, { into: summary });
+            
+            // Show all management sections when authenticated
+            const managementSections = document.querySelectorAll('.management-section');
+            managementSections.forEach(section => {
+                section.classList.add('authenticated');
+            });
         }
+    } else {
+        // Hide all management sections when not authenticated
+        const managementSections = document.querySelectorAll('.management-section');
+        managementSections.forEach(section => {
+            section.classList.remove('authenticated');
+        });
     }
 
     loginForm.addEventListener('submit', async (e) => {
