@@ -383,7 +383,6 @@ section {
     padding: 0.2rem;
     font-weight: bold;
     border: 2px solid var(--body-bg);
-    color: var(--tag-text, currentColor);
 }
 
 .tag a {
