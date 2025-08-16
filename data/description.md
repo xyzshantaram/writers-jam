@@ -15,9 +15,8 @@ The rules are simple:
   [WhatsApp group]($WHATSAPP_URL) to share and discuss!
 - Most importantly of all, have fun!
 
-The theme for this week is "**Two Stories**". You are encouraged to get creative with the theme.
-Write a poem that reads differently top to bottom and bottom to top, two separate stories
-side-by-side, a reflection on the House M.D. episode, or tell the same events from two different
-perspectives.
+The theme for this week is _An object in my room_. You are encouraged to get creative with the
+theme. Write about your favourite t-shirt, a special sea-shell from the beach, a portrait of someone
+near and dear, or something else entirely. There is lots to find when you know how to look.
 
 What are you waiting for?
