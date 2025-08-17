@@ -123,7 +123,7 @@
             <a href="/post/{{ post.id }}#post-comment-{{ comment.id }}"><i class="iconoir-link"></i></a>
             <span class="comment-author">{{ comment.author }}</span>
             </div>
-            <div class="comment-body">{{ comment.content }}</div>
+            <div class="comment-body">{{ comment.content | escape }}</div>
             <div class="comment-meta">
                 <span class="comment-reply"><a href="javascript:void(0)" aria-role="button">Reply</a></span>
                 <span class="comment-time">
@@ -146,8 +146,8 @@
             const parent = item.closest('.comment');
             const poster = parent.querySelector('.comment-author').innerHTML;
             const body = parent.querySelector('.comment-body');
-            const contents = body.innerHTML;
-            const quoted = `> **_@${poster}_** wrote:  \n${unescape(contents).split('\n').map(item => `> ${item}`).join('\n')}\n\n`;
+            const contents = unescape(body.innerHTML);
+            const quoted = `> **_@${poster}_** wrote:  \n${contents.split('\n').map(item => `> ${item}`).join('\n')}\n\n`;
             item.onclick = () => {
                 if (textarea.value.trim()) {
                     textarea.value += `\n${quoted}`;
@@ -157,7 +157,7 @@
                 }
                 textarea.focus();
             }
-            body.innerHTML = parseMd(unescape(contents));
+            body.innerHTML = parseMd(contents);
         })
     })
 </script>
