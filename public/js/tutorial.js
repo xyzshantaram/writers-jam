@@ -1,5 +1,5 @@
-import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
-import { r } from "https://esm.sh/jsr/@campfire/core@4.0.2";
+import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import { r } from "https://esm.sh/jsr/@campfire/core@4.0.3";
 import { parseMd } from "./parse.js";
 import { showDialog } from "./dialog.js";
 

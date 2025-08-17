@@ -4,7 +4,7 @@ import TurndownService from "https://esm.sh/turndown@7.2.0";
 import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
 import { renderPreview } from "./preview.js";
-import cf from "https://esm.sh/jsr/@campfire/core@4.0.2";
+import cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
 
 globalThis.addEventListener("DOMContentLoaded", async () => {
     const textarea = document.querySelector("textarea");
