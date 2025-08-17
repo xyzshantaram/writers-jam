@@ -139,11 +139,11 @@
 
 <script type="module">
     import { parseMd } from '/js/parse.js';
-    import { unescape } from 'https://esm.sh/jsr/@campfire/core@4.0.2';
+    import { unescape } from 'https://esm.sh/jsr/@campfire/core@4.0.3';
     window.addEventListener('DOMContentLoaded', () => {
         const textarea = document.querySelector("#comment-body");
-        document.querySelectorAll('.comment-reply').forEach(item => {
-            const parent = item.closest('.comment');
+        document.querySelectorAll('.comment').forEach(parent => {
+            const item = parent.querySelector('.comment-reply');
             const poster = parent.querySelector('.comment-author').innerHTML;
             const body = parent.querySelector('.comment-body');
             const contents = unescape(body.innerHTML);

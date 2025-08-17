@@ -1,6 +1,7 @@
 import { marked } from "https://esm.sh/marked@^16.0.0";
 import { markedSmartypants } from "https://esm.sh/marked-smartypants@1.1.10";
 import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
+import { escape } from "https://esm.sh/jsr/@campfire/core@4.0.3";
 
 const renderer = {
     heading({ tokens, depth }) {
@@ -10,6 +11,9 @@ const renderer = {
     image() {
         return "";
     },
+    text(token) {
+        return escape(token.raw);
+    }
 };
 
 marked.use(markedSmartypants());
@@ -17,7 +21,8 @@ marked.use({ renderer });
 
 export function parseMd(markdown) {
     const input = typeof markdown === "string" ? markdown : String(markdown ?? "");
-    return sanitize(marked.parse(input), {
+    const parsed = marked.parse(input);
+    return sanitize(parsed, {
         allowedTags: [
             "address",
             "article",
