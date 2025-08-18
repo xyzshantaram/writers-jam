@@ -29,24 +29,18 @@ import {
 } from "../errors/admin.ts";
 import { ValidationError } from "../errors/general.ts";
 import { errors } from "../error.ts";
+import { z } from "zod/v4";
 
 /*
-GET /post/:ulid/edit
-    - delete post
-    - edit post contents
-POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged.
+POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged?
 GET /admin/reports
 GET /admin/reports/:id
-POST /admin/post/:id/delete
-POST /admin/post/:id/nsfw (body has param state: yes/no)
-POST /admin/comment/:ulid/delete
-POST /admin/edition
-POST /admin/edition/delete
 */
 
-export const index = (_: Request, res: Response) => {
+export const index = async (_: Request, res: Response) => {
     res.render("admin", {
         whatsappUrl: config.whatsappUrl,
+        description: await Deno.readTextFile("./data/description.md"),
     });
 };
 
@@ -192,15 +186,32 @@ export const deleteComment = (req: Request, res: Response) => {
     });
 };
 
-export const createEdition = (req: Request, res: Response) => {
-    const { name } = req.body;
+const adminCreateEditionSchema = z.object({
+    name: z.string().nonempty().nonoptional(),
+});
 
-    if (!name || typeof name !== "string") {
-        return errors.json(
-            res,
-            ...ValidationError("Edition name is required and must be a string"),
-        );
-    }
+const adminUpdateDescSchema = z.object({
+    description: z.string().nonempty().nonoptional(),
+});
+
+export const getCurrentDescription = async (_: Request, res: Response) => {
+    const description = await Deno.readTextFile("./data/description.md");
+    return res.json({
+        success: true,
+        data: { description },
+    });
+};
+
+export const updateDescription = async (req: Request, res: Response) => {
+    const { description } = adminUpdateDescSchema.parse(req.body);
+    await Deno.writeTextFile("./data/description.md", description);
+    return res.json({
+        success: true,
+    });
+};
+
+export const createEdition = (req: Request, res: Response) => {
+    const { name } = adminCreateEditionSchema.parse(req.body);
 
     const edition = adminCreateEdition(name);
     res.json({
@@ -221,6 +232,26 @@ export const createEdition = (req: Request, res: Response) => {
         console.warn("Going down for edition update!");
         Deno.exit(0);
     }, 15000);
+};
+
+export const restartServer = (req: Request, res: Response) => {
+    res.json({
+        success: true,
+        message: "Server restart initiated! The server will restart in 5 seconds.",
+    });
+
+    logModerationAction(
+        getAdminUser(req),
+        "restart",
+        "server",
+        "server",
+        "Server restart initiated by admin",
+    );
+
+    setTimeout(() => {
+        console.warn("Going down for server restart!");
+        Deno.exit(0);
+    }, 5000);
 };
 
 export const whoami = (req: Request, res: Response) => {

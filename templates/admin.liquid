@@ -55,7 +55,7 @@
 <details class="management-section" open>
     <summary>Manage a post</summary>
 
-    <form onsubmit="(e) => e.preventDefault()">
+    <form onsubmit="event.preventDefault()">
         <div class="form-group">
             <label for="admin-post-id">Post ID or URL</label>
             <input type="text" id="admin-post-id">
@@ -82,7 +82,7 @@
 <details class="management-section">
     <summary>Delete a comment</summary>
 
-    <form onsubmit="(e) => e.preventDefault()">
+    <form onsubmit="event.preventDefault()">
         <div class="form-group">
             <label for="admin-comment-id">Comment ID or URL</label>
             <input type="text" id="admin-comment-id">
@@ -107,10 +107,32 @@
 </details>
 
 <details class="management-section">
+    <summary>Manage description</summary>
+    <form onsubmit="event.preventDefault()">
+        <div class="form-group textarea-group">
+            <label for="admin-update-desc">Description</label>
+            <textarea autocomplete=off rows="10" id="admin-update-desc">{{ description }}</textarea>
+        </div>
+
+        <div class="form-group submit-group">
+            <input type="submit" value="Update">
+        </div>
+    </form>
+</details>
+
+<details class="management-section">
+    <summary>Server Management</summary>
+    <div class="server-management">
+        <p><strong>Warning:</strong> Restarting the server will temporarily make the site unavailable.</p>
+        <button type="button" id="restart-server-btn" class="danger">Restart Server</button>
+    </div>
+</details>
+
+<details class="management-section">
     <summary>Manage editions</summary>
     <div class="editions-wrapper"></div>
 
-    <form onsubmit="(e) => e.preventDefault()">
+    <form onsubmit="event.preventDefault()">
         <div class="form-group">
             <label for="admin-edition-name">Edition name</label>
             <input type="text" id="admin-edition-name" placeholder="Enter edition name">
