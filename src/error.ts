@@ -51,7 +51,7 @@ export function errorHandler(
     if (res.headersSent) return next(err);
 
     console.error(err);
-    const errFn = req.route.path.startsWith("/api") ? errors.json : errors.render;
+    const errFn = req.originalUrl.startsWith("/api") ? errors.json : errors.render;
 
     if (isZodErrorLike(err)) {
         const formatted = fromError(err);
