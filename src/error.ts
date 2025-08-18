@@ -44,29 +44,30 @@ export const errors = {
 
 export function errorHandler(
     err: any,
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction,
 ): void {
     if (res.headersSent) return next(err);
 
     console.error(err);
+    const errFn = req.route.path.startsWith("/api") ? errors.json : errors.render;
 
     if (isZodErrorLike(err)) {
         const formatted = fromError(err);
-        errors.render(
+
+        return errFn(
             res,
             ...ValidationError(
                 `There was an issue with the information you provided. Please check your input and try again. Details: ${formatted.toString()}`,
             ),
         );
-        return;
     }
 
     const statusCode = err?.status || 500;
     const message = err?.message || "An unexpected error occurred. Please try again later.";
 
-    errors.render(res, {
+    return errFn(res, {
         code: "InternalError",
         title: "Something went wrong",
         name: err?.name || "Error",
