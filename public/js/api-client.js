@@ -167,6 +167,23 @@ export class ApiClient {
         return await this.request(`/api/v1/admin/moderation-log?${params}`);
     }
 
+    async getCurrentDescription() {
+        return await this.request('/api/v1/admin/description');
+    }
+
+    async updateDescription(descriptionData) {
+        return await this.request('/api/v1/admin/description', {
+            method: 'POST',
+            body: JSON.stringify(descriptionData)
+        });
+    }
+
+    async restartServer() {
+        return await this.request('/api/v1/admin/restart', {
+            method: 'POST'
+        });
+    }
+
     // Get current user information
     async whoami() {
         try {

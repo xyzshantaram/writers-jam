@@ -1,5 +1,5 @@
 import { ApiClient } from '../api-client.js';
-import { message, confirm, fatal } from 'https://esm.sh/cf-alert@0.4.1';
+import { message, confirm, fatal, input } from 'https://esm.sh/cf-alert@0.4.1';
 import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
 import TimeAgo from "https://esm.sh/javascript-time-ago@2.5.11";
 import en from "https://esm.sh/javascript-time-ago@2.5.11/locale/en";
@@ -44,7 +44,7 @@ const setupLogin = async () => {
     const api = ApiClient.getInstance();
     const loginForm = document.querySelector('#login-form');
     const isAuthenticated = await api.validateAuth();
-    
+
     if (isAuthenticated) {
         const { success, user } = await api.whoami();
         if (success && user) {
@@ -53,7 +53,7 @@ const setupLogin = async () => {
 
             summary.innerHTML = '';
             cf.insert(userInfo, { into: summary });
-            
+
             // Show all management sections when authenticated
             const managementSections = document.querySelectorAll('.management-section');
             managementSections.forEach(section => {
@@ -515,6 +515,59 @@ const ModerationLogList = (logs, pagination, onPageChange) =>
         })
         .done();
 
+function setupDescriptionMgmt() {
+    const api = ApiClient.getInstance();
+    const [form] = cf.select({ s: 'details:has(#admin-update-desc) form' });
+    const [textarea] = cf.select({ s: '#admin-update-desc' });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const description = textarea.value.trim();
+        if (!description) {
+            return await message('Please enter a description', 'Error');
+        }
+
+        try {
+            await api.updateDescription({ description });
+            await message('Description updated successfully! Changes will take effect on the next server restart.', 'Success');
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to update description');
+            await fatal(msg, 'Error');
+        }
+    });
+}
+
+function setupServerMgmt() {
+    const api = ApiClient.getInstance();
+    const [restartBtn] = cf.select({ s: '#restart-server-btn' });
+
+    restartBtn.addEventListener('click', async () => {
+        if (!await confirm(
+            'Are you sure you want to restart the server? This will make the site temporarily unavailable.',
+            {
+                yes: "Restart",
+                no: "Cancel"
+            },
+            "Confirmation"
+        )) {
+            return;
+        }
+
+        const t = await input("Please type the word 'restart' to confirm.");
+        if (t !== 'restart') return await message('Cancelled.');
+
+        try {
+            await api.restartServer();
+            await message('Server restart initiated. The page will reload in 5 seconds.', 'Success');
+            setTimeout(() => location.reload(), 5000);
+        } catch (error) {
+            const { msg } = api.handleApiError(error, 'Failed to restart server');
+            await fatal(msg, 'Error');
+        }
+    });
+}
+
 function setupModerationLog() {
     const api = ApiClient.getInstance();
     const logsStore = cf.store({ type: 'list', value: [] });
@@ -568,6 +621,8 @@ globalThis.addEventListener('DOMContentLoaded', async () => {
     setupPostMgmt();
     setupCommentMgmt();
     setupSignupCodeMgmt();
+    setupDescriptionMgmt();
+    setupServerMgmt();
     setupEditionMgmt();
     setupModerationLog();
 });
