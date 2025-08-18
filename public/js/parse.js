@@ -12,7 +12,11 @@ const renderer = {
         return "";
     },
     text(token) {
-        return escape(token.raw);
+        if ('tokens' in token && token.tokens) {
+            return this.parser.parseInline(token.tokens);
+        }
+
+        return escape(token.text);
     }
 };
 
