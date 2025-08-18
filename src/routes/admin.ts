@@ -30,20 +30,11 @@ import {
 import { ValidationError } from "../errors/general.ts";
 import { errors } from "../error.ts";
 import { z } from "zod/v4";
-import { getDescription } from "./index.ts";
 
 /*
-GET /post/:ulid/edit
-    - delete post
-    - edit post contents
-POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged.
+POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged?
 GET /admin/reports
 GET /admin/reports/:id
-POST /admin/post/:id/delete
-POST /admin/post/:id/nsfw (body has param state: yes/no)
-POST /admin/comment/:ulid/delete
-POST /admin/edition
-POST /admin/edition/delete
 */
 
 export const index = async (_: Request, res: Response) => {
@@ -212,7 +203,7 @@ export const getCurrentDescription = async (_: Request, res: Response) => {
 };
 
 export const updateDescription = async (req: Request, res: Response) => {
-    const { description } = adminUpdateDescSchema.parse(req);
+    const { description } = adminUpdateDescSchema.parse(req.body);
     await Deno.writeTextFile("./data/description.md", description);
     return res.json({
         success: true,
