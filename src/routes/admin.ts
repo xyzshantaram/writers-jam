@@ -46,10 +46,10 @@ POST /admin/edition
 POST /admin/edition/delete
 */
 
-export const index = (_: Request, res: Response) => {
+export const index = async (_: Request, res: Response) => {
     res.render("admin", {
         whatsappUrl: config.whatsappUrl,
-        description: getDescription(),
+        description: await Deno.readTextFile("./data/description.md"),
     });
 };
 
