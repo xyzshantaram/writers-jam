@@ -171,10 +171,10 @@ export class ApiClient {
         return await this.request('/api/v1/admin/description');
     }
 
-    async updateDescription(descriptionData) {
+    async updateDescription(description) {
         return await this.request('/api/v1/admin/description', {
             method: 'POST',
-            body: JSON.stringify(descriptionData)
+            body: JSON.stringify({ description })
         });
     }
 

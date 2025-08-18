@@ -529,7 +529,7 @@ function setupDescriptionMgmt() {
         }
 
         try {
-            await api.updateDescription({ description });
+            await api.updateDescription(description);
             await message('Description updated successfully! Changes will take effect on the next server restart.', 'Success');
         } catch (error) {
             const { msg } = api.handleApiError(error, 'Failed to update description');
