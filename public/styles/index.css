@@ -23,6 +23,10 @@
     align-items: center;
 }
 
+.index-desc>p:last-of-type {
+    text-align: center;
+}
+
 .feed .post-item {
     margin-top: 1rem;
     width: 100%;
