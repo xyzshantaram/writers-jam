@@ -438,8 +438,8 @@ const LogItem = ({ action, ttype, admin, title, time, id, details }) => cf.html`
             <span class='small gray'>${timeAgo.format(new Date(time * 1000))}</span>
         </div>
 
-        ${details?.trim() ? cf.html`
-            <div class="moderation-log-details"><strong>Details:</strong> ${details}</div>`
+        ${details?.trim() ? cf.r(cf.html`
+            <div class="moderation-log-details"><strong>Details:</strong> ${details}</div>`)
         : ''}
     </li>`;
 
