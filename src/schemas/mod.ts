@@ -20,7 +20,7 @@ export const createPostSchema = z.object({
         .default("")
         .transform((s) => s.trim()),
     triggers: z.string()
-        .max(100, { error: "Trigger warning text is too long (max 100 characters)" })
+        .max(200, { error: "Notes text is too long (max 200 characters)" })
         .default("")
         .transform((s) => s.trim()),
     nsfw: z.string()
