@@ -31,6 +31,10 @@
 
         {% endif %}
 
+        {% if mode == "edit" %}
+            <input type="hidden" id="post-author" value="{{ post.author }}">
+        {% endif %}
+
         <button type="button" id="tutorial-nag" class="nag">
             Click here for help with editing.
         </button>
