@@ -104,13 +104,13 @@
 
 
     {% if post.tags.criticism.value %}
-    <div class="nag">This user is accepting constructive criticism. Feel free to post advice and tips on how they can improve their writing! Please be kind though, as it takes a lot of courage to share one's work in this way.</div>
+    <div class="nag">This user is accepting constructive criticism. Feel free to post advice and tips on how they can improve their writing!</div>
     {% endif %}
 
 
     <div class="form-group textarea-group">
         <label for="comment-body">Your comment</label>
-        <textarea name="content" id="comment-body" placeholder="Remember to be respectful! All art is subjective."></textarea>
+        <textarea name="content" id="comment-body" placeholder="Remember to be respectful! It takes a lot of courage to share one's work in this way."></textarea>
     </div>
 
     <input type="hidden" name="for" value="{{ post.id }}">
