@@ -14,7 +14,6 @@ const detailsTemplate = template(`
     `);
 
 export const renderPreview = (elts, opts) => {
-    console.log(elts, opts);
     if (!elts.details || !elts.preview) throw new Error("Both details and render target must be supplied!");
     elts.details.innerHTML = detailsTemplate({
         ...opts,
