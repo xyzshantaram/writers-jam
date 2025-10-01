@@ -131,10 +131,8 @@ export const updatePost = (
     const id = unhashPostId(hashedId);
     const tags = getPostTagString({
         ...tagItem("edition", edition),
-        ...tagItem("criticism", criticism),
+        ...(criticism !== undefined ? tagItem("criticism", criticism) : {}),
     }, getPostTags(id));
-
-    console.log(tags);
 
     return updatePostStmt.run({
         id,
