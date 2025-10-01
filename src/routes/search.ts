@@ -38,6 +38,12 @@ export const index = (req: Request, res: Response) => {
             prevPage: updateQuery({
                 page: String(clamp(page - 1, 1, results.totalPages)),
             }),
+            firstPage: updateQuery({
+                page: "1",
+            }),
+            lastPage: updateQuery({
+                page: results.totalPages.toString(),
+            }),
         },
         currentEdition: edition.noEdition ? undefined : edition.number,
         editions,
