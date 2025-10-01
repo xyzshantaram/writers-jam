@@ -36,6 +36,9 @@ export const createPostSchema = z.object({
     captcha: z.string()
         .nonempty({ error: "Captcha is required. Please solve the captcha" }),
     edition: editionSchema.nonoptional(),
+    criticism: z.string()
+        .default("")
+        .transform((s) => s === "yes" ? 1 : 0),
 });
 
 export interface Post {

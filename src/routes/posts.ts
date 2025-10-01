@@ -105,14 +105,20 @@ export const create = async (req: Request, res: Response) => {
     const { success } = await cap.validateToken(parsed.captcha);
     if (!success) return captchaErr(res);
 
-    const { triggers, captcha: _, password, edition, ...createOpts } = parsed;
+    const { triggers, criticism, captcha: _, password, edition, ...createOpts } = parsed;
+
+    const tags = {
+        edition: { value: edition },
+        criticism: { value: !!criticism },
+    };
 
     const created = createPost({
         ...createOpts,
         password: password.length ? hash(password) : "",
         triggers: triggers.trim(),
-        tags: getPostTagString({ edition: { value: edition } }),
+        tags: getPostTagString(tags),
     });
+
     return res.redirect(`/post/${created}`);
 };
 
@@ -172,6 +178,9 @@ const postModificationAction = z.object({
     nsfw: z.string().default("").transform((s) => s === "yes" ? 1 : 0),
     edition: editionSchema,
     captcha: z.string({ error: "Captcha is required." }),
+    criticism: z.string()
+        .default("")
+        .transform((s) => s === "yes" ? 1 : 0),
 });
 
 export const manage = (req: Request, res: Response) => {
@@ -246,6 +255,7 @@ export const update = async (req: Request, res: Response) => {
             content: updated.content,
             nsfw: !!updated.nsfw,
             edition: updated.edition,
+            criticism: updated.criticism,
         });
         return res.redirect(`/post/${id}`);
     } else if (parsed.action === "update_edit_code") {

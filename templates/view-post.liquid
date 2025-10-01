@@ -95,11 +95,18 @@
 <h2>Comments</h2>
 
 <h3>Leave a comment</h3>
+
 <form method="POST" action="/post/{{ post.id }}/comment">
     <div class="form-group">
         <label for="comment-author">Your name</label>
         <input type="text" name="author" placeholder="Anonymous" id="comment-author">
     </div>
+
+
+    {% if post.tags.criticism.value %}
+    <div class="nag">This user is accepting constructive criticism. Feel free to post advice and tips on how they can improve their writing! Please be kind though, as it takes a lot of courage to share one's work in this way.</div>
+    {% endif %}
+
 
     <div class="form-group textarea-group">
         <label for="comment-body">Your comment</label>

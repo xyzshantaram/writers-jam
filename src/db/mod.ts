@@ -5,7 +5,7 @@ import { createCommentSchema, Post } from "../schemas/mod.ts";
 import { ulid } from "@std/ulid";
 import { z } from "zod/v4";
 import { hash } from "@bronti/argon2";
-export { createPost, getCommentsForPost, getCommentById, getPostById, getPosts } from "./posts.ts";
+export { createPost, getCommentById, getCommentsForPost, getPostById, getPosts } from "./posts.ts";
 export { getHomepageFeeds } from "./feeds.ts";
 export { type Edition, getAllEditions } from "./editions.ts";
 export * from "./admin.ts";
@@ -114,17 +114,27 @@ export const getPostTags = (id: number) => {
     return JSON.parse(String(result.tags || "{}"));
 };
 
-type UpdatePostArgs = Pick<Post, "title" | "content" | "triggers" | "nsfw"> & { edition: number };
-const edJson = (ed: number) => ({ edition: { value: ed } });
+type UpdatePostArgs = Pick<Post, "title" | "content" | "triggers" | "nsfw"> & {
+    edition: number;
+    criticism?: number;
+};
+const tagItem = <T>(key: string, t: T) => ({
+    [key]: { value: t },
+});
 
 export const updatePost = (
     hashedId: string,
     opts: UpdatePostArgs,
 ) => {
-    const { title = "", content, triggers = "", nsfw, edition } = opts;
+    const { title = "", content, triggers = "", nsfw, edition, criticism } = opts;
     const updated = Date.now();
     const id = unhashPostId(hashedId);
-    const tags = getPostTagString(edJson(edition), getPostTags(id));
+    const tags = getPostTagString({
+        ...tagItem("edition", edition),
+        ...tagItem("criticism", criticism),
+    }, getPostTags(id));
+
+    console.log(tags);
 
     return updatePostStmt.run({
         id,

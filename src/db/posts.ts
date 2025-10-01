@@ -14,7 +14,7 @@ const createPostStmt = db.prepare(`INSERT INTO post (
 `);
 
 export const createPost = (
-    opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "edition"> & {
+    opts: Omit<z.infer<typeof createPostSchema>, "captcha" | "edition" | "criticism"> & {
         tags: string;
     },
 ) => {
