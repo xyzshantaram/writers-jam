@@ -52,6 +52,24 @@
 </form>
 
 {% if results.posts.size %}
+
+{% if hasQuery %}
+    <div class="nag filter-nag">Some posts have been filtered. 
+        <a href="/posts">Reset</a>
+    </div>
+{% endif %}
+
+
+<div class="search-first-last-links">
+    {% if page != 1 %}
+        <a href="{{ links.firstPage }}">First</a>
+    {% endif %}
+    Page {{ page }} of {{ results.totalPages }}
+    {% if page != results.totalPages %}
+        <a href="{{ links.lastPage }}">Last</a>
+    {% endif %}
+</div>
+
 <div class="posts">
     {% for post in results.posts %}
         {% render 'partials/post.liquid' post: post %}
