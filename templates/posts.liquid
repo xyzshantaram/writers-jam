@@ -51,6 +51,8 @@
     </div>
 </form>
 
+{% if results.posts.size %}
+
 {% if hasQuery %}
     <div class="nag filter-nag">Some posts have been filtered. 
         <a href="/posts">Reset</a>
@@ -68,7 +70,6 @@
     {% endif %}
 </div>
 
-{% if results.posts.size %}
 <div class="posts">
     {% for post in results.posts %}
         {% render 'partials/post.liquid' post: post %}
