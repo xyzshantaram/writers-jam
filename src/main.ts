@@ -17,6 +17,7 @@ import { Post } from "./schemas/mod.ts";
 import { editionMap, editions } from "./utils/editions.ts";
 import { parseMd } from "../public/js/parse.js";
 import { InvalidLink, PostNotFound } from "./errors/posts.ts";
+import { ValidationError } from "./errors/general.ts";
 
 const setupLiquid = (app: express.Express, timeAgo: TimeAgo) => {
     const liquid = new Liquid({ extname: ".liquid", jsTruthy: true });
@@ -83,6 +84,18 @@ const createApp = () => {
             success: true,
             data: editions.filter((itm) => !itm.deleted),
         });
+    });
+
+    app.get("/api/v1/editions/:id", (req, res) => {
+        const id = Number(req.params.id);
+        if (isNaN(id)) {
+            return errors.json(res, ...ValidationError("Invalid edition ID"));
+        }
+        const edition = editionMap.get(id);
+        if (!edition) {
+            return errors.json(res, ...ValidationError("Edition not found"));
+        }
+        res.json({ success: true, data: edition });
     });
 
     // Post API routes
