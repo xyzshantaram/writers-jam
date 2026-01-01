@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import process from "node:process";
 import * as fs from "@std/fs";
 import { die, fatal } from "./utils/mod.ts";

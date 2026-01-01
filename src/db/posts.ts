@@ -1,4 +1,4 @@
-import z from "zod/v4";
+import z from "zod";
 import { Comment, createPostSchema, Post } from "../schemas/mod.ts";
 import { db } from "./db.ts";
 import { hashPostId, unhashPostId } from "../utils/mod.ts";

@@ -3,7 +3,7 @@ import { getPostTagString, hashPostId, unhashPostId } from "../utils/mod.ts";
 import { init } from "./init.ts";
 import { createCommentSchema, Post } from "../schemas/mod.ts";
 import { ulid } from "@std/ulid";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { hash } from "@bronti/argon2";
 export { createPost, getCommentById, getCommentsForPost, getPostById, getPosts } from "./posts.ts";
 export { getHomepageFeeds } from "./feeds.ts";

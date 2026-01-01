@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import { createErrorMap } from "zod-validation-error/v4";
 import { count } from "@wordpress/wordcount";
 import { editionSchema } from "../utils/editions.ts";

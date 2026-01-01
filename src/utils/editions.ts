@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import { Edition, getAllEditions } from "../db/mod.ts";
 
 const rawEditions = getAllEditions();

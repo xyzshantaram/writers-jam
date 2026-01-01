@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const signupSchema = z.object({
     username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_]+$/),

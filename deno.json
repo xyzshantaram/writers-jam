@@ -24,8 +24,8 @@
         "marked": "npm:marked@^16.0.0",
         "marked-smartypants": "npm:marked-smartypants@^1.1.10",
         "sanitize-html": "npm:sanitize-html@^2.17.0",
-        "zod": "npm:zod@^4.0.5",
-        "zod-validation-error": "npm:zod-validation-error@^3.5.3"
+        "zod": "npm:zod@^4.3.4",
+        "zod-validation-error": "npm:zod-validation-error@^4.0.2"
     },
     "nodeModulesDir": "auto",
     "lint": {

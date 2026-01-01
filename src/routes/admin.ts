@@ -29,7 +29,7 @@ import {
 } from "../errors/admin.ts";
 import { ValidationError } from "../errors/general.ts";
 import { errors } from "../error.ts";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 /*
 POST /post/:id/report (w/ reason). 3 reports to hide a post and present it to admin for review as flagged?
