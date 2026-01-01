@@ -1,0 +1,20 @@
+{% block head_extras %}
+<link rel="stylesheet" href="/styles/editions.css">
+{% endblock %}
+
+{% layout "base.liquid" heading: "Editions" %}
+
+{% block content %}
+
+<div class="editions">
+    {% for edition in editions %}
+        <a class="edition-item" href="/editions/{{ edition.id }}">
+            <div class="edition-title">{{ edition.name }}</div>
+            {% if edition.description %}
+                <div class="edition-desc">{{ edition.description | parse_md | raw }}</div>
+            {% endif %}
+        </a>
+    {% endfor %}
+</div>
+
+{% endblock %}

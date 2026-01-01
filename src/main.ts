@@ -8,6 +8,7 @@ import * as index from "./routes/index.ts";
 import * as posts from "./routes/posts.ts";
 import * as admin from "./routes/admin.ts";
 import * as search from "./routes/search.ts";
+import * as editionsRoute from "./routes/editions.ts";
 import { getPostById } from "./db/mod.ts";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
@@ -58,6 +59,9 @@ const createApp = () => {
     );
 
     app.get("/posts", search.index);
+
+    app.get("/editions", editionsRoute.index);
+    app.get("/editions/:id", editionsRoute.view);
 
     app.post(
         "/captcha/challenge",

@@ -1,0 +1,38 @@
+.edition-item {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    padding-left: none;
+    text-decoration: none;
+    border: 3px solid var(--border);
+}
+
+.editions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 80%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.edition-title {
+    font-weight: bold;
+}
+
+.edition-desc {
+    font-size: 0.9rem;
+}
+
+.edition-desc p {
+    margin: 0.25rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    .editions {
+        grid-template-columns: 1fr;
+    }
+}

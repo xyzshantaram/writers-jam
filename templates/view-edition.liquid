@@ -1,0 +1,56 @@
+{% block head_extras %}
+<link rel="stylesheet" href="/styles/posts.css">
+<link rel="stylesheet" href="/styles/post-preview.css">
+{% endblock %}
+
+{% layout "base.liquid" heading: edition.name %}
+{% block content %}
+
+<div class="edition-header">
+    {% if edition.description %}
+        <div class="edition-description">{{ edition.description }}</div>
+    {% endif %}
+    
+    <div class="edition-actions">
+        <button id="random-post-btn" class="btn">Get random post from edition</button>
+    </div>
+</div>
+
+{% if results.posts.size %}
+
+<div class="search-first-last-links">
+    {% if page != 1 %}
+        <a href="{{ links.firstPage }}">First</a>
+    {% endif %}
+    Page {{ page }} of {{ results.totalPages }}
+    {% if page != results.totalPages %}
+        <a href="{{ links.lastPage }}">Last</a>
+    {% endif %}
+</div>
+
+<div class="posts">
+    {% for post in results.posts %}
+        {% render 'partials/post.liquid' post: post %}
+    {% endfor %}
+</div>
+
+<div class="page-links">
+    <div>
+        {% if page != 1 %}
+        <a href="{{ links.prevPage }}">Previous</a>
+        {% endif %}
+    </div>
+
+    <div>Page {{ page }} of {{ results.totalPages }}</div>
+
+    <div>
+        {% if page != results.totalPages %}
+        <a href="{{ links.nextPage }}">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<p>No posts found in this edition.</p>
+{% endif %}
+
+{% endblock %}
