@@ -10,7 +10,7 @@
     {% for edition in editions %}
         <div class="edition-item">
             <a href="/editions/{{ edition.id }}" class="edition-title">{{ edition.name }}</a>
-            {% if edition.description %}
+            {% if edition.description | parse_md | raw %}
                 <div class="edition-desc">{{ edition.description | parse_md | raw }}</div>
             {% endif %}
         </div>
