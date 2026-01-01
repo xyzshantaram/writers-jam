@@ -5,6 +5,7 @@ import {
     createPost,
     deletePost,
     getCommentsForPost,
+    getCurrentEdition,
     getMigratedPostId,
     getPostById,
     randomPost,
@@ -13,7 +14,7 @@ import {
 } from "../db/mod.ts";
 import { errors } from "../error.ts";
 import { createCommentSchema, createPostSchema, postIdSchema } from "../schemas/mod.ts";
-import { getClientIP, getPostTagString } from "../utils/mod.ts";
+import { getClientIP, getPostTagString, makeQueryLinkHelper } from "../utils/mod.ts";
 import { Request, Response } from "express";
 import { timeMs } from "../utils/time.ts";
 import { cap } from "./captcha.ts";
@@ -38,12 +39,28 @@ export const index = (_: Request, res: Response) => {
     });
 };
 
-export const random = (_: Request, res: Response) => {
-    const post = randomPost();
+export const random = (req: Request, res: Response) => {
+    let edition: number | undefined;
+    const editionQuery = req.query.edition;
+
+    if (editionQuery === "current") {
+        edition = getCurrentEdition();
+    } else if (typeof editionQuery === "string") {
+        const parsed = parseInt(editionQuery, 10);
+        if (!isNaN(parsed)) {
+            edition = parsed;
+        }
+    }
+
+    const query = makeQueryLinkHelper(req.query);
+
+    const post = randomPost(edition);
     if (!post) {
         return errors.render(res, ...NoPostsAvailable);
     }
-    return res.redirect(`/post/${post}`);
+    return res.redirect(
+        `/post/${post}${query({ edition: edition ? String(edition) : undefined })}`,
+    );
 };
 
 const postViewsByIp: Record<string, Record<string, number>> = {};
