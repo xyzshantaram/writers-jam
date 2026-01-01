@@ -3,12 +3,13 @@ import { db } from "./db.ts";
 export type Edition = {
     id: number;
     name: string;
+    description?: string;
     deleted: boolean;
 };
 
-const stmt = db.prepare(`
+const allEditionsStmt = db.prepare(`
 SELECT 
-    id, name, deleted
+    id, name, description, deleted
 FROM 
     editions
 ORDER BY 
@@ -16,19 +17,31 @@ ORDER BY
 `);
 
 export const getAllEditions = (): Edition[] => {
-    return stmt.all() as unknown as Edition[];
+    return allEditionsStmt.all() as unknown as Edition[];
 };
 
-export const createEdition = (name: string): Edition => {
+export const createEdition = (name: string, description: string = ""): Edition => {
     const insertStmt = db.prepare(`
     INSERT INTO 
-        editions (name)
-        VALUES (?) 
+        editions (name, description)
+        VALUES (?, ?) 
     returning
-        name, id, deleted
+        name, description, id, deleted
   `);
 
-    const edition = insertStmt.get(name)!;
+    const edition = insertStmt.get(name, description)!;
+    return edition as unknown as Edition;
+};
+
+export const updateEditionDescription = (id: number, description: string): Edition => {
+    const stmt = db.prepare(`
+    UPDATE editions
+    SET description = ?
+    WHERE id = ?
+    returning
+        name, description, id, deleted
+  `);
+    const edition = stmt.get(description, id)!;
     return edition as unknown as Edition;
 };
 
@@ -41,8 +54,15 @@ export const deleteEdition = (id: number): void => {
     stmt.run(id);
 };
 
-export const adminCreateEdition = (name: string): Edition => {
-    return createEdition(name);
+export const adminCreateEdition = (name: string, description?: string): Edition => {
+    return createEdition(name, description);
+};
+
+export const adminUpdateEdition = (
+    id: number,
+    description: string,
+): Edition => {
+    return updateEditionDescription(id, description);
 };
 
 export const adminDeleteEdition = (id: number): void => {

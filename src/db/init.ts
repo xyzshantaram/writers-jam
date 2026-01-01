@@ -41,6 +41,11 @@ export const init = (db: DatabaseSync) => {
     INSERT OR IGNORE INTO editions (id, name) VALUES (0, 'No edition');
     `);
 
+    const columns = db.prepare("PRAGMA table_info(editions)").all() as any[];
+    if (!columns.find((c) => c.name === "description")) {
+        db.exec("ALTER TABLE editions ADD COLUMN description TEXT DEFAULT ''");
+    }
+
     db.exec(`
     CREATE VIRTUAL TABLE IF NOT EXISTS post_fts USING fts5(
       content,
