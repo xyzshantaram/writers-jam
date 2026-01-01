@@ -159,12 +159,20 @@ export const updatePostEditCode = (
     });
 };
 
-const randomPostQuery = db.prepare(
-    "select id from post where deleted = 0 order by random() limit 1",
-);
+export const randomPost = (edition?: number) => {
+    let query = "select id from post where deleted = 0";
+    const params: Record<string, number> = {};
 
-export const randomPost = () => {
-    const res = randomPostQuery.get();
+    if (edition !== undefined) {
+        query += " AND json_extract(tags, '$.edition.value') = :edition";
+        params.edition = edition;
+    }
+
+    query += " order by random() limit 1";
+
+    const stmt = db.prepare(query);
+    const res = stmt.get(params) as { id: number } | undefined;
+    
     if (!res) return null;
-    return hashPostId(res.id as number);
+    return hashPostId(res.id);
 };
