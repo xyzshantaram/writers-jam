@@ -14,7 +14,7 @@ import {
     type ModerationLogResponse,
 } from "../db/admin.ts";
 import { getCommentById, logModerationAction, updatePostEditCode } from "../db/mod.ts";
-import { adminCreateEdition } from "../db/editions.ts";
+import { adminCreateEdition, adminUpdateEdition } from "../db/editions.ts";
 import { hash, verify } from "@bronti/argon2";
 import { hashPostId, randIntInRange } from "../utils/mod.ts";
 import { signinSchema, signupSchema } from "../schemas/admin.ts";
@@ -188,6 +188,11 @@ export const deleteComment = (req: Request, res: Response) => {
 
 const adminCreateEditionSchema = z.object({
     name: z.string().nonempty().nonoptional(),
+    description: z.string().optional(),
+});
+
+const adminUpdateEditionSchema = z.object({
+    description: z.string().optional().default(""),
 });
 
 const adminUpdateDescSchema = z.object({
@@ -211,9 +216,9 @@ export const updateDescription = async (req: Request, res: Response) => {
 };
 
 export const createEdition = (req: Request, res: Response) => {
-    const { name } = adminCreateEditionSchema.parse(req.body);
+    const { name, description } = adminCreateEditionSchema.parse(req.body);
 
-    const edition = adminCreateEdition(name);
+    const edition = adminCreateEdition(name, description);
     res.json({
         success: true,
         message: "Edition created successfully! The server will restart in 15 seconds.",
@@ -232,6 +237,29 @@ export const createEdition = (req: Request, res: Response) => {
         console.warn("Going down for edition update!");
         Deno.exit(0);
     }, 15000);
+};
+
+export const updateEdition = (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) return errors.json(res, ...ValidationError("Invalid edition ID"));
+
+    const { description } = adminUpdateEditionSchema.parse(req.body);
+
+    const edition = adminUpdateEdition(parseInt(id), description);
+    res.json({
+        success: true,
+        message:
+            "Edition updated successfully! Note that changes will only take effect after a server restart.",
+        data: edition,
+    });
+
+    logModerationAction(
+        getAdminUser(req),
+        "update",
+        "edition",
+        edition.id.toString(),
+        edition.name,
+    );
 };
 
 export const restartServer = (req: Request, res: Response) => {
