@@ -1,24 +1,16 @@
 .edition-item {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.25rem;
     padding: 0.5rem;
     padding-left: none;
-    text-decoration: none;
-    border: 3px solid var(--border);
-}
-
-.editions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    width: 80%;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
 }
 
 .edition-title {
     font-weight: bold;
+    text-decoration: none;
+}
+
+.edition-title {
+    border-bottom: 2px solid var(--border);
+    width: auto;
 }
 
 .edition-desc {

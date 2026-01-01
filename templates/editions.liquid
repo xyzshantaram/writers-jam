@@ -8,12 +8,12 @@
 
 <div class="editions">
     {% for edition in editions %}
-        <a class="edition-item" href="/editions/{{ edition.id }}">
-            <div class="edition-title">{{ edition.name }}</div>
+        <div class="edition-item">
+            <a href="/editions/{{ edition.id }}" class="edition-title">{{ edition.name }}</a>
             {% if edition.description %}
                 <div class="edition-desc">{{ edition.description | parse_md | raw }}</div>
             {% endif %}
-        </a>
+        </div>
     {% endfor %}
 </div>
 
