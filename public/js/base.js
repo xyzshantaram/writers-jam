@@ -1,4 +1,5 @@
-import * as cf from "https://esm.sh/jsr/@campfire/core";
+// deno-lint-ignore-file no-import-prefix
+import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
 import { showDialog } from "./dialog.js";
 
 const themes = [
@@ -38,6 +39,79 @@ const ThemeSelector = () => {
         .done();
 };
 
+const setupRandomButton = async (el, onClose) => {
+    const linkItem = (label, href) => cf.nu('a.btn')
+        .attr('href', href)
+        .style('margin', '0.25rem')
+        .style('margin-top', '0')
+        .content(label)
+        .ref();
+
+    const params = new URLSearchParams(globalThis.location.search);
+    let editionId = params.get("edition");
+
+    if (!editionId) {
+        const match = globalThis.location.pathname.match(/\/editions\/(\d+)/);
+        if (match && !isNaN(parseInt(match[1]))) {
+            editionId = match[1];
+        }
+    }
+
+    const option = document.querySelector(`#search-edition option[value="${editionId}"]`);
+    let name = option?.textContent.trim();
+
+    if (!name && editionId) {
+        name = await fetch(`/api/v1/editions/${editionId}`)
+            .catch(e => console.error(e))
+            .then(res => {
+                if (!res.ok) throw new Error("Error while fetching");
+                return res;
+            })
+            .then(res => res.json())
+            .then(json => json.data.name);
+    }
+
+    if (!name) name = "Selected Edition";
+
+    el.onclick = async (e) => {
+        e.preventDefault();
+        const links = [];
+        // Current edition
+        links.push(linkItem("Current edition", "/post/random?edition=current"));
+        if (editionId) {
+            links.push(linkItem(`Edition: ${name}`,
+                `/post/random?edition=${editionId}`));
+        }
+
+        links.push(linkItem("All posts", "/post/random"));
+
+        const [cancel] = cf.nu("button")
+            .on("click", () => onClose())
+            .content("Cancel")
+            .done();
+
+        const [container] = cf.nu("div")
+            .style('display', 'flex')
+            .style('flexDirection', 'column')
+            .style('gap', '10px')
+            .done();
+
+        cf.insert(links, { into: container });
+
+        const [content] = cf.nu("div.dialog-inner")
+            .html`<h3 style="margin-top: 0">Random Post</h3>
+                <p>View random post from:</p>
+                <cf-slot name="links"></cf-slot>
+                <div class="form-group submit-group" style="margin-top: 1rem;">
+                    <cf-slot name="cancel"></cf-slot>
+                </div>`
+            .children({ cancel, links: container })
+            .done();
+
+        await showDialog(content);
+    };
+}
+
 globalThis.addEventListener("DOMContentLoaded", () => {
     const [dialog] = cf.select({ s: "dialog" });
     const [themeSelect] = ThemeSelector();
@@ -70,4 +144,7 @@ globalThis.addEventListener("DOMContentLoaded", () => {
 
     const settingsBtn = cf.select({ s: "#settings-btn", single: true });
     settingsBtn.onclick = async () => await showDialog(elem);
+
+    const randomBtn = cf.select({ s: "#random-btn", single: true });
+    setupRandomButton(randomBtn, () => dialog.close());
 });
