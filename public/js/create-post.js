@@ -1,10 +1,13 @@
+// deno-lint-ignore-file no-import-prefix
 import { isLikelyVSCodeHtml, maybeMarkdown } from "./detect-markdown.js";
-import { count } from "https://esm.sh/@wordpress/wordcount@^4.26.0";
+import { Tally } from "https://esm.sh/jsr/@twocaretcat/tally-ts@2.0.0";
 import TurndownService from "https://esm.sh/turndown@7.2.0";
 import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
 import { renderPreview } from "./preview.js";
 import cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+
+const tally = new Tally();
 
 globalThis.addEventListener("DOMContentLoaded", async () => {
     const textarea = document.querySelector("textarea");
@@ -52,7 +55,7 @@ globalThis.addEventListener("DOMContentLoaded", async () => {
             wc.textContent = "0";
             return;
         }
-        wc.textContent = String(count(value, "words"));
+        wc.textContent = String(tally.countWords(value, "words").total);
     };
 
     const listener = () => {

@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { createErrorMap } from "zod-validation-error/v4";
-import { count } from "@wordpress/wordcount";
+import { Tally } from "@twocaretcat/tally-ts";
 import { editionSchema } from "../utils/editions.ts";
+
+const tally = new Tally();
 
 z.config({
     customError: createErrorMap(),
@@ -26,7 +28,7 @@ export const createPostSchema = z.object({
         .transform((s) => s === "yes" ? 1 : 0),
     content: z.string()
         .nonempty({ error: "Content cannot be empty. Please enter your story" })
-        .refine((v) => count(v, "words") >= 100, {
+        .refine((v) => tally.countWords(v).total >= 100, {
             error: "Your submission must have greater than or exactly 100 words",
         })
         .transform((s) => s.trim()),
