@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-import-prefix
 import { ApiClient } from '../api-client.js';
 import { message, confirm, fatal, input } from 'https://esm.sh/cf-alert@0.4.1';
 import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
@@ -285,18 +286,40 @@ function setupCommentMgmt() {
 
 const EditionList = (editions) => cf.nu('div.editions-list')
     .deps({ editions })
-    .render(({ editions }, { b }) =>
-        b.html`<ol class="edition-items">
-            ${cf.r(editions
-            .toSorted((a, b) => a.id - b.id)
-            .slice(1)
-            .map(edition => `
-                <li class="edition-item" data-id="${edition.id}">
-                    <span class="edition-name">${edition.name}</span>
-                </li>
-            `).join(''))}
-        </ol>`
-    )
+    .render(({ editions }, { b }) => {
+        const sortedEditions = editions
+            .toSorted((a, b) => b.id - a.id) // Show newest first
+            .filter(e => e.id !== 0); // Hide "No edition"
+
+        return b.html`
+        <table class="editions-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cf.r(sortedEditions.map(edition => `
+                    <tr class="edition-row" data-id="${edition.id}">
+                        <td class="edition-name-cell">
+                            <span class="edition-name">${edition.name}</span>
+                        </td>
+                        <td class="edition-desc-cell">
+                            <div class="edition-desc-display">
+                                ${edition.description || '<em class="gray">No description</em>'}
+                                ${edition.pendingRestart ? '<span class="tag warning small">Pending Restart</span>' : ''}
+                            </div>
+                        </td>
+                        <td class="edition-actions-cell">
+                            <button type="button" class="edit-edition-btn small">Edit</button>
+                        </td>
+                    </tr>
+                `).join(''))}
+            </tbody>
+        </table>`;
+    })
     .done();
 
 const SignupCodeList = (signupCodes) => cf.nu('div.signup-codes-list')
@@ -359,11 +382,6 @@ function setupSignupCodeMgmt() {
 function setupEditionMgmt() {
     const api = ApiClient.getInstance();
     const editions = cf.store({ type: 'list', value: [] });
-    const [list] = EditionList(editions);
-    cf.select({ s: '.editions-wrapper' })[0].append(list);
-
-    const [input] = cf.select({ s: "#admin-edition-name" });
-    const [btn] = cf.select({ s: '#add-edition-btn' });
 
     const loadEditions = async () => {
         try {
@@ -374,6 +392,55 @@ function setupEditionMgmt() {
             await message(msg, 'Error loading editions');
         }
     };
+
+    const [list] = EditionList(editions);
+    cf.select({ s: '.editions-wrapper' })[0].append(list);
+
+    // Event delegation for edit buttons
+    list.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.edit-edition-btn');
+        if (!btn) return;
+
+        const row = btn.closest('.edition-row');
+        const id = parseInt(row.dataset.id);
+        const edition = editions.current().find(e => e.id === id);
+
+        const descCell = row.querySelector('.edition-desc-cell');
+
+        if (btn.textContent === 'Edit') {
+            // Switch to edit mode
+            const currentDesc = edition.description || '';
+
+            descCell.innerHTML = `<textarea class="edit-desc-textarea" rows="3">${currentDesc}</textarea>`;
+            btn.textContent = 'Save';
+            btn.classList.add('accented');
+        } else {
+            // Save changes
+            const newDesc = descCell.querySelector('.edit-desc-textarea').value.trim();
+
+            try {
+                await api.updateEdition(id, { description: newDesc });
+                
+                // Update local store immediately with indicator
+                const currentEditions = editions.current();
+                const updatedEditions = currentEditions.map(e => {
+                    if (e.id === id) {
+                        return { ...e, description: newDesc, pendingRestart: true };
+                    }
+                    return e;
+                });
+                editions.update(updatedEditions);
+
+                await message('Edition updated successfully! Note that these changes will only take effect after a server restart.', 'Success');
+            } catch (error) {
+                const { msg } = api.handleApiError(error, 'Failed to update edition');
+                await fatal(msg, 'Error');
+            }
+        }
+    });
+
+    const [input] = cf.select({ s: "#admin-edition-name" });
+    const [btn] = cf.select({ s: '#add-edition-btn' });
 
     btn.onclick = async () => {
         const name = input.value.trim();

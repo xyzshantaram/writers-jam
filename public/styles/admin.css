@@ -101,3 +101,45 @@
         flex-direction: column;
     }
 }
+
+.editions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.editions-table th, .editions-table td {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.editions-table th {
+    background-color: var(--background-alt);
+}
+
+.edition-desc-cell {
+    width: 60%;
+}
+
+.edit-name-input, .edit-desc-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.3rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.edit-desc-textarea {
+    resize: vertical;
+}
+
+.edition-actions-cell {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.small {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+}

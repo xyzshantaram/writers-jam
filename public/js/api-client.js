@@ -151,11 +151,19 @@ export class ApiClient {
     }
 
     async createEdition(editionData) {
-        // Server expects { name: string } in the body
+        // Server expects { name: string, description?: string } in the body
         const data = typeof editionData === 'string' ? { name: editionData } : editionData;
         return await this.request('/api/v1/admin/editions', {
             method: 'POST',
             body: JSON.stringify(data)
+        });
+    }
+
+    async updateEdition(id, editionData) {
+        // Server expects { name: string, description?: string } in the body
+        return await this.request(`/api/v1/admin/editions/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(editionData)
         });
     }
 
