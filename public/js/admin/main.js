@@ -440,10 +440,13 @@ function setupEditionMgmt() {
     });
 
     const [input] = cf.select({ s: "#admin-edition-name" });
+    const [descInput] = cf.select({ s: "#admin-edition-desc" });
     const [btn] = cf.select({ s: '#add-edition-btn' });
 
     btn.onclick = async () => {
         const name = input.value.trim();
+        const description = descInput.value.trim();
+        
         if (!name) return await message('Please enter an edition name', 'Error');
 
         if (!await confirm(
@@ -454,8 +457,9 @@ function setupEditionMgmt() {
         }, "Confirmation", false)) return;
 
         try {
-            await api.createEdition(name);
+            await api.createEdition({ name, description });
             input.value = '';
+            descInput.value = '';
             await message("Edition created successfully. The server will restart in 15 seconds.");
             setTimeout(() => location.reload(), 15000);
         } catch (error) {
