@@ -4,9 +4,7 @@ import { count } from "@wordpress/wordcount";
 import { editionSchema } from "../utils/editions.ts";
 
 z.config({
-    customError: createErrorMap({
-        includePath: true,
-    }),
+    customError: createErrorMap(),
 });
 
 export const createPostSchema = z.object({
