@@ -116,6 +116,7 @@ const createApp = () => {
     app.delete("/api/v1/admin/comments/:id", isAdmin, admin.deleteComment);
     app.get("/api/v1/admin/comments/:id", isAdmin, admin.getComment);
     app.post("/api/v1/admin/editions", isAdmin, admin.createEdition);
+    app.patch("/api/v1/admin/editions/:id", isAdmin, admin.updateEdition);
     app.get("/api/v1/admin/description", isAdmin, admin.getCurrentDescription);
     app.post("/api/v1/admin/description", isAdmin, admin.updateDescription);
     app.post("/api/v1/admin/restart", isAdmin, admin.restartServer);
