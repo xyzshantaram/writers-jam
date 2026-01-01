@@ -21,11 +21,23 @@
 
 <a class="btn invert" href="/post"><strong>Get started!</strong></a>
 
-<div><h2>Posts</h2>(<a href="/posts">View all</a>)</div>
+<div class="current-edition-info">
+    <p>
+        Current Edition: <strong><a href="/editions/{{ edition.id }}">{{ edition.name }}</a></strong>
+    </p>
+    {% if edition.desc %}
+        <div>{{ edition.desc | parse_md | raw }}</div>
+    {% endif %}
+</div>
+
+<div class="posts-heading"><h2>Posts <a href="/posts">View all</a></h2></div>
 
 <div class="feeds">
     <div class="feed-wrapper">
         <h3 title="Random posts from the latest edition">Current Edition</h3>
+        <div class="feed-subtitle">
+            <a href="/editions">Browse all editions</a>
+        </div>
         <div class="feed current-edition">
             {% if feeds.currentEdition.size %}
             {% for post in feeds.currentEdition %}
@@ -48,6 +60,9 @@
 
     <div class="feed-wrapper">
         <h3>Recently updated</h3>
+        <div class="feed-subtitle">
+            <a href="/posts?sort=updated&order=desc">See all</a>
+        </div>
         <div class="feed latest">
             {% for post in feeds.latest %}
                 {% render 'partials/post.liquid' post: post %}
@@ -57,6 +72,9 @@
 
     <div class="feed-wrapper">
         <h3>Highly viewed</h3>
+        <div class="feed-subtitle">
+            <a href="/posts?sort=views&order=desc">See all</a>
+        </div>
         <div class="feed most-viewed">
             {% for post in feeds.mostViewed %}
                 {% render 'partials/post.liquid' post: post %}
