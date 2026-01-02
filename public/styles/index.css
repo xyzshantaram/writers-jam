@@ -18,14 +18,9 @@
     margin-bottom: 0.2rem;
 }
 
-.feed-subtitle {
-    text-align: center;
+.posts-heading h2 a,
+.feed-wrapper h3 a {
     font-size: 0.9rem;
-    font-weight: bold;
-}
-
-.posts-heading h2 a {
-    font-size: 1rem;
 }
 
 .feed-wrapper {

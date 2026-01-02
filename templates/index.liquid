@@ -34,10 +34,7 @@
 
 <div class="feeds">
     <div class="feed-wrapper">
-        <h3 title="Random posts from the latest edition">Current Edition</h3>
-        <div class="feed-subtitle">
-            <a href="/editions">Browse all editions</a>
-        </div>
+        <h3 title="Random posts from the latest edition">Current Edition <a href="/editions">Browse all</a></h3>
         <div class="feed current-edition">
             {% if feeds.currentEdition.size %}
             {% for post in feeds.currentEdition %}
@@ -59,10 +56,7 @@
     </div>
 
     <div class="feed-wrapper">
-        <h3>Recently updated</h3>
-        <div class="feed-subtitle">
-            <a href="/posts?sort=updated&order=desc">See all</a>
-        </div>
+        <h3>Recently updated <a href="/posts?sort=updated&order=desc">See all</a></h3>
         <div class="feed latest">
             {% for post in feeds.latest %}
                 {% render 'partials/post.liquid' post: post %}
@@ -71,10 +65,7 @@
     </div>
 
     <div class="feed-wrapper">
-        <h3>Highly viewed</h3>
-        <div class="feed-subtitle">
-            <a href="/posts?sort=views&order=desc">See all</a>
-        </div>
+        <h3>Highly viewed <a href="/posts?sort=views&order=desc">See all</a></h3>
         <div class="feed most-viewed">
             {% for post in feeds.mostViewed %}
                 {% render 'partials/post.liquid' post: post %}
