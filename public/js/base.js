@@ -1,5 +1,4 @@
-// deno-lint-ignore-file no-import-prefix
-import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import * as cf from "@campfire/core";
 import { showDialog } from "./dialog.js";
 
 const themes = [

@@ -1,9 +1,8 @@
-// deno-lint-ignore-file no-import-prefix
 import { ApiClient } from '../api-client.js';
-import { message, confirm, fatal, input } from 'https://esm.sh/cf-alert@0.4.1';
-import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
-import TimeAgo from "https://esm.sh/javascript-time-ago@2.5.11";
-import en from "https://esm.sh/javascript-time-ago@2.5.11/locale/en";
+import { message, confirm, fatal, input } from 'cf-alert';
+import * as cf from "@campfire/core";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 import { renderPreview } from '../preview.js';
 import { getFormJson, extractPostId, ManageBtns } from "./utils.js";
 import { showDialog } from "../dialog.js";

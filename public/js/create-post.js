@@ -1,11 +1,10 @@
-// deno-lint-ignore-file no-import-prefix
 import { isLikelyVSCodeHtml, maybeMarkdown } from "./detect-markdown.js";
-import { Tally } from "https://esm.sh/jsr/@twocaretcat/tally-ts@2.0.0";
-import TurndownService from "https://esm.sh/turndown@7.2.0";
-import * as turndownGfm from "https://esm.sh/turndown-plugin-gfm";
+import { Tally } from "@twocaretcat/tally-ts";
+import TurndownService from "turndown";
+import * as turndownGfm from "turndown-plugin-gfm";
 import { initTutorial } from "./tutorial.js";
 import { renderPreview } from "./preview.js";
-import cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import cf from "@campfire/core";
 
 const tally = new Tally();
 

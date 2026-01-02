@@ -1,7 +1,7 @@
-import { marked } from "https://esm.sh/marked@^16.0.0";
-import { markedSmartypants } from "https://esm.sh/marked-smartypants@1.1.10";
-import sanitize from "https://esm.sh/sanitize-html@^2.17.0";
-import { escape } from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import { marked } from "marked";
+import { markedSmartypants } from "marked-smartypants";
+import sanitize from "sanitize-html";
+import { escape } from "@campfire/core";
 
 const renderer = {
     heading({ tokens, depth }) {

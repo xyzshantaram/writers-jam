@@ -1,4 +1,4 @@
-import * as cf from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import * as cf from "@campfire/core";
 
 export const getFormJson = (form) => {
     if (form instanceof HTMLElement && form.tagName === "FORM") {

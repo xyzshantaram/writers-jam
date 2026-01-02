@@ -1,5 +1,5 @@
 import { parseMd } from "./parse.js";
-import { template } from "https://esm.sh/jsr/@campfire/core@4.0.3";
+import { template } from "@campfire/core";
 
 const detailsTemplate = template(`
         <h3>Preview "{{title}}"</h3>
