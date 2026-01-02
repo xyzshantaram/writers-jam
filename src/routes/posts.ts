@@ -59,7 +59,7 @@ export const random = (req: Request, res: Response) => {
         return errors.render(res, ...NoPostsAvailable);
     }
     return res.redirect(
-        `/post/${post}${query({ edition: edition ? String(edition) : undefined })}`,
+        `/post/${post}${query()}`,
     );
 };
 

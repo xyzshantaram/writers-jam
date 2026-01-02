@@ -74,7 +74,8 @@ export const makeQueryLinkHelper = (query: Record<string, any>) => {
         );
 
         const searchParams = new URLSearchParams(cleaned);
-        return `?${searchParams.toString()}`;
+        const s = searchParams.toString();
+        return s ? `?${s}` : "";
     };
 };
 
