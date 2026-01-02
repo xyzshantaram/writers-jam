@@ -23,7 +23,10 @@
 
 <div class="current-edition-info">
     <p>
-        Current Edition: <strong><a href="/editions/{{ edition.id }}">{{ edition.name }}</a></strong>
+        Current edition: <strong><a href="/editions/{{ edition.id }}">{{ edition.name }}</a></strong>
+    </p>
+    <p>
+        <a href="/editions">Previous editions</a>
     </p>
     {% if edition.desc %}
         <div>{{ edition.desc | parse_md | raw }}</div>
@@ -34,7 +37,7 @@
 
 <div class="feeds">
     <div class="feed-wrapper">
-        <h3 title="Random posts from the latest edition">Current Edition <a href="/editions">Browse all</a></h3>
+        <h3 title="Random posts from the latest edition">Current Edition</h3>
         <div class="feed current-edition">
             {% if feeds.currentEdition.size %}
             {% for post in feeds.currentEdition %}
