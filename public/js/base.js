@@ -145,5 +145,6 @@ globalThis.addEventListener("DOMContentLoaded", () => {
     settingsBtn.onclick = async () => await showDialog(elem);
 
     const randomBtn = cf.select({ s: "#random-btn", single: true });
+    randomBtn.setAttribute('href', 'javascript:void(0)');
     setupRandomButton(randomBtn, () => dialog.close());
 });
