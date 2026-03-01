@@ -8,7 +8,7 @@
 
 <div class="edition-header">
     {% if edition.description %}
-        <div class="edition-description">{{ edition.description }}</div>
+        <div class="edition-description">{{ edition.description | parse_md | raw }}</div>
     {% endif %}
 </div>
 
@@ -46,7 +46,7 @@
     </div>
 </div>
 {% else %}
-<p>No posts found in this edition.</p>
+<p>No posts found in this edition. <a href='/post'>Be the first!</a></p>
 {% endif %}
 
 {% endblock %}
