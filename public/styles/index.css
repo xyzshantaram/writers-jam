@@ -5,7 +5,7 @@
 }
 
 .current-edition-info {
-    text-align: center;
+    text-align: left;
     margin: 1rem;
     width: 100%;
     display: flex;
@@ -16,6 +16,7 @@
 .current-edition-info p {
     margin-top: 0.2rem;
     margin-bottom: 0.2rem;
+    text-align: center;
 }
 
 .posts-heading h2 a,
