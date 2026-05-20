@@ -6,6 +6,7 @@ COPY deno.json deno.lock ./
 COPY src/ ./src/
 COPY public/ ./public/
 COPY templates/ ./templates/
+COPY data/ ./data/
 
 RUN deno cache --unstable-raw-imports src/main.ts
 
@@ -17,6 +18,7 @@ COPY --from=builder /app/deno.json /app/deno.lock ./
 COPY --from=builder /app/src/ ./src/
 COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/templates/ ./templates/
+COPY --from=builder /app/data/ ./data/
 
 RUN deno cache --unstable-raw-imports src/main.ts
 
