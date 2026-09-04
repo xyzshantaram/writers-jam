@@ -4,6 +4,28 @@ Writers Jam (read in simple-present tense) is a simple online writing exercise. 
 theme and participants are encouraged to write 100 words in any format on that theme. They can share
 their entry and read others' entries on the website (<https://writersjam.shantaram.xyz>).
 
+## Screenshots
+
+**The site.** A weekly theme, a 100 word minimum, and a live count of what
+people have written so far.
+
+![The Writers Jam landing page, showing the rules and a counter reading 361 posts and 102,338 views](res/01-home.png)
+
+**Writing a post.** The editor takes a name, an edition, and the piece itself,
+and counts words as you type.
+
+![The Create a post form with a name field, an edition picker, and a content area with a word count](res/02-editor.png)
+
+**Reading a post.** Each piece has a view count, an age, and a font control, so
+a reader can set the text the way they like it.
+
+![A finished post rendered for a reader, with a display font control](res/03-post.png)
+
+**Finding a post.** Search filters by edition, sorts the results, and narrows
+them down.
+
+![The search panel with edition, sort, and filter controls above the results](res/04-search.png)
+
 ## Usage
 
 ### Prerequisites
